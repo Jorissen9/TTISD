@@ -1,20 +1,22 @@
 package com.example.ttisd.ttisdassignment1;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.List;
-
-public class MapsActivity extends FragmentActivity implements GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMarkerClickListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -25,13 +27,13 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMarker
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -65,11 +67,42 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMarker
                 .snippet("Start-up promoten"));
         mCorda.setTag(0);
 
-        // Add a marker to uHasselt and move the camera
+        // Set current location to the camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(UHASSELT));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            
+
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
 
         // Set a listener for marker click.
-        mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng latLng) {
+
+                // Creating a marker
+                MarkerOptions markerOptions = new MarkerOptions();
+
+                // Setting the position for the marker
+                markerOptions.position(latLng);
+
+                // Setting the title for the marker.
+                // This will be displayed on taping the marker
+                markerOptions.title("Enter title");
+                markerOptions.snippet("TODO list");
+
+                // Clears the previously touched position
+                mMap.clear();
+
+                // Animating to the touched position
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                // Placing a marker on the touched position
+                mMap.addMarker(markerOptions);
+            }
+        });
     }
 
     @Override
@@ -82,6 +115,5 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMarker
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
         return false;
-
     }
 }
