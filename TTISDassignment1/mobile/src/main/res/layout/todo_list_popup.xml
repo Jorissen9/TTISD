@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_custom_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This is a sample title."
+        android:layout_marginTop="125dp"
+        android:layout_centerHorizontal="true"
+        android:padding="25sp"
+        />
+
+    <EditText
+        android:id="@+id/todo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TODO list..."
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/title"
+        android:padding="25sp"
+        />
+
+    <Button
+        android:id="@+id/button_update"
+        android:text="Update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/todo"
+        android:layout_centerInParent="true"
+        />
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:text="Cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_update"
+        android:layout_centerInParent="true"
+        />
+
+    <Button
+        android:id="@+id/button_remove"
+        android:text="Remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_cancel"
+        android:layout_centerInParent="true"
+        />
+
+</RelativeLayout>

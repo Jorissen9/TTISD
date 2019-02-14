@@ -1,10 +1,19 @@
 package com.example.ttisd.ttisdassignment1;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,6 +28,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity implements OnMarkerClickListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Context mContext;
+    private PopupWindow mPopupWindow;
+    private RelativeLayout mMapLayout;
+
+    private EditText titleText;
+    private EditText todoListText;
+    private Marker currentMarker;
 
     private static final LatLng PXL = new LatLng(50.9382073, 5.34806385);
     private static final LatLng UHASSELT = new LatLng(50.9262009, 5.39275314);
@@ -27,6 +43,9 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContext = getApplicationContext();
+        mMapLayout = (RelativeLayout) findViewById(R.id.map);
 
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -69,8 +88,8 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
 
         // Set current location to the camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(UHASSELT));
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             return;
         }
@@ -106,10 +125,87 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
     }
 
     @Override
-    public boolean onMarkerClick(final Marker marker) {
+    public boolean onMarkerClick(Marker marker) {
         Toast.makeText(this,
                 "TODO:\n" + marker.getSnippet(),
                 Toast.LENGTH_SHORT).show();
+
+        currentMarker = marker;
+        // Initialize a new instance of LayoutInflater service
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        // Inflate the custom layout/view
+        View customView = inflater.inflate(R.layout.todo_list_popup,null);
+
+                /*
+                    Parameters
+                        contentView : the popup's content
+                        width : the popup's width
+                        height : the popup's height
+                */
+        // Initialize a new instance of popup window
+        mPopupWindow = new PopupWindow(
+                customView,
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        // Set an elevation value for popup window | Call requires API level 21
+        if(Build.VERSION.SDK_INT>=21){
+            mPopupWindow.setElevation(5.0f);
+        }
+
+        // Get a reference for the custom view close button
+        titleText = customView.findViewById(R.id.title);
+        todoListText = customView.findViewById(R.id.todo);
+        titleText.setText(currentMarker.getTitle());
+        todoListText.setText(currentMarker.getSnippet());
+
+        Button updateButton = customView.findViewById(R.id.button_update);
+        Button closeButton = customView.findViewById(R.id.button_cancel);
+        Button removeButton = customView.findViewById(R.id.button_remove);
+
+        // Set a click listener for the popup window close button
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Dismiss the popup window
+                mPopupWindow.dismiss();
+            }
+        });
+
+        // Set a click listener for the popup window close button
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Dismiss the popup window
+                System.out.println(titleText.getText());
+                System.out.println(todoListText.getText());
+                currentMarker.setTitle(String.valueOf(titleText.getText()));
+                currentMarker.setSnippet(String.valueOf(todoListText.getText()));
+                mPopupWindow.dismiss();
+            }
+        });
+
+        // Set a click listener for the popup window close button
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                currentMarker.remove();
+                // Dismiss the popup window
+                mPopupWindow.dismiss();
+            }
+        });
+
+                /*
+                    Parameters
+                        parent : a parent view to get the getWindowToken() token from
+                        gravity : the gravity which controls the placement of the popup window
+                        x : the popup's x location offset
+                        y : the popup's y location offset
+                */
+        // Finally, show the popup window at the center location of root relative layout
+        mPopupWindow.showAtLocation(mMapLayout, Gravity.CENTER,0,0);
 
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
