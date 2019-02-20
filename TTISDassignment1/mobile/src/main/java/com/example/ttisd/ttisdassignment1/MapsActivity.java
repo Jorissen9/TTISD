@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -87,10 +88,9 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
         mCorda.setTag(0);
 
         // Set current location to the camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(UHASSELT));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UHASSELT, 12.0f));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
             return;
         }
         mMap.setMyLocationEnabled(true);
@@ -101,25 +101,13 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
             @Override
             public void onMapClick(LatLng latLng) {
 
-                // Creating a marker
-                MarkerOptions markerOptions = new MarkerOptions();
-
-                // Setting the position for the marker
-                markerOptions.position(latLng);
-
-                // Setting the title for the marker.
-                // This will be displayed on taping the marker
-                markerOptions.title("Enter title");
-                markerOptions.snippet("TODO list");
-
-                // Clears the previously touched position
-                mMap.clear();
+                mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title("Enter title")
+                        .snippet("TODO list")).setTag(0);
 
                 // Animating to the touched position
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-
-                // Placing a marker on the touched position
-                mMap.addMarker(markerOptions);
             }
         });
     }
