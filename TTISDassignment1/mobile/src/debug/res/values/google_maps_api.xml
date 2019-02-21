@@ -1,7 +1,5 @@
 <resources>
     <!--
-    TODO: Before you run your application, you need a Google Maps API key.
-
     To get one, follow this link, follow the directions and press "Create" at the end:
 
     https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=A8:21:99:2F:17:A9:22:77:1E:B6:01:15:9E:46:96:9D:0E:E0:96:88%3Bcom.example.ttisd.ttisdassignment1

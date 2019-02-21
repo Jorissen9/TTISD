@@ -6,7 +6,9 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +33,7 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
     private GoogleMap mMap;
     private Context mContext;
     private PopupWindow mPopupWindow;
-    private RelativeLayout mMapLayout;
+    private Fragment mMapLayout;
 
     private EditText titleText;
     private EditText todoListText;
@@ -46,7 +48,6 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
         super.onCreate(savedInstanceState);
 
         mContext = getApplicationContext();
-        mMapLayout = (RelativeLayout) findViewById(R.id.map);
 
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -67,6 +68,9 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+        mMapLayout = fragmentManager.findFragmentById(R.id.map);
 
         // Add some markers to the map, and add a data object to each marker.
         Marker mPxl = mMap.addMarker(new MarkerOptions()
@@ -91,16 +95,16 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UHASSELT, 12.0f));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
         mMap.setMyLocationEnabled(true);
 
         // Set a listener for marker click.
+        mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng latLng) {
-
                 mMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title("Enter title")
@@ -114,10 +118,6 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(this,
-                "TODO:\n" + marker.getSnippet(),
-                Toast.LENGTH_SHORT).show();
-
         currentMarker = marker;
         // Initialize a new instance of LayoutInflater service
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -158,6 +158,10 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
             @Override
             public void onClick(View view) {
                 // Dismiss the popup window
+                System.out.println(titleText.getText());
+                System.out.println(todoListText.getText());
+                currentMarker.setTitle(String.valueOf(titleText.getText()));
+                currentMarker.setSnippet(String.valueOf(todoListText.getText()));
                 mPopupWindow.dismiss();
             }
         });
@@ -167,10 +171,6 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
             @Override
             public void onClick(View view) {
                 // Dismiss the popup window
-                System.out.println(titleText.getText());
-                System.out.println(todoListText.getText());
-                currentMarker.setTitle(String.valueOf(titleText.getText()));
-                currentMarker.setSnippet(String.valueOf(todoListText.getText()));
                 mPopupWindow.dismiss();
             }
         });
@@ -193,7 +193,7 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
                         y : the popup's y location offset
                 */
         // Finally, show the popup window at the center location of root relative layout
-        mPopupWindow.showAtLocation(mMapLayout, Gravity.CENTER,0,0);
+        mPopupWindow.showAtLocation(mMapLayout.getView(), Gravity.CENTER,0,0);
 
         // Return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
