@@ -136,10 +136,16 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        return createMessagebox(marker);
+        createMessagebox(marker);
+
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
     }
 
-    private boolean createMessagebox(Marker marker) {
+    private void createMessagebox(Marker marker) {
         currentMarker = marker;
         // Initialize a new instance of LayoutInflater service
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -220,10 +226,5 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
                 */
         // Finally, show the popup window at the center location of root relative layout
         mPopupWindow.showAtLocation(mMapLayout.getView(), Gravity.CENTER,0,0);
-
-        // Return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
-        return false;
     }
 }
