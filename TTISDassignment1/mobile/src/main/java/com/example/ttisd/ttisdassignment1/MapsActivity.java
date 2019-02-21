@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -28,6 +30,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
+
+import java.util.ArrayList;
+
+
 public class MapsActivity extends FragmentActivity implements OnMarkerClickListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -38,6 +48,9 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
     private EditText titleText;
     private EditText todoListText;
     private Marker currentMarker;
+
+    private GeofencingClient geofencingClient;
+    private ArrayList<Geofence> geofenceList;
 
     private static final LatLng PXL = new LatLng(50.9382073, 5.34806385);
     private static final LatLng UHASSELT = new LatLng(50.9262009, 5.39275314);
@@ -54,6 +67,9 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        geofencingClient = LocationServices.getGeofencingClient(this);
+        geofenceList = new ArrayList<>();
     }
 
     /**
