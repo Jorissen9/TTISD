@@ -3,53 +3,65 @@
     android:id="@+id/rl_custom_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:background="@color/common_google_signin_btn_text_dark_default">
+
+    <TextView
+        android:id="@+id/title_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="Title:" />
 
     <EditText
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="This is a sample title."
-        android:layout_marginTop="125dp"
+        android:layout_below="@+id/title_label"
         android:layout_centerHorizontal="true"
-        android:padding="25sp"
-        />
+        android:width="250dp"
+        android:padding="25sp" />
+
+    <TextView
+        android:id="@+id/todo_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:text="TODO:" />
 
     <EditText
         android:id="@+id/todo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TODO list..."
+        android:layout_below="@+id/todo_label"
         android:layout_centerInParent="true"
-        android:layout_below="@+id/title"
-        android:padding="25sp"
-        />
+        android:lines="4"
+        android:width="250dp"
+        android:padding="25sp" />
 
     <Button
         android:id="@+id/button_update"
-        android:text="Update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/todo"
         android:layout_centerInParent="true"
-        />
+        android:text="Update" />
 
     <Button
         android:id="@+id/button_cancel"
-        android:text="Cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button_update"
         android:layout_centerInParent="true"
-        />
+        android:text="Cancel" />
 
     <Button
         android:id="@+id/button_remove"
-        android:text="Remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/button_cancel"
         android:layout_centerInParent="true"
-        />
+        android:text="Remove" />
 
 </RelativeLayout>
