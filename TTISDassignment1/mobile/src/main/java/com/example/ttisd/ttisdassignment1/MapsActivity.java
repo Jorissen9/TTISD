@@ -105,10 +105,12 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
 
             @Override
             public void onMapClick(LatLng latLng) {
-                mMap.addMarker(new MarkerOptions()
+                Marker newMarker = mMap.addMarker(new MarkerOptions()
                         .position(latLng)
-                        .title("Enter title")
-                        .snippet("TODO list")).setTag(0);
+                        .title("")
+                        .snippet(""));
+                newMarker.setTag(0);
+                createMessagebox(newMarker);
 
                 // Animating to the touched position
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -118,6 +120,10 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        return createMessagebox(marker);
+    }
+
+    private boolean createMessagebox(Marker marker) {
         currentMarker = marker;
         // Initialize a new instance of LayoutInflater service
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -132,11 +138,15 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
                         height : the popup's height
                 */
         // Initialize a new instance of popup window
+        if(mPopupWindow != null) {
+            mPopupWindow.dismiss();
+        }
         mPopupWindow = new PopupWindow(
                 customView,
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
         );
+        mPopupWindow.setFocusable(true);
 
         // Set an elevation value for popup window | Call requires API level 21
         if(Build.VERSION.SDK_INT>=21){
