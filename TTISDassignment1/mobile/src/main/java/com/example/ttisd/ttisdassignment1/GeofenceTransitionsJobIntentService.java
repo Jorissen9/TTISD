@@ -141,7 +141,9 @@ public class GeofenceTransitionsJobIntentService extends JobIntentService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
         // Define the notification settings.
-        builder.setColor(Color.RED)
+        builder.setSmallIcon(R.drawable.ic_launcher)
+               .setLargeIcon(BitmapFactory.decodeResource(getResources(), .drawable.ic_launcher))
+               .setColor(Color.RED)
                .setContentTitle(notificationDetails)
                .setContentText("In de buurt van TODO!")
                .setContentIntent(notificationPendingIntent);
