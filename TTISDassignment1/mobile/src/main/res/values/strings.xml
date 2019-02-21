@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">TTISDassignment1</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="app_name">GeoTODO</string>
+    <string name="title_activity_maps">GeoTODO</string>
 </resources>
