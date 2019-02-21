@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,10 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.util.Log;
@@ -26,7 +23,6 @@ import android.util.Log;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -37,11 +33,9 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
 
 public class MapsActivity extends FragmentActivity implements OnMarkerClickListener, OnMapReadyCallback {
     private static final String TAG = "MapsActivity";
@@ -62,10 +56,24 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
     private ArrayList<Geofence> geofenceList;
     private PendingIntent geofencePendingIntent;
 
+    static public class LocationMark {
+        public String Title;
+        public String Descr;
+        public LatLng latlong;
 
-    private static final LatLng PXL = new LatLng(50.9382073, 5.34806385);
-    private static final LatLng UHASSELT = new LatLng(50.9262009, 5.39275314);
-    private static final LatLng CORDA = new LatLng(50.9526418, 5.3500728);
+        public LocationMark(String Title, String Descr, LatLng latlong) {
+            this.Title = Title;
+            this.Descr = Descr;
+            this.latlong = latlong;
+        }
+    }
+
+    private static final ArrayList<LocationMark> PREDEFINED_LOCATIONS = new ArrayList<LocationMark>() {{
+        add(new LocationMark("PXL"     , "Niets meer"                    , new LatLng(50.9382073, 5.34806385)));
+        add(new LocationMark("UHASSELT", "Dit jaar slagen\nDiploma halen", new LatLng(50.9262009, 5.39275314)));
+        add(new LocationMark("CORDA"   , "Start-up promoten"             , new LatLng(50.9526418, 5.3500728)));
+        add(new LocationMark("EDM"     , "Test de evaluatie"             , new LatLng(50.93120798, 5.39556116)));
+    }};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,12 +111,13 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
         mMapLayout = fragmentManager.findFragmentById(R.id.map);
 
         // Add some markers to the map, and add a data object to each marker.
-        addMapMarker(PXL, "Pxl", "Niets meer");
-        addMapMarker(UHASSELT, "UHasselt", "Dit jaar slagen\nDiploma halen");
-        addMapMarker(CORDA, "Corda", "Start-up promoten");
+        for (LocationMark loc : PREDEFINED_LOCATIONS) {
+            Marker m = addMapMarker(loc.latlong, loc.Title, loc.Descr);
+            addGeofenceForMarker(m);
+        }
 
         // Set current location to the camera
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(UHASSELT, 12.0f));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(PREDEFINED_LOCATIONS.get(PREDEFINED_LOCATIONS.size() - 1).latlong, 12.0f));
 
         if (!checkPermissions()) {
             // No permission granted
@@ -160,38 +169,21 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
         return addMapMarker(latLng, "", "");
     }
 
-    @SuppressWarnings("MissingPermission")
     private Marker addMapMarker(LatLng latLng, String title, String descr) {
         Marker newMarker = mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(title)
                 .snippet(descr));
 
-        geofenceList.add(new Geofence.Builder()
-                // Set the request ID of the geofence. This is a string to identify this geofence.
-                .setRequestId(title + " at " + latLng.toString())
-                .setCircularRegion(latLng.latitude, latLng.longitude, GEO_RADIUS)
-                .setExpirationDuration(GEO_EXPIRATION_IN_MILLISECONDS)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .build());
-
-        GeofencingRequest request = new GeofencingRequest.Builder()
-                                    .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-                                    .addGeofences(geofenceList)
-                                    .build();
-
-        if (checkPermissions()) {
-            geofencingClient.addGeofences(request, getGeofencePendingIntent());
-            Log.i(TAG, "Added geofences " + request.toString());
-        } else {
-            Log.e(TAG, "No permission to add geofence");
-        }
+        newMarker.setTag(latLng.toString());
 
         return newMarker;
     }
 
+
     private void createMessagebox(Marker marker) {
         currentMarker = marker;
+
         // Initialize a new instance of LayoutInflater service
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -237,9 +229,16 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
                 // Dismiss the popup window
                 System.out.println(titleText.getText());
                 System.out.println(todoListText.getText());
+
+                Geofence found = findGeofence(currentMarker);
+                if (found != null)
+                    geofenceList.remove(found);
+
                 currentMarker.setTitle(String.valueOf(titleText.getText()));
                 currentMarker.setSnippet(String.valueOf(todoListText.getText()));
                 mPopupWindow.dismiss();
+
+                addGeofenceForMarker(currentMarker);
             }
         });
 
@@ -249,6 +248,10 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
             public void onClick(View view) {
                 // Dismiss the popup window
                 mPopupWindow.dismiss();
+
+                if (currentMarker.getTitle().isEmpty()) {
+                    currentMarker.remove();
+                }
             }
         });
 
@@ -256,10 +259,14 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currentMarker.remove();
+                Geofence found = findGeofence(currentMarker);
+                if (found != null)
+                    geofenceList.remove(found);
 
                 // Delete geofence monitor
                 geofencingClient.removeGeofences(getGeofencePendingIntent());
+
+                currentMarker.remove();
 
                 // Dismiss the popup window
                 mPopupWindow.dismiss();
@@ -275,6 +282,48 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
                 */
         // Finally, show the popup window at the center location of root relative layout
         mPopupWindow.showAtLocation(mMapLayout.getView(), Gravity.CENTER,0,0);
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void addGeofenceForMarker(Marker currentMarker) {
+        if (checkPermissions()) {
+            geofenceList.add(new Geofence.Builder()
+                    // Set the request ID of the geofence. This is a string to identify this geofence.
+                    .setRequestId(requestIdFromMarker(currentMarker))
+                    .setCircularRegion(currentMarker.getPosition().latitude, currentMarker.getPosition().longitude, GEO_RADIUS)
+                    .setExpirationDuration(GEO_EXPIRATION_IN_MILLISECONDS)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build());
+
+            GeofencingRequest request = new GeofencingRequest.Builder()
+                    .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                    .addGeofences(geofenceList)
+                    .build();
+
+            geofencingClient.addGeofences(request, getGeofencePendingIntent());
+            Log.i(TAG, "Added geofences " + request.toString());
+        } else {
+            Log.e(TAG, "No permission to add geofence");
+        }
+    }
+
+    private String requestIdFromMarker(Marker m) {
+        String request_id = currentMarker.getTitle() + ":\n" + currentMarker.getSnippet();
+        request_id = request_id.substring(0, Math.min(request_id.length(), 20)) + "...";
+
+        return request_id;
+    }
+
+    private Geofence findGeofence(Marker m) {
+        String request_id = requestIdFromMarker(m);
+
+        for (Geofence gg : geofenceList) {
+            if (gg.getRequestId().equals(request_id)) {
+                return gg;
+            }
+        }
+
+        return null;
     }
 
     private PendingIntent getGeofencePendingIntent() {

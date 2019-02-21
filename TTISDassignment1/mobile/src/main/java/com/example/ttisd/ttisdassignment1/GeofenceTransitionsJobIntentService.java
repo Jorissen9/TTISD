@@ -35,6 +35,29 @@ public class GeofenceTransitionsJobIntentService extends JobIntentService {
 
     private static final String CHANNEL_ID = "channel_01";
 
+    static private class NotificationDescr {
+        private String NotiTitle;
+        private List<String> markerDescr;
+
+        public NotificationDescr(String NotiTitle) {
+            this.NotiTitle = NotiTitle;
+            markerDescr = new ArrayList<>();
+        }
+
+        public void addMarkerDescr(String descr) {
+            markerDescr.add(descr);
+        }
+
+        public String getTitle() {
+            return NotiTitle;
+        }
+
+        @Override
+        public String toString() {
+            return TextUtils.join("\n", markerDescr);
+        }
+    }
+
     /**
      * Convenience method for enqueuing work in to this service.
      */
@@ -66,12 +89,11 @@ public class GeofenceTransitionsJobIntentService extends JobIntentService {
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
 
             // Get the transition details as a String.
-            String geofenceTransitionDetails = getGeofenceTransitionDetails(geofenceTransition,
-                    triggeringGeofences);
+            NotificationDescr notdesc = getGeofenceTransitionDetails(geofenceTransition, triggeringGeofences);
 
             // Send notification and log the transition details.
-            sendNotification(geofenceTransitionDetails);
-            Log.i(TAG, geofenceTransitionDetails);
+            sendNotification(notdesc);
+            Log.i(TAG, notdesc.toString());
         } else {
             // Log the error.
             Log.e(TAG, "error geofence_transition_invalid_type " + geofenceTransition);
@@ -85,27 +107,25 @@ public class GeofenceTransitionsJobIntentService extends JobIntentService {
      * @param triggeringGeofences   The geofence(s) triggered.
      * @return                      The transition details formatted as String.
      */
-    private String getGeofenceTransitionDetails(
+    private NotificationDescr getGeofenceTransitionDetails(
             int geofenceTransition,
             List<Geofence> triggeringGeofences) {
 
-        String geofenceTransitionString = getTransitionString(geofenceTransition);
+        NotificationDescr notidescr = new NotificationDescr(getTransitionString(geofenceTransition));
 
         // Get the Ids of each geofence that was triggered.
-        ArrayList<String> triggeringGeofencesIdsList = new ArrayList<>();
         for (Geofence geofence : triggeringGeofences) {
-            triggeringGeofencesIdsList.add(geofence.getRequestId());
+            notidescr.addMarkerDescr(geofence.getRequestId());
         }
-        String triggeringGeofencesIdsString = TextUtils.join(", ",  triggeringGeofencesIdsList);
 
-        return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
+        return notidescr;
     }
 
     /**
      * Posts a notification in the notification bar when a transition is detected.
      * If the user clicks the notification, control goes to the MainActivity.
      */
-    private void sendNotification(String notificationDetails) {
+    private void sendNotification(NotificationDescr notificationDetails) {
         // Get an instance of the Notification manager
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -141,11 +161,12 @@ public class GeofenceTransitionsJobIntentService extends JobIntentService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
         // Define the notification settings.
-        builder.setSmallIcon(R.drawable.ic_launcher)
-               .setLargeIcon(BitmapFactory.decodeResource(getResources(), .drawable.ic_launcher))
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+               //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                .setColor(Color.RED)
-               .setContentTitle(notificationDetails)
-               .setContentText("In de buurt van TODO!")
+               //.setContentTitle(notificationDetails.getTitle())
+               .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationDetails.toString()))
+               .setContentText(notificationDetails.getTitle())
                .setContentIntent(notificationPendingIntent);
 
         // Set the Channel ID for Android O.
