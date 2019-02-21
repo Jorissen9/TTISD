@@ -1,6 +1,7 @@
 package com.example.ttisd.ttisdassignment1;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
