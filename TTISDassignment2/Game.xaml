@@ -9,8 +9,11 @@
         Title="Game" Width="1280" Height="720">
     <Grid>
         <sharpGL:OpenGLControl
+            Name="openGLControl" 
             OpenGLInitialized="OpenGLControl_OpenGLInitialized" 
             OpenGLDraw="OpenGLControl_OpenGLDraw"
+            SizeChanged="OpenGLControl_SizeChanged"
+            DrawFPS="True"
             />
     </Grid>
 </Window>

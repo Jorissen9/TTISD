@@ -48,6 +48,9 @@ namespace TTISDassignment2
 
             kinectChooser.KinectSensorChooser = sensorStatus;
             sensorStatus.Start();
+
+            btnPlaying.IsEnabled = false;
+            btnCalibrateNext.IsEnabled = false;
         }
 
         private void KinectSensorChooserKinectChanged(object sender, KinectChangedEventArgs e)
@@ -173,6 +176,8 @@ namespace TTISDassignment2
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_1:
+
+
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_2:
@@ -309,6 +314,7 @@ namespace TTISDassignment2
         private void BtnPlay_Click(object sender, RoutedEventArgs e)
         {
             btnPlaying.IsEnabled = false;
+            this.game.state = GameState.PLAYING;
         }
     }
 }

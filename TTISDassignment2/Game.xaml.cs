@@ -23,6 +23,8 @@ namespace TTISDassignment2
     {
         public GameState state = GameState.START;
 
+        private double width, height;
+
         private Point player1, player2;
 
         public Game()
@@ -43,8 +45,25 @@ namespace TTISDassignment2
 
         private void OpenGLControl_OpenGLInitialized(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
-            //  Enable the OpenGL depth testing functionality.
             args.OpenGL.Enable(OpenGL.GL_DEPTH_TEST);
+        }
+
+        private void OpenGLControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            width = e.NewSize.Width;
+            height = e.NewSize.Height;
+
+            OpenGL gl = openGLControl.OpenGL;
+
+            gl.MatrixMode(OpenGL.GL_PROJECTION);
+            gl.LoadIdentity();
+            gl.Perspective(45.0f,
+                gl.RenderContextProvider.Width / gl.RenderContextProvider.Height,
+                0.1f, 100.0f);
+            gl.MatrixMode(OpenGL.GL_MODELVIEW);
+
+            //gl.SetDimensions((int)width, (int)height);
+            //gl.Viewport(0, 0, (int)width, (int)height);
         }
 
         private void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
@@ -56,7 +75,7 @@ namespace TTISDassignment2
             gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
 
             //  Reset the modelview matrix.
-            gl.LoadIdentity();
+            //gl.LoadIdentity();
 
             switch (state)
             {
@@ -65,7 +84,68 @@ namespace TTISDassignment2
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_1:
-                    gl.ClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+                    gl.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+                    //  Reset the modelview matrix.
+                    gl.LoadIdentity();
+
+                    //  Move into a more central position.
+                    //gl.Translate(-width/2.0, -height/2.0, -99.0f);
+                    gl.Translate(0.0f, 0.0f, -99.0f);
+                    
+                    //  Provide the cube colors and geometry.
+                    gl.Begin(OpenGL.GL_QUADS);
+
+                    gl.Color(1.0f, 0.0f, 0.0f);
+                    gl.Vertex(0.0f, 0.0f, 0.0f);
+                    gl.Vertex(0.0f, height, 0.0f);
+                    gl.Vertex(width, height, 0.0f);
+                    gl.Vertex(width, 0.0f, 0.0f);
+                    gl.End();
+
+                    gl.Begin(OpenGL.GL_2D);
+                    gl.Color(0.0f, 1.0f, 0.0f);
+                    gl.Rect(10.0, 10.0, width/2.0, height/2.0);
+                    gl.End();
+
+                    //gl.Color(0.0f, 1.0f, 0.0f);
+                    //gl.Vertex(1.0f, 1.0f, -1.0f);
+                    //gl.Vertex(-1.0f, 1.0f, -1.0f);
+                    //gl.Vertex(-1.0f, 1.0f, 1.0f);
+                    //gl.Vertex(1.0f, 1.0f, 1.0f);
+
+                    //gl.Color(1.0f, 0.5f, 0.0f);
+                    //gl.Vertex(1.0f, -1.0f, 1.0f);
+                    //gl.Vertex(-1.0f, -1.0f, 1.0f);
+                    //gl.Vertex(-1.0f, -1.0f, -1.0f);
+                    //gl.Vertex(1.0f, -1.0f, -1.0f);
+
+                    //gl.Color(1.0f, 0.0f, 0.0f);
+                    //gl.Vertex(1.0f, 1.0f, 1.0f);
+                    //gl.Vertex(-1.0f, 1.0f, 1.0f);
+                    //gl.Vertex(-1.0f, -1.0f, 1.0f);
+                    //gl.Vertex(1.0f, -1.0f, 1.0f);
+
+                    //gl.Color(1.0f, 1.0f, 0.0f);
+                    //gl.Vertex(1.0f, -1.0f, -1.0f);
+                    //gl.Vertex(-1.0f, -1.0f, -1.0f);
+                    //gl.Vertex(-1.0f, 1.0f, -1.0f);
+                    //gl.Vertex(1.0f, 1.0f, -1.0f);
+
+                    //gl.Color(0.0f, 0.0f, 1.0f);
+                    //gl.Vertex(-1.0f, 1.0f, 1.0f);
+                    //gl.Vertex(-1.0f, 1.0f, -1.0f);
+                    //gl.Vertex(-1.0f, -1.0f, -1.0f);
+                    //gl.Vertex(-1.0f, -1.0f, 1.0f);
+
+                    //gl.Color(1.0f, 0.0f, 1.0f);
+                    //gl.Vertex(1.0f, 1.0f, -1.0f);
+                    //gl.Vertex(1.0f, 1.0f, 1.0f);
+                    //gl.Vertex(1.0f, -1.0f, 1.0f);
+                    //gl.Vertex(1.0f, -1.0f, -1.0f);
+
+
+
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_2:
