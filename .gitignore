@@ -13,6 +13,9 @@
 bin/
 gen/
 out/
+.vs/
+obj/
+*.csproj.user
 
 # Gradle files
 .gradle/
@@ -42,6 +45,7 @@ TTISDassignment1/.idea/assetWizardSettings.xml
 TTISDassignment1/.idea/dictionaries
 TTISDassignment1/.idea/libraries
 TTISDassignment1/.idea/caches
+.idea/
 
 # Keystore files
 # Uncomment the following lines if you do not want to check your keystore files in.
@@ -73,3 +77,5 @@ TTISDassignment1/.idea/encodings.xml
 TTISDassignment1/.idea/caches/build_file_checksums.ser
 TTISDassignment1/doc/geo-TODO_Demo.pds
 TTISDassignment1/doc/geo-TODO_Demo.mp4
+
+packages/

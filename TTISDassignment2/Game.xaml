@@ -1,0 +1,16 @@
+﻿<Window x:Class="TTISDassignment2.Game"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
+        xmlns:local="clr-namespace:TTISDassignment2"
+        mc:Ignorable="d"
+        Title="Game" Width="1280" Height="720">
+    <Grid>
+        <sharpGL:OpenGLControl
+            OpenGLInitialized="OpenGLControl_OpenGLInitialized" 
+            OpenGLDraw="OpenGLControl_OpenGLDraw"
+            />
+    </Grid>
+</Window>
