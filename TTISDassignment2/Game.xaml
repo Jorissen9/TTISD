@@ -6,7 +6,7 @@
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
         xmlns:local="clr-namespace:TTISDassignment2"
         mc:Ignorable="d"
-        Title="Game" Width="1280" Height="720">
+        Title="Game" Width="1325" Height="720">
     <Grid>
         <sharpGL:OpenGLControl
             Name="openGLControl" 
