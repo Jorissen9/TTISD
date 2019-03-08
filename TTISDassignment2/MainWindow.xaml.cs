@@ -307,7 +307,11 @@ namespace TTISDassignment2
                 {
                     btnCalibrateNext.IsEnabled = false;
                     btnPlaying.IsEnabled = true;
-                    this.calibrate();
+
+                    if(sensor != null)
+                    {
+                        this.Calibrate();
+                    }
                 }
             }
             else

@@ -33,6 +33,7 @@ namespace TTISDassignment2
 
         private Block player1, player2;
         private Ball p1ball, p2ball;
+        private Block[] bricks;
 
         private Color gamePlayer1Color = Color.FromArgb(255, 255, 0, 0);
         private Color gamePlayer2Color = Color.FromArgb(255, 0, 255, 0);
@@ -94,6 +95,13 @@ namespace TTISDassignment2
 
             p1ball.Speed = new Point3D(0.4, 0.2, 0.0);
             p2ball.Speed = new Point3D(-0.4, -0.2, 0.0);
+
+            // Generate bricks
+            bricks = new Block[16];
+            bricks[0] = new Block(calib_pos[0], calib_size, Colors.Cyan);
+            bricks[1] = new Block(calib_pos[1], calib_size, Colors.Cyan);
+            bricks[2] = new Block(calib_pos[2], calib_size, Colors.Cyan);
+            bricks[3] = new Block(calib_pos[3], calib_size, Colors.Cyan);
         }
 
         public void Exit(object sender, EventArgs e)
