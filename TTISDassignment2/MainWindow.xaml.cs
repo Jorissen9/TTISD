@@ -177,15 +177,19 @@ namespace TTISDassignment2
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_3:
+
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_4:
+
                     break;
 
                 case GameState.DONE_CALIBRATING:
                     break;
 
                 case GameState.PLAYING:
+                    game.SetPositions(kinectToProjectionPoint(posPlayer1), kinectToProjectionPoint(posPlayer2));
+
                     break;
 
                 case GameState.PLAYER_1_WINS:
@@ -200,7 +204,7 @@ namespace TTISDassignment2
 
         }
 
-        private void calibrate()
+        private void Calibrate()
         {
             if (m_skeletonCalibPoints.Count == m_calibPoints.Count)
             {
@@ -252,7 +256,7 @@ namespace TTISDassignment2
                 Point tResult1 = kinectToProjectionPoint(m_skeletonCalibPoints[1]);
                 Point tResult2 = kinectToProjectionPoint(m_skeletonCalibPoints[2]);
                 Point tResult3 = kinectToProjectionPoint(m_skeletonCalibPoints[3]);
-                
+
                 txtCalib.Text = tResult0.ToString() + "; " +
                                 tResult1.ToString() + "; " +
                                 tResult2.ToString() + "; " +

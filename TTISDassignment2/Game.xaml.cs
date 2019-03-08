@@ -118,7 +118,7 @@ namespace TTISDassignment2
             this.state = next;
         }
 
-        public void setPositions(Point p1, Point p2)
+        public void SetPositions(Point p1, Point p2)
         {
             player1.set2DPosition(p1);
             player2.set2DPosition(p2);
@@ -177,7 +177,7 @@ namespace TTISDassignment2
 
                 case GameState.IS_CALIBRATING_POINT_3:
                     gl.ClearColor(gameBGColor.R, gameBGColor.G, gameBGColor.B, gameBGColor.A);
-                    
+
                     gameCalibRectangle.drawBorder(gl);
                     gameCalibBlocks[(int)state - 1].drawFilled(gl);
 
@@ -185,7 +185,7 @@ namespace TTISDassignment2
 
                 case GameState.IS_CALIBRATING_POINT_4:
                     gl.ClearColor(gameBGColor.R, gameBGColor.G, gameBGColor.B, gameBGColor.A);
-                    
+
                     gameCalibRectangle.drawBorder(gl);
                     gameCalibBlocks[(int)state - 1].drawFilled(gl);
 
