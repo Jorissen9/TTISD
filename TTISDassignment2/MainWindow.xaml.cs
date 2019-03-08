@@ -148,7 +148,6 @@ namespace TTISDassignment2
             }
 
 
-
             //// Corners
             //m_calibPoints.Add(new Point(0, 0));
             //m_calibPoints.Add(new Point(1, 0));
@@ -176,23 +175,25 @@ namespace TTISDassignment2
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_1:
-
-
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_2:
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_3:
+
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_4:
+
                     break;
 
                 case GameState.DONE_CALIBRATING:
                     break;
 
                 case GameState.PLAYING:
+                    game.SetPositions(kinectToProjectionPoint(player1.Position), kinectToProjectionPoint(player2.Position));
+
                     break;
 
                 case GameState.PLAYER_1_WINS:
@@ -207,7 +208,7 @@ namespace TTISDassignment2
 
         }
 
-        private void calibrate()
+        private void Calibrate()
         {
             if (m_skeletonCalibPoints.Count == m_calibPoints.Count)
             {

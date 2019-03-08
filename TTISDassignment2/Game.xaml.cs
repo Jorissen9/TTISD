@@ -101,12 +101,12 @@ namespace TTISDassignment2
             Application.Current.Shutdown();
         }
 
-        public void setState(GameState next)
+        public void SetState(GameState next)
         {
             this.state = next;
         }
 
-        public void setPositions(Point p1, Point p2)
+        public void SetPositions(Point p1, Point p2)
         {
             player1.set2DPosition(p1);
             player2.set2DPosition(p2);
