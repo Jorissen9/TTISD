@@ -153,5 +153,16 @@
             Cursor="Hand"
             FontSize="60"
             />
+
+        <TextBlock 
+            x:Name="txtCalib" 
+            Grid.Column="0"
+            Grid.Row="6"
+            Grid.ColumnSpan="3"
+            HorizontalAlignment="Center"
+            TextWrapping="Wrap" 
+            Text="0%, 0%, 0%, 0%" 
+            VerticalAlignment="Center" 
+            FontSize="40"/>
     </Grid>
 </Window>

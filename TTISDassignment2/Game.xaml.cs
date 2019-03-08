@@ -37,9 +37,9 @@ namespace TTISDassignment2
         private Color gamePlayer1Color = Color.FromArgb(255, 255, 0, 0);
         private Color gamePlayer2Color = Color.FromArgb(255, 0, 255, 0);
 
-        private Color gameBGColor        = Color.FromArgb(255, 0, 0, 0);
+        private Color gameBGColor        = Color.FromArgb(255, 255, 255, 255);
         private Color gameCalibRectColor = Color.FromArgb(255, 255, 255, 0);
-        private Color gameRectColor      = Color.FromArgb(255, 255, 255, 255);
+        private Color gameRectColor      = Color.FromArgb(255, 0, 0, 0);
 
         private Block gameRectangle;
         private Block gameCalibRectangle;
@@ -74,8 +74,8 @@ namespace TTISDassignment2
             gameCalibBlocks[2] = new Block(calib_pos[2], calib_size, Colors.Cyan);
             gameCalibBlocks[3] = new Block(calib_pos[3], calib_size, Colors.Cyan);
 
-            gameRectangle      = new Block(new Point3D(0, 0, -11), windowSize, gameBGColor, 0.1);
-            gameCalibRectangle = new Block(new Point3D(0, 0, -11), windowSize, gameBGColor, 0.1);
+            gameRectangle      = new Block(new Point3D(0, 0, -11), windowSize, gameBGColor, 0.15);
+            gameCalibRectangle = new Block(new Point3D(0, 0, -11), windowSize, gameBGColor, 0.15);
 
             gameRectangle.BorderColor      = gameRectColor;
             gameCalibRectangle.BorderColor = gameCalibRectColor;
@@ -99,6 +99,18 @@ namespace TTISDassignment2
         public void Exit(object sender, EventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        public List<Point> getCorners()
+        {
+            List<Point> points = new List<Point>(corners.Length);
+
+            points.Add(new Point(corners[0].X, corners[0].Y));
+            points.Add(new Point(corners[1].X, corners[1].Y));
+            points.Add(new Point(corners[2].X, corners[2].Y));
+            points.Add(new Point(corners[3].X, corners[3].Y));
+
+            return points;
         }
 
         public void setState(GameState next)

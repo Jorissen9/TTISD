@@ -22,6 +22,8 @@ namespace TTISDassignment2
         private List<Point> m_calibPoints = new List<Point>(); //2d calibration points
         private List<SkeletonPoint> m_skeletonCalibPoints = new List<SkeletonPoint>(); //3d skeleton points
 
+        private SkeletonPoint posPlayer1, posPlayer2;
+
         private Matrix3D m_groundPlaneTransform; //step 2 transform
         private Emgu.CV.Matrix<double> m_transform; //step 3 transform
 
@@ -51,6 +53,8 @@ namespace TTISDassignment2
 
             btnPlaying.IsEnabled = false;
             btnCalibrateNext.IsEnabled = false;
+
+            m_calibPoints = game.getCorners();
         }
 
         private void KinectSensorChooserKinectChanged(object sender, KinectChangedEventArgs e)
@@ -121,9 +125,10 @@ namespace TTISDassignment2
 
             if (player1 != null)
             {
-                txtP1SkelPosX.Text = player1.Position.X.ToString(CultureInfo.InvariantCulture);
-                txtP1SkelPosY.Text = player1.Position.Y.ToString(CultureInfo.InvariantCulture);
-                txtP1SkelPosZ.Text = player1.Position.Z.ToString(CultureInfo.InvariantCulture);
+                posPlayer1 = player1.Position;
+                txtP1SkelPosX.Text = posPlayer1.X.ToString(CultureInfo.InvariantCulture);
+                txtP1SkelPosY.Text = posPlayer1.Y.ToString(CultureInfo.InvariantCulture);
+                txtP1SkelPosZ.Text = posPlayer1.Z.ToString(CultureInfo.InvariantCulture);
             }
             else
             {
@@ -135,9 +140,10 @@ namespace TTISDassignment2
 
             if (player2 != null && player1.TrackingId != player2.TrackingId)
             {
-                txtP2SkelPosX.Text = player2.Position.X.ToString(CultureInfo.InvariantCulture);
-                txtP2SkelPosY.Text = player2.Position.Y.ToString(CultureInfo.InvariantCulture);
-                txtP2SkelPosZ.Text = player2.Position.Z.ToString(CultureInfo.InvariantCulture);
+                posPlayer2 = player2.Position;
+                txtP2SkelPosX.Text = posPlayer2.X.ToString(CultureInfo.InvariantCulture);
+                txtP2SkelPosY.Text = posPlayer2.Y.ToString(CultureInfo.InvariantCulture);
+                txtP2SkelPosZ.Text = posPlayer2.Z.ToString(CultureInfo.InvariantCulture);
             }
             else
             {
@@ -147,17 +153,6 @@ namespace TTISDassignment2
                 txtP2SkelPosZ.Text = "?";
             }
 
-
-
-            //// Corners
-            //m_calibPoints.Add(new Point(0, 0));
-            //m_calibPoints.Add(new Point(1, 0));
-            //m_calibPoints.Add(new Point(0, 1));
-            //m_calibPoints.Add(new Point(1, 1));
-
-            //// Instruct user to stand on each corner target
-
-            //// ... ?
 
             //for (var i = 0; i < 4; i++)
             //{
@@ -176,8 +171,6 @@ namespace TTISDassignment2
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_1:
-
-
                     break;
 
                 case GameState.IS_CALIBRATING_POINT_2:
@@ -259,6 +252,11 @@ namespace TTISDassignment2
                 Point tResult1 = kinectToProjectionPoint(m_skeletonCalibPoints[1]);
                 Point tResult2 = kinectToProjectionPoint(m_skeletonCalibPoints[2]);
                 Point tResult3 = kinectToProjectionPoint(m_skeletonCalibPoints[3]);
+                
+                txtCalib.Text = tResult0.ToString() + "; " +
+                                tResult1.ToString() + "; " +
+                                tResult2.ToString() + "; " +
+                                tResult3.ToString();
             }
         }
 
@@ -297,12 +295,15 @@ namespace TTISDassignment2
             if (game.state >= GameState.IS_CALIBRATING_POINT_1
                 && game.state <= GameState.IS_CALIBRATING_POINT_4)
             {
+                m_skeletonCalibPoints.Add(posPlayer1);
+
                 this.game.state = (GameState)((int)game.state + 1);
 
                 if (game.state > GameState.IS_CALIBRATING_POINT_4)
                 {
                     btnCalibrateNext.IsEnabled = false;
                     btnPlaying.IsEnabled = true;
+                    this.calibrate();
                 }
             }
             else
