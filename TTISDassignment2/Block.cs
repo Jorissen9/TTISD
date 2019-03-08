@@ -12,6 +12,13 @@ namespace TTISDassignment2
 {
     class Block : Mover
     {
+        private const uint SAMPLE_MAX = 100; 
+        private uint sample = 0;
+        private Vector3D prevPos;
+        private double SPEED_MOD = 0.05;
+
+        public bool Destroyed = false;
+
         public Block(double x, double y, double z, double w, double h, double b = 1)
             : base(x, y, z, w, h, b)
         {
@@ -22,6 +29,30 @@ namespace TTISDassignment2
             : base(pos, size, color, b)
         {
 
+        }
+
+        public override void move(Point3D speed)
+        {
+            if (this.sample++ > SAMPLE_MAX)
+            {
+                prevPos = (Vector3D) this.Pos;
+                this.sample = 0;
+            }
+            base.move(speed);
+        }
+
+        public bool collidesWith(Ball b)
+        {
+            if (base.collidesWith(b))
+            {
+                Vector3D rel_speed = (prevPos - ((Vector3D)this.Pos)) * SPEED_MOD;
+                Vector3D speedy = (Vector3D)b.Speed;
+                speedy.X = -speedy.X;
+
+                b.Speed = (Point3D)(speedy + rel_speed);
+                return true;
+            }
+            return false;
         }
 
         public override void drawFilled(OpenGL gl)

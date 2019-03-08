@@ -20,6 +20,17 @@ namespace TTISDassignment2
 
         }
 
+        public bool collidesWith(Block b)
+        {
+            if (base.collidesWith(b))
+            {
+                b.Destroyed = true;
+                return true;
+            }
+
+            return false;
+        }
+
         public override void drawFilled(OpenGL gl)
         {
             gl.Begin(OpenGL.GL_QUADS);

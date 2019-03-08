@@ -161,8 +161,8 @@
             Grid.ColumnSpan="3"
             HorizontalAlignment="Center"
             TextWrapping="Wrap" 
-            Text="0%, 0%, 0%, 0%" 
-            VerticalAlignment="Center" 
-            FontSize="40"/>
+            Text="0,0; 0,0; 0,0; 0,0;" 
+            VerticalAlignment="Bottom" 
+            FontSize="20"/>
     </Grid>
 </Window>

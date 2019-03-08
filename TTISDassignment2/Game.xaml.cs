@@ -198,9 +198,21 @@ namespace TTISDassignment2
                 case GameState.PLAYING:
                     gameRectangle.drawBorder(gl);
 
+                    // Update Position and Speed
                     p1ball.update(gameSize);
                     p2ball.update(gameSize);
 
+                    player1.update(gameSize);
+                    player2.update(gameSize);
+                    
+                    // Collide with ball
+                    player1.collidesWith(p1ball);
+                    player1.collidesWith(p2ball);
+
+                    player2.collidesWith(p1ball);
+                    player2.collidesWith(p2ball);
+
+                    // Draw
                     player1.drawFilled(gl);
                     player2.drawFilled(gl);
 
