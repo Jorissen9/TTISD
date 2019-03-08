@@ -153,18 +153,6 @@ namespace TTISDassignment2
                 txtP2SkelPosZ.Text = "?";
             }
 
-
-            //for (var i = 0; i < 4; i++)
-            //{
-            //    // Move to next...
-            //    // Wait on confirm or time
-
-            //    // Add current position
-            //    m_skeletonCalibPoints.Add(skel.Position);
-            //}
-
-            //calibrate();
-
             switch (this.game.state)
             {
                 case GameState.START:
@@ -257,10 +245,10 @@ namespace TTISDassignment2
                 Point tResult2 = kinectToProjectionPoint(m_skeletonCalibPoints[2]);
                 Point tResult3 = kinectToProjectionPoint(m_skeletonCalibPoints[3]);
 
-                txtCalib.Text = tResult0.ToString() + "; " +
-                                tResult1.ToString() + "; " +
-                                tResult2.ToString() + "; " +
-                                tResult3.ToString();
+                txtCalib.Text = tResult0.ToString(CultureInfo.InvariantCulture) + ";\n" +
+                                tResult1.ToString(CultureInfo.InvariantCulture) + ";\n" +
+                                tResult2.ToString(CultureInfo.InvariantCulture) + ";\n" +
+                                tResult3.ToString(CultureInfo.InvariantCulture);
             }
         }
 
