@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using SharpGL;
 using SharpGL.SceneGraph.Assets;
@@ -35,9 +36,11 @@ namespace TTISDassignment2
             return false;
         }
 
-        private void init(OpenGL gl)
+        public void init(OpenGL gl)
         {
-            texture.Create(gl, @"C:\Users\bjorn\Documents\GitHub\TTISD\TTISDassignment2\Pokeball.png");
+            var img = (BitmapImage)App.Current.Resources["texBall"];
+            texture.Create(gl, Util.BitmapImage2Bitmap(img));
+
             initialized = true;
         }
 

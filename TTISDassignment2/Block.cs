@@ -45,11 +45,14 @@ namespace TTISDassignment2
         {
             if (base.collidesWith(b))
             {
-                Vector3D rel_speed = (prevPos - ((Vector3D)this.Pos)) * SPEED_MOD;
+                //Vector3D rel_speed = (prevPos - ((Vector3D)this.Pos)) * SPEED_MOD;
                 Vector3D speedy = (Vector3D)b.Speed;
                 speedy.X = -speedy.X;
 
-                b.Speed = (Point3D)(speedy + rel_speed);
+                //b.Speed = (Point3D)(speedy + rel_speed);
+
+                b.Speed = (Point3D)speedy;
+
                 return true;
             }
             return false;

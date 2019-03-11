@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:TTISDassignment2"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <BitmapImage x:Key="texBall" UriSource="texBall.png" />
     </Application.Resources>
 </Application>
