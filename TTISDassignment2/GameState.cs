@@ -15,5 +15,6 @@
 
         PLAYER_1_WINS,
         PLAYER_2_WINS,
+        GAME_OVER
     }
 }
