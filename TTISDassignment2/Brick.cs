@@ -12,9 +12,28 @@ namespace TTISDassignment2
 {
     class Brick : Block
     {
-        public Brick(Point3D pos, Size size, Color color, double b = 0.05, int hp = 1) : base(pos, size, color, b)
+        private static readonly Color[] colors = {
+            Colors.White,
+            Color.FromRgb(0x8E, 0xFF, 0x00),
+            Color.FromRgb(0xF3, 0xFF, 0x00),
+            Color.FromRgb(0xFF, 0xBD, 0x00),
+            Color.FromRgb(0xFF, 0x00, 0x00),
+            Color.FromRgb(0xFF, 0x00, 0xD0),
+        };
+
+        public static int MaxHP { get => colors.Length - 1; }
+
+        public Brick(Point3D pos, Size size, int hp = 1) : base(pos, size, Colors.White, 0.035)
         {
             this.hitpoints = hp;
+            this.FillColor = colors[Util.Clamp(this.hitpoints, 0, MaxHP)];
+            this.BorderColor = Colors.White;
+        }
+
+        public override void Hit()
+        {
+            base.Hit();
+            this.FillColor = colors[Util.Clamp(this.hitpoints, 0, MaxHP)];
         }
 
         public override void drawBorder(OpenGL gl)

@@ -103,27 +103,27 @@ namespace TTISDassignment2
             bricks = new Brick[50];
             for(int i = 0; i < 10; i++)
             {
-                bricks[i] = new Brick(new Point3D((gameSize.X / 2) - (br_width/2) - (br_width * 2), 1 + (br_height * i), -11), br_size, Colors.Red);
+                bricks[i] = new Brick(new Point3D((gameSize.X / 2) - (br_width/2) - (br_width * 2), 1 + (br_height * i), -11), br_size, Colors.Yellow);
                 bricks[i].BorderColor = Colors.Blue;
             }
             for (int i = 0; i < 10; i++)
             {
-                bricks[i + 10] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) - (br_width), 1 + (br_height * i), -11), br_size, Colors.Red);
+                bricks[i + 10] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) - (br_width), 1 + (br_height * i), -11), br_size, Colors.Orange, 3);
                 bricks[i + 10].BorderColor = Colors.Blue;
             }
             for (int i = 0; i < 10; i++)
             {
-                bricks[i + 20] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2), 1 + (br_height * i), -11), br_size, Colors.Red);
+                bricks[i + 20] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2), 1 + (br_height * i), -11), br_size, Colors.Red, 5);
                 bricks[i + 20].BorderColor = Colors.Blue;
             }
             for (int i = 0; i < 10; i++)
             {
-                bricks[i + 30] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width), 1 + (br_height * i), -11), br_size, Colors.Red);
+                bricks[i + 30] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width), 1 + (br_height * i), -11), br_size, Colors.Orange, 3);
                 bricks[i + 30].BorderColor = Colors.Blue;
             }
             for (int i = 0; i < 10; i++)
             {
-                bricks[i + 40] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width * 2), 1 + (br_height * i), -11), br_size, Colors.Red);
+                bricks[i + 40] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width * 2), 1 + (br_height * i), -11), br_size, Colors.Yellow);
                 bricks[i + 40].BorderColor = Colors.Blue;
             }
         }
