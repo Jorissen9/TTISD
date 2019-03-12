@@ -29,7 +29,7 @@ namespace TTISDassignment2
         {
             if (base.collidesWith(b))
             {
-                b.Destroyed = true;
+                b.Hit();
                 return true;
             }
 

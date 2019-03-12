@@ -17,7 +17,14 @@ namespace TTISDassignment2
         private Vector3D prevPos;
         private double SPEED_MOD = 0.05;
 
-        public bool Destroyed = false;
+        protected int hitpoints = 1;
+
+        public bool Alive { get => hitpoints > 0; }
+
+        public void Hit()
+        {
+            hitpoints = 0;
+        }
 
         public Block(double x, double y, double z, double w, double h, double b = 1)
             : base(x, y, z, w, h, b)

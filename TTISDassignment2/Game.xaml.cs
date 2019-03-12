@@ -254,12 +254,6 @@ namespace TTISDassignment2
                         {
                             p1ball.collidesWith(bricks[i]);
                             p2ball.collidesWith(bricks[i]);
-
-                            if (p1ball.hadCollision || p2ball.hadCollision)
-                            {
-                                bricks[i].hit();
-                            }
-
                             bricks[i].drawBorder(gl);
                         }
                     }
