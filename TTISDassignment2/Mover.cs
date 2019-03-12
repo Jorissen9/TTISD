@@ -92,6 +92,33 @@ namespace TTISDassignment2
 
             if (left && right && bot && top)
             {
+                double left_overlap  = b.Pos.X + b.Size.X - this.Pos.X;
+                double right_overlap = this.Pos.X + this.Size.X - b.Pos.X;
+                double bot_overlap   = b.Pos.Y + b.Size.Y - this.Pos.Y;
+                double top_overlap   = this.Pos.Y + this.Size.Y - b.Pos.Y;
+
+                bool strictLeft  = left_overlap < top_overlap && left_overlap < bot_overlap && left_overlap < right_overlap;
+                bool strictRight = right_overlap < top_overlap && right_overlap < bot_overlap && right_overlap < left_overlap;
+
+                if (strictLeft)
+                {   // Left
+                    _pos.X = b.Pos.X + b.Size.X;
+                    _speed.X = -_speed.X;
+                }
+                else if (strictRight)
+                {   // Right
+                    _pos.X = b.Pos.X - this.Size.X;
+                    _speed.X = -_speed.X;
+                } else if (top_overlap < bot_overlap)
+                {   // Top
+                    _pos.Y = b.Pos.Y - this.Size.Y;
+                    _speed.Y = -_speed.Y;
+                } else
+                {   // Bot
+                    _pos.Y = b.Pos.Y + b.Size.Y;
+                    _speed.Y = -_speed.Y;
+                }
+
                 this.hadCollision = true;
                 return true;
             }

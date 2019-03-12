@@ -130,5 +130,14 @@ namespace TTISDassignment2
 
             return retval;
         }
+
+        public static T Clamp<T>(T aValue, T aMin, T aMax) where T : IComparable<T>
+        {
+            if (aValue.CompareTo(aMax) > 0)
+                return aMax;
+            if (aValue.CompareTo(aMin) < 0)
+                return aMin;
+            return aValue;
+        }
     }
 }

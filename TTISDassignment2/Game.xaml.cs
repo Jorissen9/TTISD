@@ -212,13 +212,13 @@ namespace TTISDassignment2
 
                     player1.update(gameSize);
                     player2.update(gameSize);
-                    
-                    // Collide with ball
-                    player1.collidesWith(p1ball);
-                    player1.collidesWith(p2ball);
 
-                    player2.collidesWith(p1ball);
-                    player2.collidesWith(p2ball);
+                    // Collide with ball
+                    p1ball.collidesWith(player1);
+                    p1ball.collidesWith(player2);
+
+                    p2ball.collidesWith(player1);
+                    p2ball.collidesWith(player2);
 
                     // Draw
                     player1.drawFilled(gl);
