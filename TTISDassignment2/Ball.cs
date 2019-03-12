@@ -40,33 +40,35 @@ namespace TTISDassignment2
         {
             var img = (BitmapImage)App.Current.Resources["texBall"];
             texture.Create(gl, Util.BitmapImage2Bitmap(img));
+            gl.BindTexture(OpenGL.GL_TEXTURE_2D, texture.TextureName);
 
             initialized = true;
         }
 
         public override void drawFilled(OpenGL gl)
         {
-            gl.Enable(OpenGL.GL_TEXTURE_2D);
-            gl.Enable(OpenGL.GL_BLEND); // Y this no work
-            gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
-
             if (!initialized)
             {
                 init(gl);
             }
 
+            gl.Enable(OpenGL.GL_TEXTURE_2D);
+            gl.BindTexture(OpenGL.GL_TEXTURE_2D, texture.TextureName);
+
+            gl.Enable(OpenGL.GL_BLEND);
+            gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
+            
             gl.Begin(OpenGL.GL_QUADS);
-
-            gl.TexCoord(0.0f, 0.0f); gl.Vertex(Pos.X, Pos.Y, Pos.Z); // gl.Vertex(-1.0f, -1.0f, 1.0f); // Bottom Left Of The Texture and Quad
-            gl.TexCoord(1.0f, 0.0f); gl.Vertex(Pos.X + Size.X, Pos.Y, Pos.Z); // gl.Vertex(1.0f, -1.0f, 1.0f);  // Bottom Right Of The Texture and Quad
-            gl.TexCoord(1.0f, 1.0f); gl.Vertex(Pos.X + Size.X, Pos.Y + Size.Y, Pos.Z); // gl.Vertex(1.0f, 1.0f, 1.0f);   // Top Right Of The Texture and Quad
-            gl.TexCoord(0.0f, 1.0f); gl.Vertex(Pos.X, Pos.Y + Size.Y, Pos.Z); // gl.Vertex(-1.0f, 1.0f, 1.0f);	// Top Left Of The Texture and Quad
-
+            gl.TexCoord(0.0f, 1.0f); gl.Vertex(Pos.X, Pos.Y, Pos.Z);                    // Bottom Left Of The Texture and Quad
+            gl.TexCoord(1.0f, 1.0f); gl.Vertex(Pos.X + Size.X, Pos.Y, Pos.Z);           // Bottom Right Of The Texture and Quad
+            gl.TexCoord(1.0f, 0.0f); gl.Vertex(Pos.X + Size.X, Pos.Y + Size.Y, Pos.Z);  // Top Right Of The Texture and Quad
+            gl.TexCoord(0.0f, 0.0f); gl.Vertex(Pos.X, Pos.Y + Size.Y, Pos.Z);           // Top Left Of The Texture and Quad
             gl.End();
+
             gl.Disable(OpenGL.GL_BLEND);
             gl.Disable(OpenGL.GL_TEXTURE_2D);
+            gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
 
-            gl.Flush();
 
             //gl.Begin(OpenGL.GL_LINE_LOOP);
             //gl.Color(FillColor.R, FillColor.G, FillColor.B, FillColor.A);

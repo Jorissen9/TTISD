@@ -101,9 +101,11 @@ namespace TTISDassignment2
                 BitmapEncoder enc = new BmpBitmapEncoder();
                 enc.Frames.Add(BitmapFrame.Create(bitmapImage));
                 enc.Save(outStream);
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
-                return new Bitmap(bitmap);
+                Bitmap bitmap = new Bitmap(outStream);
+                bitmap.MakeTransparent();
+
+                return bitmap;
             }
         }
 

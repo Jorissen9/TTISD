@@ -86,7 +86,7 @@ namespace TTISDassignment2
             player1 = new Block(new Point3D(0, screen_mid, -11), p_size, gamePlayer1Color);
             player2 = new Block(new Point3D(gameSize.X - p_size.Width, screen_mid, -11), p_size, gamePlayer2Color);
 
-            double ball_size = 0.015 * windowSize.Width;
+            double ball_size = 0.065 * windowSize.Width; //0.015 * windowSize.Width;
             Size b_size = new Size(ball_size, ball_size);
             screen_mid = gameSize.Y / 2 - b_size.Height / 2;
 

@@ -280,6 +280,8 @@ namespace TTISDassignment2
 
             btnCalibrateNext.IsEnabled = true;
             btnPlaying.IsEnabled = false;
+
+            m_skeletonCalibPoints.Clear();
         }
 
         private void BtnCalibrateNext_Click(object sender, RoutedEventArgs e)
