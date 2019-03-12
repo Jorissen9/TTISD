@@ -95,8 +95,8 @@ namespace TTISDassignment2
         {
             Size p_size = new Size(0.025 * windowSize.Width, 0.1 * windowSize.Height * aspect_ratio);
             double screen_mid = gameSize.Y / 2 - p_size.Height / 2;
-            player1 = new Player(new Point3D(0, screen_mid, -11), p_size, gamePlayer1Color);
-            player2 = new Player(new Point3D(gameSize.X - p_size.Width, screen_mid, -11), p_size, gamePlayer2Color);
+            player1 = new Player(new Point3D(0, screen_mid, -11), p_size, gamePlayer1Color, 1, 0);
+            player2 = new Player(new Point3D(gameSize.X - p_size.Width, screen_mid, -11), p_size, gamePlayer2Color, 1, 1);
 
             double ball_size = 0.03 * windowSize.Width; //0.015 * windowSize.Width;
             Size b_size = new Size(ball_size, ball_size);
@@ -163,6 +163,7 @@ namespace TTISDassignment2
 
             int RenderContextProviderWidth = gl.RenderContextProvider.Width;
             int RenderContextProviderHeight = gl.RenderContextProvider.Height;
+
             switch (state)
             {
                 case GameState.START:
@@ -262,6 +263,8 @@ namespace TTISDassignment2
                         }
                     }
 
+                    brickManager.update(p1ball, p2ball);
+
                     // Collide with ball
                     p1ball.collidesWith(player1);
                     p1ball.collidesWith(player2);
@@ -273,15 +276,7 @@ namespace TTISDassignment2
                     p1ball.drawFilled(gl);
                     p2ball.drawFilled(gl);
 
-                    for (int i = 0; i < 50; i++)
-                    {
-                        if (brickManager.bricks[i].Alive)
-                        {
-                            p1ball.collidesWith(brickManager.bricks[i]);
-                            p2ball.collidesWith(brickManager.bricks[i]);
-                            brickManager.bricks[i].drawBorder(gl);
-                        }
-                    }
+                    brickManager.draw(gl);
 
                     if(player1.Alive)
                     {
@@ -291,20 +286,7 @@ namespace TTISDassignment2
                     {
                         player2.drawFilled(gl);
                     }
-
-                    // Draw text
-                    gl.DrawText(RenderContextProviderWidth / 4,
-                                RenderContextProviderHeight - fontSize - 10,
-                                gamePlayer1Color.R, gamePlayer1Color.G, gamePlayer1Color.B,
-                                "Arial", fontSize,
-                                player1.Score.ToString());
-
-                    gl.DrawText((RenderContextProviderWidth / 4) * 3,
-                                RenderContextProviderHeight - fontSize - 10,
-                                gamePlayer2Color.R, gamePlayer2Color.G, gamePlayer2Color.B,
-                                "Arial", fontSize,
-                                player2.Score.ToString());
-
+                    
                     break;
 
                 case GameState.PLAYER_1_WINS:
@@ -314,15 +296,7 @@ namespace TTISDassignment2
                     p1ball.drawFilled(gl);
                     p2ball.drawFilled(gl);
 
-                    for (int i = 0; i < 50; i++)
-                    {
-                        if (brickManager.bricks[i].Alive)
-                        {
-                            p1ball.collidesWith(brickManager.bricks[i]);
-                            p2ball.collidesWith(brickManager.bricks[i]);
-                            brickManager.bricks[i].drawBorder(gl);
-                        }
-                    }
+                    brickManager.draw(gl);
 
                     player1.drawFilled(gl);
                     player2.drawFilled(gl);
@@ -342,15 +316,7 @@ namespace TTISDassignment2
                     p1ball.drawFilled(gl);
                     p2ball.drawFilled(gl);
 
-                    for (int i = 0; i < 50; i++)
-                    {
-                        if (brickManager.bricks[i].Alive)
-                        {
-                            p1ball.collidesWith(brickManager.bricks[i]);
-                            p2ball.collidesWith(brickManager.bricks[i]);
-                            brickManager.bricks[i].drawBorder(gl);
-                        }
-                    }
+                    brickManager.draw(gl);
 
                     player1.drawFilled(gl);
                     player2.drawFilled(gl);
@@ -370,15 +336,7 @@ namespace TTISDassignment2
                     p1ball.drawFilled(gl);
                     p2ball.drawFilled(gl);
 
-                    for (int i = 0; i < 50; i++)
-                    {
-                        if (brickManager.bricks[i].Alive)
-                        {
-                            p1ball.collidesWith(brickManager.bricks[i]);
-                            p2ball.collidesWith(brickManager.bricks[i]);
-                            brickManager.bricks[i].drawBorder(gl);
-                        }
-                    }
+                    brickManager.draw(gl);
 
                     player1.drawFilled(gl);
                     player2.drawFilled(gl);

@@ -177,14 +177,11 @@ namespace TTISDassignment2
 
                 case GameState.PLAYING:
                     game.SetPositions(kinectToProjectionPoint(posPlayer1), kinectToProjectionPoint(posPlayer2));
-
                     break;
 
                 case GameState.PLAYER_1_WINS:
-                    btnPlaying.IsEnabled = true;
-                    break;
-
                 case GameState.PLAYER_2_WINS:
+                case GameState.GAME_OVER:
                     btnPlaying.IsEnabled = true;
                     break;
 
