@@ -13,16 +13,21 @@ namespace TTISDassignment2
     class Brick : Block
     {
         private int hp;
+        private static readonly Color[] colors = {Colors.LightYellow, Colors.Yellow, Colors.Orange, Colors.OrangeRed, Colors.Red };
         public bool Alive { get => hp > 0; }
-
-        public Brick(Point3D pos, Size size, Color color, double b = 0.05, int hp = 1) : base(pos, size, color, b)
+        
+        public Brick(Point3D pos, Size size, Color color, int hp = 1, double b = 0.05) : base(pos, size, color, b)
         {
             this.hp = hp;
         }
 
         public void hit()
         {
-            --this.hp;
+            if(hp > 0)
+            {
+                this.FillColor = colors[hp-1];
+                --this.hp;
+            }
         }
 
         public override bool collidesWith(Mover b)
