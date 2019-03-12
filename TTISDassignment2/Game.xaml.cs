@@ -47,6 +47,8 @@ namespace TTISDassignment2
 
         private Block[] gameCalibBlocks;
 
+        private int fontSize = 64;
+
         public Game()
         {
             InitializeComponent();
@@ -286,6 +288,14 @@ namespace TTISDassignment2
 
                     player1.drawFilled(gl);
                     player2.drawFilled(gl);
+
+                    // Draw text
+                    int RenderContextProviderWidth = gl.RenderContextProvider.Width;
+                    int RenderContextProviderHeight = gl.RenderContextProvider.Height;
+
+                    gl.DrawText(RenderContextProviderWidth / 4, RenderContextProviderHeight - fontSize - 10, gamePlayer1Color.R, gamePlayer1Color.G, gamePlayer1Color.B, "Arial", fontSize, "0");
+
+                    gl.DrawText((RenderContextProviderWidth / 4) * 3, RenderContextProviderHeight - fontSize - 10, gamePlayer2Color.R, gamePlayer2Color.G, gamePlayer2Color.B, "Arial", fontSize, "0");
 
                     break;
 
