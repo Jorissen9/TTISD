@@ -23,6 +23,12 @@ namespace TTISDassignment2
         public bool wentOutOfRightBorder = false;
         public bool hadCollision         = false;
 
+        private bool isLeft  = false;
+        private bool isRight = false;
+        
+        public bool IsOnLeftSide  { get => isLeft; }
+        public bool IsOnRightSide { get => isRight; }
+
         public Mover(double x, double y, double z, double w, double h, double b = 1)
         {
             this._pos      = new Point3D(x, y, z);
@@ -81,6 +87,9 @@ namespace TTISDassignment2
                 _pos.Y = collide_rect.Y - Size.Y;
                 this.hadCollision = true;
             }
+
+            isLeft  = Pos.X + Size.X < collide_rect.X / 2;
+            isRight = Pos.X > collide_rect.X / 2;
         }
 
         public virtual bool collidesWith(Mover b)

@@ -13,6 +13,8 @@ namespace TTISDassignment2
         private Texture texture = new Texture();
         private bool initialized = false;
 
+        private Player lastPlayer = null;
+
         public Ball(double x, double y, double z, double w, double h, double b = 1)
             : base(x, y, z, w, h, b)
         {
@@ -25,11 +27,28 @@ namespace TTISDassignment2
 
         }
 
-        public bool collidesWith(Block b)
+        public bool collidesWith(Brick b)
         {
             if (base.collidesWith(b))
             {
+                if (lastPlayer != null)
+                {
+                    lastPlayer.HitBrick(b);
+                }
+
                 b.Hit();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool collidesWith(Player b)
+        {
+            if (base.collidesWith(b))
+            {
+                lastPlayer = b;
                 return true;
             }
 

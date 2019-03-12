@@ -31,7 +31,7 @@ namespace TTISDassignment2
 
         private Point3D[] corners;
 
-        private Block player1, player2;
+        private Player player1, player2;
         private Ball p1ball, p2ball;
         private Brick[] bricks;
 
@@ -83,8 +83,8 @@ namespace TTISDassignment2
 
             Size p_size = new Size(0.025 * windowSize.Width, 0.1 * windowSize.Height * aspect_ratio);
             double screen_mid = gameSize.Y / 2 - p_size.Height / 2;
-            player1 = new Block(new Point3D(0, screen_mid, -11), p_size, gamePlayer1Color);
-            player2 = new Block(new Point3D(gameSize.X - p_size.Width, screen_mid, -11), p_size, gamePlayer2Color);
+            player1 = new Player(new Point3D(0, screen_mid, -11), p_size, gamePlayer1Color);
+            player2 = new Player(new Point3D(gameSize.X - p_size.Width, screen_mid, -11), p_size, gamePlayer2Color);
 
             double ball_size = 0.03 * windowSize.Width; //0.015 * windowSize.Width;
             Size b_size = new Size(ball_size, ball_size);
@@ -103,28 +103,23 @@ namespace TTISDassignment2
             bricks = new Brick[50];
             for(int i = 0; i < 10; i++)
             {
-                bricks[i] = new Brick(new Point3D((gameSize.X / 2) - (br_width/2) - (br_width * 2), 1 + (br_height * i), -11), br_size, Colors.Yellow);
-                bricks[i].BorderColor = Colors.Blue;
+                bricks[i] = new Brick(new Point3D((gameSize.X / 2) - (br_width/2) - (br_width * 2), 1 + (br_height * i), -11), br_size, 1);
             }
             for (int i = 0; i < 10; i++)
             {
-                bricks[i + 10] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) - (br_width), 1 + (br_height * i), -11), br_size, Colors.Orange, 3);
-                bricks[i + 10].BorderColor = Colors.Blue;
+                bricks[i + 10] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) - (br_width), 1 + (br_height * i), -11), br_size, 3);
             }
             for (int i = 0; i < 10; i++)
             {
-                bricks[i + 20] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2), 1 + (br_height * i), -11), br_size, Colors.Red, 5);
-                bricks[i + 20].BorderColor = Colors.Blue;
+                bricks[i + 20] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2), 1 + (br_height * i), -11), br_size, Brick.MaxHP);
             }
             for (int i = 0; i < 10; i++)
             {
-                bricks[i + 30] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width), 1 + (br_height * i), -11), br_size, Colors.Orange, 3);
-                bricks[i + 30].BorderColor = Colors.Blue;
+                bricks[i + 30] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width), 1 + (br_height * i), -11), br_size, 3);
             }
             for (int i = 0; i < 10; i++)
             {
-                bricks[i + 40] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width * 2), 1 + (br_height * i), -11), br_size, Colors.Yellow);
-                bricks[i + 40].BorderColor = Colors.Blue;
+                bricks[i + 40] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width * 2), 1 + (br_height * i), -11), br_size, 1);
             }
         }
 
@@ -236,6 +231,37 @@ namespace TTISDassignment2
 
                     player1.update(gameSize);
                     player2.update(gameSize);
+
+                    if (p1ball.wentOutOfLeftBorder)
+                    {
+                        if (player1.IsOnLeftSide)
+                        {
+                            player1.MissedBall();
+                        }
+                        if (player2.IsOnLeftSide)
+                        {
+                            player2.MissedBall();
+                        }
+
+                        // Reset ball
+                        // ...
+                    } else if (p1ball.wentOutOfRightBorder)
+                    {
+                        if (player1.IsOnRightSide)
+                        {
+                            player1.MissedBall();
+                        }
+                        if (player2.IsOnRightSide)
+                        {
+                            player2.MissedBall();
+                        }
+
+                        // Reset ball
+                        // ...
+                    }
+
+                    Console.WriteLine("P1: " + player1.Score.ToString());
+                    Console.WriteLine("P2: " + player2.Score.ToString());
 
                     // Collide with ball
                     p1ball.collidesWith(player1);

@@ -12,18 +12,17 @@ namespace TTISDassignment2
 {
     class Block : Mover
     {
-        private const uint SAMPLE_MAX = 100; 
-        private uint sample = 0;
-        private Vector3D prevPos;
-        private double SPEED_MOD = 0.05;
-
         protected int hitpoints = 1;
 
-        public bool Alive { get => hitpoints > 0; }
+        public int CurrentHP { get => Math.Max(hitpoints, 0); }
+        public virtual bool Alive { get => CurrentHP > 0; }
 
-        public void Hit()
+        public virtual void Hit()
         {
-            hitpoints = 0;
+            if (this.Alive)
+            {
+                this.hitpoints--;
+            }
         }
 
         public Block(double x, double y, double z, double w, double h, double b = 1)
@@ -36,16 +35,6 @@ namespace TTISDassignment2
             : base(pos, size, color, b)
         {
 
-        }
-
-        public override void move(Point3D speed)
-        {
-            if (this.sample++ > SAMPLE_MAX)
-            {
-                prevPos = (Vector3D) this.Pos;
-                this.sample = 0;
-            }
-            base.move(speed);
         }
 
         public override void drawFilled(OpenGL gl)

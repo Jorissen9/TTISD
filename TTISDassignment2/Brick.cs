@@ -26,14 +26,14 @@ namespace TTISDassignment2
         public Brick(Point3D pos, Size size, int hp = 1) : base(pos, size, Colors.White, 0.035)
         {
             this.hitpoints = hp;
-            this.FillColor = colors[Util.Clamp(this.hitpoints, 0, MaxHP)];
+            this.FillColor = colors[Util.Clamp(CurrentHP, 0, MaxHP)];
             this.BorderColor = Colors.White;
         }
 
         public override void Hit()
         {
             base.Hit();
-            this.FillColor = colors[Util.Clamp(this.hitpoints, 0, MaxHP)];
+            this.FillColor = colors[Util.Clamp(CurrentHP, 0, MaxHP)];
         }
 
         public override void drawBorder(OpenGL gl)
