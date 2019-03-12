@@ -83,7 +83,7 @@ namespace TTISDassignment2
             }
         }
 
-        public bool collidesWith(Mover b)
+        public virtual bool collidesWith(Mover b)
         {
             bool left  = this.Pos.X < b.Pos.X + b.Size.X;
             bool right = this.Pos.X + this.Size.X > b.Pos.X;
