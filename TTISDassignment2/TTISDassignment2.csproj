@@ -94,6 +94,7 @@
     </ApplicationDefinition>
     <Compile Include="Ball.cs" />
     <Compile Include="Block.cs" />
+    <Compile Include="Brick.cs" />
     <Compile Include="Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
     </Compile>

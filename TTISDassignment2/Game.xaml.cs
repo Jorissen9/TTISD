@@ -33,7 +33,7 @@ namespace TTISDassignment2
 
         private Block player1, player2;
         private Ball p1ball, p2ball;
-        private Block[] bricks;
+        private Brick[] bricks;
 
         private Color gamePlayer1Color = Color.FromArgb(255, 255, 0, 0);
         private Color gamePlayer2Color = Color.FromArgb(255, 0, 255, 0);
@@ -86,7 +86,7 @@ namespace TTISDassignment2
             player1 = new Block(new Point3D(0, screen_mid, -11), p_size, gamePlayer1Color);
             player2 = new Block(new Point3D(gameSize.X - p_size.Width, screen_mid, -11), p_size, gamePlayer2Color);
 
-            double ball_size = 0.065 * windowSize.Width; //0.015 * windowSize.Width;
+            double ball_size = 0.03 * windowSize.Width; //0.015 * windowSize.Width;
             Size b_size = new Size(ball_size, ball_size);
             screen_mid = gameSize.Y / 2 - b_size.Height / 2;
 
@@ -97,11 +97,35 @@ namespace TTISDassignment2
             p2ball.Speed = new Point3D(-0.4, -0.2, 0.0);
 
             // Generate bricks
-            bricks = new Block[16];
-            bricks[0] = new Block(calib_pos[0], calib_size, Colors.Cyan);
-            bricks[1] = new Block(calib_pos[1], calib_size, Colors.Cyan);
-            bricks[2] = new Block(calib_pos[2], calib_size, Colors.Cyan);
-            bricks[3] = new Block(calib_pos[3], calib_size, Colors.Cyan);
+            double br_width = 0.03 * windowSize.Width;
+            double br_height = 0.09 * windowSize.Height;
+            Size br_size = new Size(br_width, br_height);
+            bricks = new Brick[50];
+            for(int i = 0; i < 10; i++)
+            {
+                bricks[i] = new Brick(new Point3D((gameSize.X / 2) - (br_width/2) - (br_width * 2), 1 + (br_height * i), -11), br_size, Colors.Red);
+                bricks[i].BorderColor = Colors.Blue;
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                bricks[i + 10] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) - (br_width), 1 + (br_height * i), -11), br_size, Colors.Red);
+                bricks[i + 10].BorderColor = Colors.Blue;
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                bricks[i + 20] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2), 1 + (br_height * i), -11), br_size, Colors.Red);
+                bricks[i + 20].BorderColor = Colors.Blue;
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                bricks[i + 30] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width), 1 + (br_height * i), -11), br_size, Colors.Red);
+                bricks[i + 30].BorderColor = Colors.Blue;
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                bricks[i + 40] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width * 2), 1 + (br_height * i), -11), br_size, Colors.Red);
+                bricks[i + 40].BorderColor = Colors.Blue;
+            }
         }
 
         public void Exit(object sender, EventArgs e)
@@ -221,11 +245,27 @@ namespace TTISDassignment2
                     p2ball.collidesWith(player2);
 
                     // Draw
-                    player1.drawFilled(gl);
-                    player2.drawFilled(gl);
-
                     p1ball.drawFilled(gl);
                     p2ball.drawFilled(gl);
+
+                    for (int i = 0; i < 50; i++)
+                    {
+                        if (bricks[i].Alive)
+                        {
+                            p1ball.collidesWith(bricks[i]);
+                            p2ball.collidesWith(bricks[i]);
+
+                            if (p1ball.hadCollision || p2ball.hadCollision)
+                            {
+                                bricks[i].hit();
+                            }
+
+                            bricks[i].drawBorder(gl);
+                        }
+                    }
+
+                    player1.drawFilled(gl);
+                    player2.drawFilled(gl);
 
                     break;
 
