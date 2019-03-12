@@ -11,13 +11,20 @@ namespace TTISDassignment2
 {
     class Player : Block
     {
-        private const uint SAMPLE_MAX = 100;
+        private const uint SAMPLE_MAX = 50;
         private uint sample = 0;
         private Vector3D prevPos;
-        private double SPEED_MOD = 0.05;
+        private double SPEED_MOD = 0.5;
 
         public override bool Alive { get => Score > 0; }
-        public int Score { get; private set; } = 1;
+
+        public Vector3D RelativeSpeed
+        {
+            get => (prevPos - ((Vector3D)this.Pos)) * SPEED_MOD;
+        }
+
+        private int _score;
+        public int Score { get => Math.Max(_score, 0); }
 
         public Player(Point3D pos, Size size, Color color, double b = 1)
             : base(pos, size, color, b)
@@ -27,12 +34,12 @@ namespace TTISDassignment2
 
         public void MissedBall()
         {
-            this.Score -= 5;
+            _score -= 5;
         }
 
         public void HitBrick(Brick b)
         {
-            this.Score += b.CurrentHP;
+            _score += b.CurrentHP;
         }
 
         public override void move(Point3D speed)

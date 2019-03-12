@@ -83,6 +83,16 @@ namespace TTISDassignment2
             gameRectangle.BorderColor      = gameRectColor;
             gameCalibRectangle.BorderColor = gameCalibRectColor;
 
+            this.Reset();
+        }
+
+        public void Exit(object sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        public void Reset()
+        {
             Size p_size = new Size(0.025 * windowSize.Width, 0.1 * windowSize.Height * aspect_ratio);
             double screen_mid = gameSize.Y / 2 - p_size.Height / 2;
             player1 = new Player(new Point3D(0, screen_mid, -11), p_size, gamePlayer1Color);
@@ -95,17 +105,18 @@ namespace TTISDassignment2
             p1ball = new Ball(new Point3D(ball_size * 3.0, screen_mid, -11), b_size, gamePlayer1Color);
             p2ball = new Ball(new Point3D(gameSize.X - ball_size * 3.0, screen_mid, -11), b_size, gamePlayer2Color);
 
-            p1ball.Speed = new Point3D(0.4, 0.2, 0.0);
-            p2ball.Speed = new Point3D(-0.4, -0.2, 0.0);
+            p1ball.Speed = Ball.InitSpeedToRight;
+            p2ball.Speed = Ball.InitSpeedToLeft;
 
             // Generate bricks
             double br_width = 0.03 * windowSize.Width;
             double br_height = 0.09 * windowSize.Height;
             Size br_size = new Size(br_width, br_height);
             bricks = new Brick[50];
-            for(int i = 0; i < 10; i++)
+
+            for (int i = 0; i < 10; i++)
             {
-                bricks[i] = new Brick(new Point3D((gameSize.X / 2) - (br_width/2) - (br_width * 2), 1 + (br_height * i), -11), br_size, 1);
+                bricks[i] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) - (br_width * 2), 1 + (br_height * i), -11), br_size, 1);
             }
             for (int i = 0; i < 10; i++)
             {
@@ -123,11 +134,6 @@ namespace TTISDassignment2
             {
                 bricks[i + 40] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width * 2), 1 + (br_height * i), -11), br_size, 1);
             }
-        }
-
-        public void Exit(object sender, EventArgs e)
-        {
-            Application.Current.Shutdown();
         }
 
         public List<Point> getCorners()
@@ -234,7 +240,7 @@ namespace TTISDassignment2
                     player1.update(gameSize);
                     player2.update(gameSize);
 
-                    if (p1ball.wentOutOfLeftBorder)
+                    if (p1ball.wentOutOfLeftBorder || p2ball.wentOutOfLeftBorder)
                     {
                         if (player1.IsOnLeftSide)
                         {
@@ -244,10 +250,7 @@ namespace TTISDassignment2
                         {
                             player2.MissedBall();
                         }
-
-                        // Reset ball
-                        // ...
-                    } else if (p1ball.wentOutOfRightBorder)
+                    } else if (p1ball.wentOutOfRightBorder || p2ball.wentOutOfRightBorder)
                     {
                         if (player1.IsOnRightSide)
                         {
@@ -257,13 +260,7 @@ namespace TTISDassignment2
                         {
                             player2.MissedBall();
                         }
-
-                        // Reset ball
-                        // ...
                     }
-
-                    Console.WriteLine("P1: " + player1.Score.ToString());
-                    Console.WriteLine("P2: " + player2.Score.ToString());
 
                     // Collide with ball
                     p1ball.collidesWith(player1);
@@ -293,9 +290,17 @@ namespace TTISDassignment2
                     int RenderContextProviderWidth = gl.RenderContextProvider.Width;
                     int RenderContextProviderHeight = gl.RenderContextProvider.Height;
 
-                    gl.DrawText(RenderContextProviderWidth / 4, RenderContextProviderHeight - fontSize - 10, gamePlayer1Color.R, gamePlayer1Color.G, gamePlayer1Color.B, "Arial", fontSize, "0");
+                    gl.DrawText(RenderContextProviderWidth / 4, 
+                                RenderContextProviderHeight - fontSize - 10, 
+                                gamePlayer1Color.R, gamePlayer1Color.G, gamePlayer1Color.B, 
+                                "Arial", fontSize, 
+                                player1.Score.ToString());
 
-                    gl.DrawText((RenderContextProviderWidth / 4) * 3, RenderContextProviderHeight - fontSize - 10, gamePlayer2Color.R, gamePlayer2Color.G, gamePlayer2Color.B, "Arial", fontSize, "0");
+                    gl.DrawText((RenderContextProviderWidth / 4) * 3, 
+                                RenderContextProviderHeight - fontSize - 10, 
+                                gamePlayer2Color.R, gamePlayer2Color.G, gamePlayer2Color.B, 
+                                "Arial", fontSize,
+                                player2.Score.ToString());
 
                     break;
 

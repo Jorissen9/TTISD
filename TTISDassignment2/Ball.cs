@@ -10,6 +10,9 @@ namespace TTISDassignment2
 {
     class Ball : Mover
     {
+        public static readonly Point3D InitSpeedToRight = new Point3D(0.4, 0.2, 0.0);
+        public static readonly Point3D InitSpeedToLeft  = new Point3D(-0.4, -0.2, 0.0);
+
         private Texture texture = new Texture();
         private bool initialized = false;
 
@@ -27,6 +30,24 @@ namespace TTISDassignment2
 
         }
 
+        public override void update(Point3D collide_rect)
+        {
+            base.update(collide_rect);
+
+            if (this.wentOutOfLeftBorder)
+            {
+                this._pos.X = collide_rect.X / 4 * 1;
+                this._pos.Y = collide_rect.Y / 2 + this.Size.Y / 2;
+                this.Speed = Ball.InitSpeedToRight;
+            }
+            else if (this.wentOutOfRightBorder)
+            {
+                this._pos.X = collide_rect.X / 4 * 3;
+                this._pos.Y = collide_rect.Y / 2 + this.Size.Y / 2;
+                this.Speed = Ball.InitSpeedToLeft;
+            }
+        }
+
         public bool collidesWith(Brick b)
         {
             if (base.collidesWith(b))
@@ -37,6 +58,9 @@ namespace TTISDassignment2
                 }
 
                 b.Hit();
+
+                this._speed.X = Math.Sign(Speed.X) * Math.Abs(InitSpeedToRight.X);
+                this._speed.Y = Math.Sign(Speed.Y) * Math.Abs(InitSpeedToRight.Y);
 
                 return true;
             }
@@ -49,6 +73,13 @@ namespace TTISDassignment2
             if (base.collidesWith(b))
             {
                 lastPlayer = b;
+
+                //Vector3D rel = lastPlayer.RelativeSpeed;
+                //this._speed.X *= rel.X;
+                //this._speed.Y *= rel.Y;                
+
+                this._speed.X *= 1.25;
+                this._speed.Y *= 1.05;
                 return true;
             }
 

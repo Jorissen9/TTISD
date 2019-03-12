@@ -181,9 +181,11 @@ namespace TTISDassignment2
                     break;
 
                 case GameState.PLAYER_1_WINS:
+                    btnPlaying.IsEnabled = true;
                     break;
 
                 case GameState.PLAYER_2_WINS:
+                    btnPlaying.IsEnabled = true;
                     break;
 
                 default:
@@ -313,6 +315,7 @@ namespace TTISDassignment2
         private void BtnPlay_Click(object sender, RoutedEventArgs e)
         {
             btnPlaying.IsEnabled = false;
+            game.Reset();
             this.game.state = GameState.PLAYING;
         }
     }

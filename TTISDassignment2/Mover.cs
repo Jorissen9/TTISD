@@ -7,12 +7,12 @@ namespace TTISDassignment2
 {
     abstract class Mover
     {
-        private Point3D _pos;
+        protected Point3D _pos;
         public Point3D Pos { get => _pos; }
 
         public Point Size { get; set; }
 
-        private Point3D _speed;
+        protected Point3D _speed;
         public Point3D Speed { get => _speed; set => _speed = value; }
 
         public Color FillColor { get; set; }
@@ -58,7 +58,7 @@ namespace TTISDassignment2
             this._pos.Offset(Speed.X, Speed.Y, Speed.Z);
         }
 
-        public void update(Point3D collide_rect)
+        public virtual void update(Point3D collide_rect)
         {
             this.move(Speed);
             this.hadCollision = false;
