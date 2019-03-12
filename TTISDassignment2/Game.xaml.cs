@@ -33,7 +33,7 @@ namespace TTISDassignment2
 
         private Player player1, player2;
         private Ball p1ball, p2ball;
-        private Brick[] bricks;
+        private BrickManager brickManager;
 
         private Color gamePlayer1Color = Color.FromArgb(255, 255, 0, 0);
         private Color gamePlayer2Color = Color.FromArgb(255, 0, 255, 0);
@@ -101,28 +101,7 @@ namespace TTISDassignment2
             // Generate bricks
             double br_width = 0.03 * windowSize.Width;
             double br_height = 0.09 * windowSize.Height;
-            Size br_size = new Size(br_width, br_height);
-            bricks = new Brick[50];
-            for(int i = 0; i < 10; i++)
-            {
-                bricks[i] = new Brick(new Point3D((gameSize.X / 2) - (br_width/2) - (br_width * 2), 1 + (br_height * i), -11), br_size, 1);
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                bricks[i + 10] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) - (br_width), 1 + (br_height * i), -11), br_size, 3);
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                bricks[i + 20] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2), 1 + (br_height * i), -11), br_size, Brick.MaxHP);
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                bricks[i + 30] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width), 1 + (br_height * i), -11), br_size, 3);
-            }
-            for (int i = 0; i < 10; i++)
-            {
-                bricks[i + 40] = new Brick(new Point3D((gameSize.X / 2) - (br_width / 2) + (br_width * 2), 1 + (br_height * i), -11), br_size, 1);
-            }
+            brickManager = new BrickManager(br_width, br_height, gameSize);
         }
 
         public void Exit(object sender, EventArgs e)
@@ -177,6 +156,8 @@ namespace TTISDassignment2
             //  Move into a more central position.
             gl.Translate(gameOffset.X, gameOffset.Y, gameOffset.Z);
 
+            int RenderContextProviderWidth = gl.RenderContextProvider.Width;
+            int RenderContextProviderHeight = gl.RenderContextProvider.Height;
             switch (state)
             {
                 case GameState.START:
@@ -227,12 +208,32 @@ namespace TTISDassignment2
                 case GameState.PLAYING:
                     gameRectangle.drawBorder(gl);
 
+                    // check aliveness and change states accordignly
+                    if(!player1.Alive && !player2.Alive)
+                    {
+                        state = GameState.GAME_OVER;
+                    }
+                    else if(!player1.Alive && brickManager.allBricksDestoyed())
+                    {
+                        state = GameState.PLAYER_2_WINS;
+                    }
+                    else if (!player2.Alive && brickManager.allBricksDestoyed())
+                    {
+                        state = GameState.PLAYER_1_WINS;
+                    }
+
                     // Update Position and Speed
                     p1ball.update(gameSize);
                     p2ball.update(gameSize);
 
-                    player1.update(gameSize);
-                    player2.update(gameSize);
+                    if(player1.Alive)
+                    {
+                        player1.update(gameSize);
+                    }
+                    if (player2.Alive)
+                    {
+                        player2.update(gameSize);
+                    }
 
                     if (p1ball.wentOutOfLeftBorder)
                     {
@@ -278,11 +279,43 @@ namespace TTISDassignment2
 
                     for (int i = 0; i < 50; i++)
                     {
-                        if (bricks[i].Alive)
+                        if (brickManager.bricks[i].Alive)
                         {
-                            p1ball.collidesWith(bricks[i]);
-                            p2ball.collidesWith(bricks[i]);
-                            bricks[i].drawBorder(gl);
+                            p1ball.collidesWith(brickManager.bricks[i]);
+                            p2ball.collidesWith(brickManager.bricks[i]);
+                            brickManager.bricks[i].drawBorder(gl);
+                        }
+                    }
+
+                    if(player1.Alive)
+                    {
+                        player1.drawFilled(gl);
+                    }
+                    if (player2.Alive)
+                    {
+                        player2.drawFilled(gl);
+                    }
+
+                    // Draw text
+                    gl.DrawText(RenderContextProviderWidth / 4, 10, gamePlayer1Color.R, gamePlayer1Color.G, gamePlayer1Color.B, "Arial", fontSize, "0");
+                    gl.DrawText((RenderContextProviderWidth / 4) * 3, 10, gamePlayer2Color.R, gamePlayer2Color.G, gamePlayer2Color.B, "Arial", fontSize, "0");
+
+                    break;
+
+                case GameState.PLAYER_1_WINS:
+                    gl.ClearColor(gameBGColor.R, gameBGColor.G, gameBGColor.B, gameBGColor.A);
+
+                    // Draw
+                    p1ball.drawFilled(gl);
+                    p2ball.drawFilled(gl);
+
+                    for (int i = 0; i < 50; i++)
+                    {
+                        if (brickManager.bricks[i].Alive)
+                        {
+                            p1ball.collidesWith(brickManager.bricks[i]);
+                            p2ball.collidesWith(brickManager.bricks[i]);
+                            brickManager.bricks[i].drawBorder(gl);
                         }
                     }
 
@@ -290,21 +323,67 @@ namespace TTISDassignment2
                     player2.drawFilled(gl);
 
                     // Draw text
-                    int RenderContextProviderWidth = gl.RenderContextProvider.Width;
-                    int RenderContextProviderHeight = gl.RenderContextProvider.Height;
+                    gl.DrawText(RenderContextProviderWidth / 4 + 75, 
+                        RenderContextProviderHeight - 100, 
+                        gamePlayer1Color.R, gamePlayer1Color.G, gamePlayer1Color.B, 
+                        "Arial", fontSize, "Player 1 Wins!!!");
 
-                    gl.DrawText(RenderContextProviderWidth / 4, RenderContextProviderHeight - fontSize - 10, gamePlayer1Color.R, gamePlayer1Color.G, gamePlayer1Color.B, "Arial", fontSize, "0");
-
-                    gl.DrawText((RenderContextProviderWidth / 4) * 3, RenderContextProviderHeight - fontSize - 10, gamePlayer2Color.R, gamePlayer2Color.G, gamePlayer2Color.B, "Arial", fontSize, "0");
-
-                    break;
-
-                case GameState.PLAYER_1_WINS:
-                    gl.ClearColor(1.0f, 1.0f, 0.0f, 1.0f);
                     break;
 
                 case GameState.PLAYER_2_WINS:
-                    gl.ClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+                    gl.ClearColor(gameBGColor.R, gameBGColor.G, gameBGColor.B, gameBGColor.A);
+
+                    // Draw
+                    p1ball.drawFilled(gl);
+                    p2ball.drawFilled(gl);
+
+                    for (int i = 0; i < 50; i++)
+                    {
+                        if (brickManager.bricks[i].Alive)
+                        {
+                            p1ball.collidesWith(brickManager.bricks[i]);
+                            p2ball.collidesWith(brickManager.bricks[i]);
+                            brickManager.bricks[i].drawBorder(gl);
+                        }
+                    }
+
+                    player1.drawFilled(gl);
+                    player2.drawFilled(gl);
+
+                    // Draw text
+                    gl.DrawText(RenderContextProviderWidth / 4 + 75, 
+                        RenderContextProviderHeight - 100, 
+                        gamePlayer2Color.R, gamePlayer2Color.G, gamePlayer2Color.B, 
+                        "Arial", fontSize, "Player 2 Wins!!!");
+
+                    break;
+
+                case GameState.GAME_OVER:
+                    gl.ClearColor(gameBGColor.R, gameBGColor.G, gameBGColor.B, gameBGColor.A);
+
+                    // Draw
+                    p1ball.drawFilled(gl);
+                    p2ball.drawFilled(gl);
+
+                    for (int i = 0; i < 50; i++)
+                    {
+                        if (brickManager.bricks[i].Alive)
+                        {
+                            p1ball.collidesWith(brickManager.bricks[i]);
+                            p2ball.collidesWith(brickManager.bricks[i]);
+                            brickManager.bricks[i].drawBorder(gl);
+                        }
+                    }
+
+                    player1.drawFilled(gl);
+                    player2.drawFilled(gl);
+
+                    // Draw text
+                    gl.DrawText(RenderContextProviderWidth / 4 + 100,
+                        RenderContextProviderHeight - 100,
+                        0, 0, 1,
+                        "Arial", fontSize, "GAME OVER...");
+
                     break;
 
                 default:
