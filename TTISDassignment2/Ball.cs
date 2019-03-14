@@ -12,22 +12,33 @@ namespace TTISDassignment2
     {
         public static readonly Point3D InitSpeedToRight = new Point3D(0.4, 0.2, 0.0);
         public static readonly Point3D InitSpeedToLeft  = new Point3D(-0.4, -0.2, 0.0);
+        private static readonly double shrinkRatio = 0.1;
 
+        private static Random rand = new Random();
+
+        Point shrinkedSize;
+        Point normalSize;
+        Point shrinkedOffsetRight;
+        
         private Texture texture = new Texture();
         private bool initialized = false;
 
         private Player lastPlayer = null;
 
-        public Ball(double x, double y, double z, double w, double h, double b = 1)
-            : base(x, y, z, w, h, b)
-        {
-
-        }
-
-        public Ball(Point3D pos, Size size, Color color, double b = 1)
+    
+        public Ball(Point3D pos, Size size, Color color, double b = 0.05)
             : base(pos, size, color, b)
         {
+            shrinkedSize = new Point(this.Size.X * shrinkRatio,
+                                     this.Size.Y * shrinkRatio);
+            normalSize = this.Size;
+            shrinkedOffsetRight = new Point(normalSize.X - shrinkedSize.X,
+                                           (normalSize.Y - shrinkedSize.Y) / 2.0);
+        }
 
+        private double randomYSpeed()
+        {
+            return rand.NextDouble() * InitSpeedToRight.Y * 2.0 - InitSpeedToRight.Y;
         }
 
         public override void update(Point3D collide_rect)
@@ -38,19 +49,35 @@ namespace TTISDassignment2
             {
                 this._pos.X = collide_rect.X / 4 * 1;
                 this._pos.Y = collide_rect.Y / 2 + this.Size.Y / 2;
-                this.Speed = Ball.InitSpeedToRight;
+                this._speed.X = Ball.InitSpeedToRight.X;
+                this._speed.Y = randomYSpeed();
             }
             else if (this.wentOutOfRightBorder)
             {
                 this._pos.X = collide_rect.X / 4 * 3;
                 this._pos.Y = collide_rect.Y / 2 + this.Size.Y / 2;
-                this.Speed = Ball.InitSpeedToLeft;
+                this._speed.X = Ball.InitSpeedToLeft.X;
+                this._speed.Y = randomYSpeed();
             }
+        }
+
+        private bool collideShrinked(Mover b)
+        {
+            // Collide with point ball, but this will fail for up/down collisions...
+            //bool goesLeft = Speed.X < 0;
+
+            //this.grow(goesLeft, true);
+            //bool collide = base.collidesWith(b);
+            //this.grow(goesLeft, false);
+
+            //return collide;
+
+            return base.collidesWith(b); 
         }
 
         public bool collidesWith(Brick b)
         {
-            if (base.collidesWith(b))
+            if (this.collideShrinked(b))
             {
                 if (lastPlayer != null)
                 {
@@ -70,7 +97,9 @@ namespace TTISDassignment2
 
         public bool collidesWith(Player b)
         {
-            if (base.collidesWith(b))
+            // Shift ball size smaller
+
+            if (this.collideShrinked(b))
             {
                 lastPlayer = b;
 
@@ -119,25 +148,51 @@ namespace TTISDassignment2
             gl.Disable(OpenGL.GL_TEXTURE_2D);
             gl.BindTexture(OpenGL.GL_TEXTURE_2D, 0);
 
-
-            //gl.Begin(OpenGL.GL_LINE_LOOP);
-            //gl.Color(FillColor.R, FillColor.G, FillColor.B, FillColor.A);
-
-            //for (int i = 0; i <= 10; i++)
-            //{
-            //    double angle = 2 * Math.PI * i / 10;
-            //    double x = Math.Cos(angle) - Pos.X;
-            //    double y = Math.Sin(angle) - Pos.Y;
-
-            //    gl.Vertex(x, y, Pos.Z);
-            //}
-
-            //gl.End();
+            //this.drawBorder(gl);
         }
 
         public override void drawBorder(OpenGL gl)
         {
+            bool goesLeft = Speed.X < 0;
 
+            this.grow(goesLeft, true);
+
+            gl.Begin(OpenGL.GL_QUADS);
+            gl.Color(BorderColor.R, BorderColor.G, BorderColor.B, BorderColor.A);
+            gl.Vertex(Pos.X, Pos.Y + Size.Y, Pos.Z);
+            gl.Vertex(Pos.X, Pos.Y, Pos.Z);
+            gl.Vertex(Pos.X + Size.X, Pos.Y, Pos.Z);
+            gl.Vertex(Pos.X + Size.X, Pos.Y + Size.Y, Pos.Z);
+            gl.End();
+
+            this.grow(goesLeft, false);
+        }
+
+        public void grow(bool left, bool shrink)
+        {
+            if (left)
+            {   // Grow/shrink to left side
+                if (shrink)
+                {
+                    this.Size = shrinkedSize;
+                    _pos.Offset(0.0, shrinkedOffsetRight.Y, 0.0);
+                } else
+                {
+                    this.Size = normalSize;
+                    _pos.Offset(0.0, -shrinkedOffsetRight.Y, 0.0);
+                }
+            } else
+            {   // Grow/shrink to right side
+                if (shrink)
+                {
+                    this.Size = shrinkedSize;
+                    _pos.Offset(shrinkedOffsetRight.X, shrinkedOffsetRight.Y, 0.0);
+                } else
+                {
+                    this.Size = normalSize;
+                    _pos.Offset(-shrinkedOffsetRight.X, -shrinkedOffsetRight.Y, 0.0);
+                }
+            }
         }
     }
 }

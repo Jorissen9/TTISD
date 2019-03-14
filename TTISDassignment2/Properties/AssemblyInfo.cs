@@ -7,12 +7,12 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TTISDassignment2")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("TTISD Assignment 2")]
+[assembly: AssemblyDescription("Two player Kinect Brick breaker game.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TTISDassignment2")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCompany("UHasselt")]
+[assembly: AssemblyProduct("TTISD Assignment 2")]
+[assembly: AssemblyCopyright("Copyright © 2019 Jorissen & Thenaers")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

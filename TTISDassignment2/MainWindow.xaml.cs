@@ -44,6 +44,8 @@ namespace TTISDassignment2
 
         private void MainWindowLoaded(object sender, RoutedEventArgs e)
         {
+            txtStatus.Content = "Undefined";
+
             var sensorStatus = new KinectSensorChooser();
 
             sensorStatus.KinectChanged += KinectSensorChooserKinectChanged;
@@ -65,7 +67,10 @@ namespace TTISDassignment2
             sensor = e.NewSensor;
 
             if (sensor == null)
+            {
+                txtStatus.Content = "Disconnected";
                 return;
+            }
 
             switch (Convert.ToString(e.NewSensor.Status))
             {
@@ -176,7 +181,8 @@ namespace TTISDassignment2
                     break;
 
                 case GameState.PLAYING:
-                    game.SetPositions(kinectToProjectionPoint(posPlayer1), kinectToProjectionPoint(posPlayer2));
+                    game.SetPositions(kinectToProjectionPoint(posPlayer1), 
+                                      kinectToProjectionPoint(posPlayer2));
                     break;
 
                 case GameState.PLAYER_1_WINS:

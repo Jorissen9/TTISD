@@ -42,7 +42,10 @@ namespace TTISDassignment2
 
         public void HitBrick(Brick b)
         {
-            _score += b.CurrentHP;
+            if (Alive)
+            {
+                _score += b.CurrentHP;
+            }
         }
 
         public override void move(Point3D speed)
@@ -58,7 +61,7 @@ namespace TTISDassignment2
         public override void drawFilled(OpenGL gl)
         {
             base.drawFilled(gl);
-            gl.DrawText(gl.RenderContextProvider.Width / 4 * (id > 0 ? 1 : 3),
+            gl.DrawText(gl.RenderContextProvider.Width / 4 * (id == 0 ? 1 : 3),
                         10,
                         FillColor.R, FillColor.G, FillColor.B,
                         "Arial", 64,

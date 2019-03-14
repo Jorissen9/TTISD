@@ -47,7 +47,7 @@ namespace TTISDassignment2
 
         private Block[] gameCalibBlocks;
 
-        private int fontSize = 64;
+        private static readonly int fontSize = 64;
 
         public Game()
         {
@@ -83,7 +83,7 @@ namespace TTISDassignment2
             gameRectangle.BorderColor      = gameRectColor;
             gameCalibRectangle.BorderColor = gameCalibRectColor;
 
-            this.Reset();
+            //this.Reset();
         }
 
         public void Exit(object sender, EventArgs e)
@@ -214,20 +214,6 @@ namespace TTISDassignment2
                 case GameState.PLAYING:
                     gameRectangle.drawBorder(gl);
 
-                    // check aliveness and change states accordingly
-                    if(!player1.Alive && !player2.Alive)
-                    {
-                        state = GameState.GAME_OVER;
-                    }
-                    else if(!player1.Alive && brickManager.allBricksDestoyed())
-                    {
-                        state = GameState.PLAYER_2_WINS;
-                    }
-                    else if (!player2.Alive && brickManager.allBricksDestoyed())
-                    {
-                        state = GameState.PLAYER_1_WINS;
-                    }
-
                     // Update Position and Speed
                     p1ball.update(gameSize);
                     p2ball.update(gameSize);
@@ -286,11 +272,25 @@ namespace TTISDassignment2
                     {
                         player2.drawFilled(gl);
                     }
-                    
+
+                    // check aliveness and change states accordingly
+                    if (!player1.Alive && !player2.Alive)
+                    {
+                        state = GameState.GAME_OVER;
+                    }
+                    else if (!player1.Alive && brickManager.allBricksDestoyed())
+                    {
+                        state = GameState.PLAYER_2_WINS;
+                    }
+                    else if (!player2.Alive && brickManager.allBricksDestoyed())
+                    {
+                        state = GameState.PLAYER_1_WINS;
+                    }
+
                     break;
 
                 case GameState.PLAYER_1_WINS:
-                    gl.ClearColor(gameBGColor.R, gameBGColor.G, gameBGColor.B, gameBGColor.A);
+                    gameRectangle.drawBorder(gl);
 
                     // Draw
                     p1ball.drawFilled(gl);
@@ -310,7 +310,7 @@ namespace TTISDassignment2
                     break;
 
                 case GameState.PLAYER_2_WINS:
-                    gl.ClearColor(gameBGColor.R, gameBGColor.G, gameBGColor.B, gameBGColor.A);
+                    gameRectangle.drawBorder(gl);
 
                     // Draw
                     p1ball.drawFilled(gl);
@@ -330,7 +330,7 @@ namespace TTISDassignment2
                     break;
 
                 case GameState.GAME_OVER:
-                    gl.ClearColor(gameBGColor.R, gameBGColor.G, gameBGColor.B, gameBGColor.A);
+                    gameRectangle.drawBorder(gl);
 
                     // Draw
                     p1ball.drawFilled(gl);

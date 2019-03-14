@@ -134,13 +134,13 @@ namespace TTISDassignment2
 
             return false;
         }
-
-        public void grow(Point growrate)
+        
+        public virtual void grow(Point growrate)
         {
             this.Size.Offset(growrate.X, growrate.Y);
         }
 
-        public void growFromMiddle(Point growrate)
+        public virtual void growFromMiddle(Point growrate)
         {
             grow(growrate);
             _pos.X -= growrate.X / 2.0;
