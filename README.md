@@ -1,5 +1,9 @@
 # TTISD
 
+Bjorn Jorissen, William Thenaers
+
+------
+
 ## Assignment 1: Android geoTODO
 
 Some screenshots from an emulator can be found in `TTISDassignment1\doc\`.
