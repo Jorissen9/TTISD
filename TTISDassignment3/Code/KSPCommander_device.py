@@ -2,7 +2,6 @@
 from microbit import *
 import radio
 
-display.clear()
 
 class Communication:
     def __init__(self, use_uart=True):
@@ -38,27 +37,39 @@ class Communication:
             radio.send_bytes(byte)
 
 
-comm = Communication(use_uart=True)
-comm.send("Start...")
-display.show(Image.HAPPY)
+if __name__ == '__main__':
+    display.clear()
 
-while True:
-    comm.reset()
+    comm = Communication(use_uart=True)
+    comm.send("Start...")
+    display.show(Image.HAPPY)
 
-    # Send BTN_A
-    comm.append(str(int(button_a.is_pressed())))
+    while True:
+        comm.reset()
 
-    # Send BTN_B
-    comm.append(str(int(button_b.is_pressed())))
+        # Send stick (X,Y)
+        comm.append("({0:d},{1:d})".format(0, 0))
 
-    # Send ACCEL
-    ac_x, ac_y, ac_z = accelerometer.get_values()
-    comm.append("({0:d},{1:d},{2:d})".format(ac_x, ac_y, ac_z))
+        # Send BTN_A (trigger left)
+        comm.append(str(int(button_a.is_pressed())))
 
-    comm.send()
-    sleep(50)
+        # Send BTN_B (trigger right)
+        comm.append(str(int(button_b.is_pressed())))
 
-comm.send("Quit...")
-display.show(Image.SAD)
-sleep(2000)
-display.clear()
+        # Send Extra Button A
+        comm.append(str(int(0)))
+
+        # Send Extra Button B
+        comm.append(str(int(0)))
+
+        # Send ACCEL (X,Y,Z)
+        ac_x, ac_y, ac_z = accelerometer.get_values()
+        comm.append("({0:d},{1:d},{2:d})".format(ac_x, ac_y, ac_z))
+
+        comm.send()
+        sleep(50)
+
+    comm.send("Quit...")
+    display.show(Image.SAD)
+    sleep(2000)
+    display.clear()
