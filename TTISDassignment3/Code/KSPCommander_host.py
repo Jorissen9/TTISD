@@ -10,11 +10,11 @@ def to_bytes(*args, type=ct.c_uint8):
     return b
 
 
-def to_int(arg, byteorder="little", signed=True):
+def to_int(arg, byteorder="big", signed=True):
     return int.from_bytes(arg, byteorder=byteorder, signed=signed)
 
 
-def to_ints_iterate(arg, size=2, byteorder="little", signed=True):
+def to_ints_iterate(arg, size=2, byteorder="big", signed=True):
     if len(arg) <= size:
         yield to_int(arg, byteorder, signed)
     else:
@@ -406,8 +406,11 @@ class DeviceInput:
     STICK_X = "STICK_X"
     STICK_Y = "STICK_Y"
 
-    BTN_A = "BTN_A"
-    BTN_B = "BTN_B"
+    BMODE_1 = "BMODE_1"
+    BMODE_2 = "BMODE_2"
+    
+    THROTTLE = "THROTTLE"
+    
     TRIGGER_LEFT = "TRIGGER_LEFT"
     TRIGGER_RIGHT = "TRIGGER_RIGHT"
 
@@ -416,14 +419,62 @@ class DeviceInput:
     ORIENT_TOPBOTTOM = "ORIENT_TOPBOTTOM"
 
 
+class DeviceMessage:
+    def __init__(self):
+        self.states = {
+            name: 0 for name in DeviceInput.__dict__ if not name.startswith("__")
+        }
+    
+        self.size = len(self.bytes()) + 2
+        
+    def setState(self, name, value):
+        self.states[name] = value
+        
+    def getState(self, name):
+        return self.states[name]
+    
+    def bytes(self):
+        return b'\xaa\x55' \
+             + to_bytes(self.getState(DeviceInput.STICK_X), 
+                        self.getState(DeviceInput.STICK_Y),
+                        self.getState(DeviceInput.ORIENT_FRONTBACK),
+                        self.getState(DeviceInput.ORIENT_LEFTRIGHT),
+                        self.getState(DeviceInput.ORIENT_TOPBOTTOM),
+                        self.getState(DeviceInput.THROTTLE),
+                        type=ct.c_int16) \
+             + to_bytes((int(self.getState(DeviceInput.BMODE_1)) << 0) |
+                        (int(self.getState(DeviceInput.BMODE_2)) << 1) |
+                        (int(self.getState(DeviceInput.TRIGGER_LEFT)) << 2) |
+                        (int(self.getState(DeviceInput.TRIGGER_RIGHT)) << 3)
+                        )
+    
+    def fromBytes(self, byte):
+        if len(byte) != self.size:
+            return
+
+        if byte[0:2] != b'\xaa\x55':
+            return
+
+        ints = list(to_ints_iterate(byte))[1:]
+        
+        self.states[DeviceInput.STICK_X]          = translate_1000_to_int16(ints[0])
+        self.states[DeviceInput.STICK_Y]          = translate_1000_to_int16(ints[1])
+        self.states[DeviceInput.ORIENT_FRONTBACK] = translate_1000_to_int16(ints[2])
+        self.states[DeviceInput.ORIENT_LEFTRIGHT] = translate_1000_to_int16(ints[3])
+        self.states[DeviceInput.ORIENT_TOPBOTTOM] = translate_1000_to_int16(ints[4])
+        self.states[DeviceInput.THROTTLE]         = translate_1000_to_int16(ints[5])
+        self.states[DeviceInput.BMODE_1]          = (ints[6] & 0x1) != 0
+        self.states[DeviceInput.BMODE_2]          = (ints[6] & 0x2) != 0
+        self.states[DeviceInput.TRIGGER_LEFT]     = (ints[6] & 0x4) != 0
+        self.states[DeviceInput.TRIGGER_RIGHT]    = (ints[6] & 0x8) != 0
+
+
 class MicroPlayer:
     def __init__(self, from_uart, device_serial_port, ksp_serial_port, baud=115200):
         self.from_uart = from_uart
         self.simpit = KerbalSimpit(port=ksp_serial_port)
 
-        self.states = {
-            name: 0 for name in DeviceInput.__dict__ if not name.startswith("__")
-        }
+        self.state = DeviceMessage()
 
         if self.from_uart:
             trying = True
@@ -435,80 +486,29 @@ class MicroPlayer:
                 except Exception as e:
                     print("ERROR: " + str(e))
                     trying = input("Try again? (Y/N) ").lower() == 'y'
-
         else:
             # BLE
             self.conn = serial.Serial(port="/dev/rfcomm0")
 
     def get_data(self):
-        data = b"0;0;(0, 0, 0);\r\n"
-
         if self.from_uart:
-            # data = "(0,0);0;1;0;1;(16, -48, -1008);\r\n"
-            data = self.conn.readline()
+            data = self.conn.read(self.state.size)
         else:
             # From BLE
-            data = data
+            data = b''
 
         #print(data)
 
-        # Split inputs
-        try:
-            XY, BTN_A, BTN_B, EBTN_A, EBTN_B, accel, _ = data.split(b';')
-        except Exception as e:
-            print("ERROR: '{0}':".format(str(data)) + str(e))
-        else:
-            move_x, move_y = list(map(translate_1000_to_int16, map(int, XY[1:-1].split(b','))))
-            accel_x, accel_y, accel_z = list(map(translate_1000_to_int16, map(int, accel[1:-1].split(b','))))
-
-            self.states[DeviceInput.STICK_X]          = move_x
-            self.states[DeviceInput.STICK_Y]          = move_y
-            self.states[DeviceInput.BTN_A]            = EBTN_A == b'1'
-            self.states[DeviceInput.BTN_B]            = EBTN_B == b'1'
-            self.states[DeviceInput.TRIGGER_LEFT]     = BTN_A == b'1'
-            self.states[DeviceInput.TRIGGER_RIGHT]    = BTN_B == b'1'
-            self.states[DeviceInput.ORIENT_FRONTBACK] = accel_y
-            self.states[DeviceInput.ORIENT_LEFTRIGHT] = accel_x
-            self.states[DeviceInput.ORIENT_TOPBOTTOM] = accel_z
+        self.state.fromBytes(data)
+        # print(self.state.states)
 
     def start(self):
-        # print("Waiting for input, press both triggers and move controller...")
-        # min_, max_ = self.states.copy(), self.states.copy()
-        #
-        # while True:
-        #     self.get_data()
-        #
-        #     min_[DeviceInput.STICK_X] = min(min_[DeviceInput.STICK_X], self.states[DeviceInput.STICK_X])
-        #     min_[DeviceInput.STICK_Y] = min(min_[DeviceInput.STICK_Y], self.states[DeviceInput.STICK_Y])
-        #
-        #     max_[DeviceInput.STICK_X] = max(max_[DeviceInput.STICK_X], self.states[DeviceInput.STICK_X])
-        #     max_[DeviceInput.STICK_Y] = max(max_[DeviceInput.STICK_Y], self.states[DeviceInput.STICK_Y])
-        #
-        #     min_[DeviceInput.ORIENT_FRONTBACK] = min(min_[DeviceInput.ORIENT_FRONTBACK], self.states[DeviceInput.ORIENT_FRONTBACK])
-        #     min_[DeviceInput.ORIENT_LEFTRIGHT] = min(min_[DeviceInput.ORIENT_LEFTRIGHT], self.states[DeviceInput.ORIENT_LEFTRIGHT])
-        #     min_[DeviceInput.ORIENT_TOPBOTTOM] = min(min_[DeviceInput.ORIENT_TOPBOTTOM], self.states[DeviceInput.ORIENT_TOPBOTTOM])
-        #
-        #     max_[DeviceInput.ORIENT_FRONTBACK] = max(max_[DeviceInput.ORIENT_FRONTBACK], self.states[DeviceInput.ORIENT_FRONTBACK])
-        #     max_[DeviceInput.ORIENT_LEFTRIGHT] = max(max_[DeviceInput.ORIENT_LEFTRIGHT], self.states[DeviceInput.ORIENT_LEFTRIGHT])
-        #     max_[DeviceInput.ORIENT_TOPBOTTOM] = max(max_[DeviceInput.ORIENT_TOPBOTTOM], self.states[DeviceInput.ORIENT_TOPBOTTOM])
-        #
-        #     if self.states[DeviceInput.TRIGGER_LEFT] and self.states[DeviceInput.TRIGGER_RIGHT]:
-        #         print("Calibrate ok...")
-        #         print("Stick: ({0:d},{1:d})         -> ({0:d},{1:d}),\n"
-        #               "Accel: ({2:d}, {3:d}, {4:d}) -> ({2:d}, {3:d}, {4:d})" \
-        #               .format(min_[DeviceInput.STICK_X], min_[DeviceInput.STICK_Y],
-        #                       max_[DeviceInput.STICK_X], max_[DeviceInput.STICK_Y],
-        #                       min_[DeviceInput.ORIENT_FRONTBACK], min_[DeviceInput.ORIENT_LEFTRIGHT], min_[DeviceInput.ORIENT_TOPBOTTOM],
-        #                       max_[DeviceInput.ORIENT_FRONTBACK], max_[DeviceInput.ORIENT_LEFTRIGHT], max_[DeviceInput.ORIENT_TOPBOTTOM]
-        #                       ))
-        #         break
-
         # Wait for both buttons
         print("Waiting for input, put KSP in foreground and press both triggers...")
         while True:
             self.get_data()
 
-            if self.states[DeviceInput.TRIGGER_LEFT] and self.states[DeviceInput.TRIGGER_RIGHT]:
+            if self.state.getState(DeviceInput.TRIGGER_LEFT) and self.state.getState(DeviceInput.TRIGGER_RIGHT):
                 print("Waiting for sync...", end="")
                 while not self.simpit.init():
                     pass
@@ -521,10 +521,10 @@ class MicroPlayer:
 
             # KSP
             msg = RotationMessage()
-            msg.setPitch(self.states[DeviceInput.ORIENT_FRONTBACK])
-            msg.setRoll(self.states[DeviceInput.ORIENT_LEFTRIGHT])
-            msg.setYaw(-10000 if self.states[DeviceInput.TRIGGER_LEFT] else \
-                        10000 if self.states[DeviceInput.TRIGGER_RIGHT] else 0)
+            msg.setPitch(self.state.getState(DeviceInput.ORIENT_FRONTBACK))
+            msg.setRoll(self.state.getState(DeviceInput.ORIENT_LEFTRIGHT))
+            msg.setYaw(-10000 if self.state.getState(DeviceInput.TRIGGER_LEFT) else \
+                        10000 if self.state.getState(DeviceInput.TRIGGER_RIGHT) else 0)
 
             self.simpit.send(InboundPackets.ROTATION_MESSAGE,
                              msg.bytes())
@@ -533,5 +533,5 @@ class MicroPlayer:
 
 
 if __name__ == '__main__':
-    g = MicroPlayer(from_uart=True, device_serial_port="COM3", ksp_serial_port="COM4")
+    g = MicroPlayer(from_uart=True, device_serial_port="COM7", ksp_serial_port="COM8")
     g.start()
