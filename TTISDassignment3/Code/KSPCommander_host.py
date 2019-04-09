@@ -48,16 +48,21 @@ def make_interpolater(left_min, left_max, right_min, right_max):
     return interp_fn
 
 
-def make_int16_interpolater(left_min, left_max, right_min, right_max):
-    interp_fn = make_interpolater(-1000, 1000, *limits(ct.c_int16))
+def make_int16_interpolater(left_min, left_max, right_min, right_max, offset=0):
+    interp_fn = make_interpolater(left_min, left_max, right_min, right_max)
 
     def int_interp_fn(value):
-        return int(interp_fn(value))
+        return int(interp_fn(value + offset))
 
     return int_interp_fn
 
 
-translate_1000_to_int16 = make_int16_interpolater(-1000, 1000, *limits(ct.c_int16))
+translate_1000s_to_int16 = make_int16_interpolater(-1000, 1000, *limits(ct.c_int16))
+translate_1000u_to_int16 = make_int16_interpolater(0, 1000, *limits(ct.c_int16))
+translate_1000u_to_uint16 = make_int16_interpolater(0, 1000, 0, limits(ct.c_int16)[1])
+
+translate_stick_X = make_int16_interpolater(315, 931, *limits(ct.c_int16), offset=87)
+translate_stick_Y = make_int16_interpolater(206, 670, *limits(ct.c_int16), offset=40)
 
 
 ###############################################################################
@@ -406,8 +411,8 @@ class DeviceInput:
     STICK_X = "STICK_X"
     STICK_Y = "STICK_Y"
 
-    BMODE_1 = "BMODE_1"
-    BMODE_2 = "BMODE_2"
+    BMODE_1 = "BMODE_1"     # STICK
+    BMODE_2 = "BMODE_2"     # MOTION
     
     THROTTLE = "THROTTLE"
     
@@ -420,12 +425,14 @@ class DeviceInput:
 
 
 class DeviceMessage:
+    HDR = b'\xaa\x55'
+
     def __init__(self):
         self.states = {
             name: 0 for name in DeviceInput.__dict__ if not name.startswith("__")
         }
     
-        self.size = len(self.bytes()) + 2
+        self.size = len(self.bytes())
         
     def setState(self, name, value):
         self.states[name] = value
@@ -434,7 +441,7 @@ class DeviceMessage:
         return self.states[name]
     
     def bytes(self):
-        return b'\xaa\x55' \
+        return DeviceMessage.HDR \
              + to_bytes(self.getState(DeviceInput.STICK_X), 
                         self.getState(DeviceInput.STICK_Y),
                         self.getState(DeviceInput.ORIENT_FRONTBACK),
@@ -452,21 +459,45 @@ class DeviceMessage:
         if len(byte) != self.size:
             return
 
-        if byte[0:2] != b'\xaa\x55':
+        if byte[0:2] != DeviceMessage.HDR:
             return
 
         ints = list(to_ints_iterate(byte))[1:]
         
-        self.states[DeviceInput.STICK_X]          = translate_1000_to_int16(ints[0])
-        self.states[DeviceInput.STICK_Y]          = translate_1000_to_int16(ints[1])
-        self.states[DeviceInput.ORIENT_FRONTBACK] = translate_1000_to_int16(ints[2])
-        self.states[DeviceInput.ORIENT_LEFTRIGHT] = translate_1000_to_int16(ints[3])
-        self.states[DeviceInput.ORIENT_TOPBOTTOM] = translate_1000_to_int16(ints[4])
-        self.states[DeviceInput.THROTTLE]         = translate_1000_to_int16(ints[5])
+        self.states[DeviceInput.STICK_X]          = translate_1000u_to_int16(ints[0])
+        self.states[DeviceInput.STICK_Y]          = translate_1000u_to_int16(ints[1])
+        self.states[DeviceInput.ORIENT_FRONTBACK] = translate_1000s_to_int16(ints[2])
+        self.states[DeviceInput.ORIENT_LEFTRIGHT] = translate_1000s_to_int16(ints[3])
+        self.states[DeviceInput.ORIENT_TOPBOTTOM] = translate_1000s_to_int16(ints[4])
+        self.states[DeviceInput.THROTTLE]         = translate_1000u_to_uint16(ints[5])
         self.states[DeviceInput.BMODE_1]          = (ints[6] & 0x1) != 0
         self.states[DeviceInput.BMODE_2]          = (ints[6] & 0x2) != 0
         self.states[DeviceInput.TRIGGER_LEFT]     = (ints[6] & 0x4) != 0
         self.states[DeviceInput.TRIGGER_RIGHT]    = (ints[6] & 0x8) != 0
+
+    def fromString(self, string):
+        if not string.endswith(b"\r\n"):
+            return
+
+        ints = list(map(int, string[:-2].split(b';')))
+
+        if len(ints) != 10:
+            return
+
+        self.states[DeviceInput.STICK_X] = translate_stick_X(ints[0])
+        self.states[DeviceInput.STICK_Y] = translate_stick_Y(ints[1])
+        self.states[DeviceInput.ORIENT_FRONTBACK] = translate_1000s_to_int16(ints[2])
+        self.states[DeviceInput.ORIENT_LEFTRIGHT] = translate_1000s_to_int16(ints[3])
+        self.states[DeviceInput.ORIENT_TOPBOTTOM] = translate_1000s_to_int16(ints[4])
+        self.states[DeviceInput.THROTTLE] = translate_1000u_to_uint16(ints[5])
+        self.states[DeviceInput.BMODE_1] = ints[6] != 0
+        self.states[DeviceInput.BMODE_2] = ints[7] != 0
+        self.states[DeviceInput.TRIGGER_LEFT] = ints[8] != 0
+        self.states[DeviceInput.TRIGGER_RIGHT] = ints[9] != 0
+
+        # print(";".join("{0:d}".format(x) for x in self.states.values()))
+
+        self.states[DeviceInput.THROTTLE] = 0 if self.states[DeviceInput.THROTTLE] < 100 else self.states[DeviceInput.THROTTLE]
 
 
 class MicroPlayer:
@@ -492,14 +523,24 @@ class MicroPlayer:
 
     def get_data(self):
         if self.from_uart:
-            data = self.conn.read(self.state.size)
+            # If bytes:
+            # data = b''
+            #
+            # while data != DeviceMessage.HDR:
+            #     data = self.conn.read(2)
+            #
+            # data += self.conn.read(self.state.size - 2)
+
+            # If string:
+            data = self.conn.readline()
         else:
             # From BLE
             data = b''
 
         #print(data)
 
-        self.state.fromBytes(data)
+        # self.state.fromBytes(data)
+        self.state.fromString(data)
         # print(self.state.states)
 
     def start(self):
@@ -515,19 +556,30 @@ class MicroPlayer:
                 break
 
         # Main loop
+        rotmsg = RotationMessage()
+
         print("Start!")
         while True:
             self.get_data()
 
             # KSP
-            msg = RotationMessage()
-            msg.setPitch(self.state.getState(DeviceInput.ORIENT_FRONTBACK))
-            msg.setRoll(self.state.getState(DeviceInput.ORIENT_LEFTRIGHT))
-            msg.setYaw(-10000 if self.state.getState(DeviceInput.TRIGGER_LEFT) else \
-                        10000 if self.state.getState(DeviceInput.TRIGGER_RIGHT) else 0)
+            if self.state.getState(DeviceInput.BMODE_2):
+                # MOTION INPUT
+                rotmsg.setPitch(self.state.getState(DeviceInput.ORIENT_FRONTBACK))
+                rotmsg.setRoll(self.state.getState(DeviceInput.ORIENT_LEFTRIGHT))
+            else:
+                # STICK INPUT
+                rotmsg.setPitch(self.state.getState(DeviceInput.STICK_Y))
+                rotmsg.setRoll(-self.state.getState(DeviceInput.STICK_X))
+
+            rotmsg.setYaw(-20000 if self.state.getState(DeviceInput.TRIGGER_LEFT) else \
+                           20000 if self.state.getState(DeviceInput.TRIGGER_RIGHT) else 0)
 
             self.simpit.send(InboundPackets.ROTATION_MESSAGE,
-                             msg.bytes())
+                             rotmsg.bytes())
+
+            self.simpit.send(InboundPackets.THROTTLE_MESSAGE,
+                             to_bytes(self.state.getState(DeviceInput.THROTTLE), type=ct.c_int16))
 
             # self.simpit.update()
 

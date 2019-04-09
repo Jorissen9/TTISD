@@ -38,6 +38,8 @@ class DeviceInput:
 
 
 class DeviceMessage:
+    HDR = b'\xaa\x55'
+
     def __init__(self):
         self.states = {
             # Gives error in micropython...
@@ -58,7 +60,7 @@ class DeviceMessage:
             DeviceInput.ORIENT_TOPBOTTOM: 0,
         }
 
-        self.size = len(self.bytes()) + 2
+        self.size = len(self.bytes())
 
     def setState(self, name, value):
         self.states[name] = value
@@ -67,7 +69,7 @@ class DeviceMessage:
         return self.states[name]
 
     def bytes(self):
-        return b'\xaa\x55' \
+        return DeviceMessage.HDR \
              + to_bytes(self.getState(DeviceInput.STICK_X),
                         self.getState(DeviceInput.STICK_Y),
                         self.getState(DeviceInput.ORIENT_FRONTBACK),
@@ -80,6 +82,18 @@ class DeviceMessage:
                         (int(self.getState(DeviceInput.TRIGGER_LEFT)) << 2) |
                         (int(self.getState(DeviceInput.TRIGGER_RIGHT)) << 3)
                         )
+
+    def string(self):
+        return str(self.getState(DeviceInput.STICK_X)           ) + ";" + \
+               str(self.getState(DeviceInput.STICK_Y)           ) + ";" + \
+               str(self.getState(DeviceInput.ORIENT_FRONTBACK)  ) + ";" + \
+               str(self.getState(DeviceInput.ORIENT_LEFTRIGHT)  ) + ";" + \
+               str(self.getState(DeviceInput.ORIENT_TOPBOTTOM)  ) + ";" + \
+               str(self.getState(DeviceInput.THROTTLE)          ) + ";" + \
+               str(int(self.getState(DeviceInput.BMODE_1))      ) + ";" + \
+               str(int(self.getState(DeviceInput.BMODE_2))      ) + ";" + \
+               str(int(self.getState(DeviceInput.TRIGGER_LEFT)) ) + ";" + \
+               str(int(self.getState(DeviceInput.TRIGGER_RIGHT)))
 
     def __str__(self):
         return ", ".join("{0:s}: {1:d}".format(k, v) for k, v in self.states.items())
@@ -141,8 +155,6 @@ if __name__ == '__main__':
     msg = DeviceMessage()
 
     while True:
-        comm.resetb()
-
         # Send stick (X,Y)
         msg.setState(DeviceInput.STICK_X, pin0.read_analog())
         msg.setState(DeviceInput.STICK_Y, pin1.read_analog())
@@ -167,10 +179,12 @@ if __name__ == '__main__':
         msg.setState(DeviceInput.ORIENT_LEFTRIGHT, ac_x)
         msg.setState(DeviceInput.ORIENT_TOPBOTTOM, ac_z)
 
+        #comm.resetb()
         #comm.appendb(msg.bytes())
         #comm.sendb()
+
         comm.reset()
-        comm.send_str = msg.__str__()
+        comm.send_str = msg.string()
         comm.send()
 
         sleep(50)
