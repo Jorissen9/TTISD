@@ -1,5 +1,5 @@
 from microbit import *
-#import radio  # Not enough memory to use with micropython...
+#import radio  # Not enough memory to use with MicroPython...
 
 class Type:
     def __init__(self, m, b, s):
@@ -7,6 +7,7 @@ class Type:
         self.b = b
         self.s = s
 
+# Custom emulation of ctypes module, wich is not available in MicroPython...
 class ct:
     c_uint8 = Type(  0xFF, 1, False)
     c_int16 = Type(0xFFFF, 2, True )
@@ -42,7 +43,7 @@ class DeviceMessage:
 
     def __init__(self):
         self.states = {
-            # Gives error in micropython...
+            # Gives error in MicroPython...
             # name: 0 for name in DeviceInput.__dict__ if not name.startswith("__")
 
             DeviceInput.STICK_X: 0,
@@ -84,6 +85,7 @@ class DeviceMessage:
                         )
 
     def string(self):
+        # Or with .format()
         return str(self.getState(DeviceInput.STICK_X)           ) + ";" + \
                str(self.getState(DeviceInput.STICK_Y)           ) + ";" + \
                str(self.getState(DeviceInput.ORIENT_FRONTBACK)  ) + ";" + \
@@ -179,16 +181,20 @@ if __name__ == '__main__':
         msg.setState(DeviceInput.ORIENT_LEFTRIGHT, ac_x)
         msg.setState(DeviceInput.ORIENT_TOPBOTTOM, ac_z)
 
+        # Send as bytes
         #comm.resetb()
         #comm.appendb(msg.bytes())
         #comm.sendb()
 
+        # Send as string
         comm.reset()
         comm.send_str = msg.string()
         comm.send()
 
+        # 50 ms delay
         sleep(50)
 
+    # Should be unreachable
     comm.send("Quit...")
     display.show(Image.SAD)
     sleep(2000)

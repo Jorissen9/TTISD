@@ -1,6 +1,7 @@
 import ctypes as ct
 import serial
 
+
 def to_bytes(*args, type=ct.c_uint8):
     b = b''
 
@@ -57,10 +58,11 @@ def make_int16_interpolater(left_min, left_max, right_min, right_max, offset=0):
     return int_interp_fn
 
 
-translate_1000s_to_int16 = make_int16_interpolater(-1000, 1000, *limits(ct.c_int16))
-translate_1000u_to_int16 = make_int16_interpolater(0, 1000, *limits(ct.c_int16))
-translate_1000u_to_uint16 = make_int16_interpolater(0, 1000, 0, limits(ct.c_int16)[1])
+translate_1000s_to_int16 = make_int16_interpolater(-1000, 1000, *limits(ct.c_int16))   # (-1000, 1000) -> (-32768, 32767)
+translate_1000u_to_int16 = make_int16_interpolater(0, 1000, 0, limits(ct.c_int16)[1])  # (    0, 1000) -> (     0, 32767)
 
+# Normally input would be between 0 and 1000, but full range is limited by enclosure.
+# The values below were determined manually.
 translate_stick_X = make_int16_interpolater(315, 931, *limits(ct.c_int16), offset=87)
 translate_stick_Y = make_int16_interpolater(206, 670, *limits(ct.c_int16), offset=40)
 
@@ -68,7 +70,6 @@ translate_stick_Y = make_int16_interpolater(206, 670, *limits(ct.c_int16), offse
 ###############################################################################
 # Payload messages
 ###############################################################################
-
 
 class RotationMessage:
     MASK_PITCH = 1
@@ -88,6 +89,9 @@ class RotationMessage:
         #       - 4: yaw
         self.mask = mask
 
+    def reset(self):
+        self.mask = 0
+
     def setPitch(self, pitch):
         self.pitch = pitch
         self.mask |= RotationMessage.MASK_PITCH
@@ -105,81 +109,6 @@ class RotationMessage:
              + to_bytes(self.mask)
 
 
-class TranslationMessage:
-    MASK_X = 1
-    MASK_Y = 2
-    MASK_Z = 4
-
-    def __init__(self, X=0, Y=0, Z=0, mask=0):
-        self.X = X  # Vessel X
-        self.Y = Y  # Vessel Y
-        self.Z = Z  # Vessel Z
-
-        # The mask indicates which elements are intentionally set.
-        #   Unset elements should be ignored. It should be one or more of:
-        #
-        #       - 1: X
-        #       - 2: Y
-        #       - 4: Z
-        self.mask = mask
-
-    def setX(self, X):
-        self.X = X
-        self.mask |= TranslationMessage.MASK_X
-
-    def setY(self, Y):
-        self.Y = Y
-        self.mask |= TranslationMessage.MASK_Y
-
-    def setZ(self, Z):
-        self.Z = Z
-        self.mask |= TranslationMessage.MASK_Z
-
-    def bytes(self):
-        return to_bytes(self.X, self.Y, self.Z, type=ct.c_int16) \
-             + to_bytes(self.mask)
-
-
-class WheelMessage:
-    MASK_STEER    = 1
-    MASK_THROTTLE = 2
-
-    def __init__(self, steer=0, throttle=0, mask=0):
-        self.steer    = steer       # Wheel steer
-        self.throttle = throttle    # Wheel throttle
-
-        # The mask indicates which elements are intentionally set.
-        #   Unset elements should be ignored. It should be one or more of:
-        #
-        #       - 1: steer
-        #       - 2: throttle
-        self.mask = mask
-
-    def setSteer(self, steer):
-        self.steer = steer
-        self.mask |= WheelMessage.MASK_STEER
-
-    def setThrottle(self, throttle):
-        self.throttle = throttle
-        self.mask |= WheelMessage.MASK_THROTTLE
-
-    def bytes(self):
-        return to_bytes(self.steer, self.throttle, type=ct.c_int16) \
-             + to_bytes(self.mask)
-
-    @classmethod
-    def fromBytes(cls, bytearr):
-        msg = cls()
-
-        if len(bytearr) == 5:
-            # vars = [x for x in to_ints_iterate(bytearr, size=2)]
-            msg.setSteer(to_int(bytearr[0:2]))
-            msg.setThrottle(to_int(bytearr[2:4]))
-            msg.mask = to_int(bytearr[4])
-
-        return msg
-
-
 ###############################################################################
 # Kerbal Simpit Message Types
 ###############################################################################
@@ -191,10 +120,6 @@ class CommonPackets:
     ECHO_REQ_MESSAGE  = 1  # Echo request. Either end can send this,
                            # and an echo response is expected.
     ECHO_RESP_MESSAGE = 2  # Echo response. Sent in reply to an echo request.
-
-
-class OutboundPackets:
-    DROP_ALL = 0
 
 
 # Inbound packets.
@@ -247,16 +172,6 @@ class InboundPackets:
     #    The payload should be a single byte, possible SAS modes are listed
     #    in the AutopilotMode enum. */
     SAS_MODE_MESSAGE = 20
-
-
-class ActionGroupIndexes:
-    DROP_ALL = 0
-
-# RotationAxes and TranslationAxes
-#       => use RotationMessage/TranslationMessage.MASK_*
-
-class AutopilotMode:
-    DROP_ALL = 0
 
 
 ###############################################################################
@@ -407,6 +322,10 @@ class KerbalSimpit:
         self.send(InboundPackets.SAS_MODE_MESSAGE, mode)
 
 
+###############################################################################
+# Microbit communication
+###############################################################################
+
 class DeviceInput:
     STICK_X = "STICK_X"
     STICK_Y = "STICK_Y"
@@ -464,12 +383,12 @@ class DeviceMessage:
 
         ints = list(to_ints_iterate(byte))[1:]
         
-        self.states[DeviceInput.STICK_X]          = translate_1000u_to_int16(ints[0])
-        self.states[DeviceInput.STICK_Y]          = translate_1000u_to_int16(ints[1])
+        self.states[DeviceInput.STICK_X]          = translate_stick_X(ints[0])
+        self.states[DeviceInput.STICK_Y]          = translate_stick_Y(ints[1])
         self.states[DeviceInput.ORIENT_FRONTBACK] = translate_1000s_to_int16(ints[2])
         self.states[DeviceInput.ORIENT_LEFTRIGHT] = translate_1000s_to_int16(ints[3])
         self.states[DeviceInput.ORIENT_TOPBOTTOM] = translate_1000s_to_int16(ints[4])
-        self.states[DeviceInput.THROTTLE]         = translate_1000u_to_uint16(ints[5])
+        self.states[DeviceInput.THROTTLE]         = translate_1000u_to_int16(ints[5])
         self.states[DeviceInput.BMODE_1]          = (ints[6] & 0x1) != 0
         self.states[DeviceInput.BMODE_2]          = (ints[6] & 0x2) != 0
         self.states[DeviceInput.TRIGGER_LEFT]     = (ints[6] & 0x4) != 0
@@ -489,7 +408,7 @@ class DeviceMessage:
         self.states[DeviceInput.ORIENT_FRONTBACK] = translate_1000s_to_int16(ints[2])
         self.states[DeviceInput.ORIENT_LEFTRIGHT] = translate_1000s_to_int16(ints[3])
         self.states[DeviceInput.ORIENT_TOPBOTTOM] = translate_1000s_to_int16(ints[4])
-        self.states[DeviceInput.THROTTLE] = translate_1000u_to_uint16(ints[5])
+        self.states[DeviceInput.THROTTLE] = translate_1000u_to_int16(ints[5])
         self.states[DeviceInput.BMODE_1] = ints[6] != 0
         self.states[DeviceInput.BMODE_2] = ints[7] != 0
         self.states[DeviceInput.TRIGGER_LEFT] = ints[8] != 0
@@ -501,10 +420,11 @@ class DeviceMessage:
 
 
 class MicroPlayer:
-    def __init__(self, from_uart, device_serial_port, ksp_serial_port, baud=115200):
+    def __init__(self, from_uart, device_serial_port, ksp_serial_port, baud=115200, recv_as_byte=False):
         self.from_uart = from_uart
-        self.simpit = KerbalSimpit(port=ksp_serial_port)
+        self.as_bytes  = recv_as_byte
 
+        self.simpit = KerbalSimpit(port=ksp_serial_port)
         self.state = DeviceMessage()
 
         if self.from_uart:
@@ -523,24 +443,26 @@ class MicroPlayer:
 
     def get_data(self):
         if self.from_uart:
-            # If bytes:
-            # data = b''
-            #
-            # while data != DeviceMessage.HDR:
-            #     data = self.conn.read(2)
-            #
-            # data += self.conn.read(self.state.size - 2)
+            if self.as_bytes:
+                data = b''
 
-            # If string:
-            data = self.conn.readline()
+                while data != DeviceMessage.HDR:
+                    data = self.conn.read(2)
+
+                data += self.conn.read(self.state.size - 2)
+            else:
+                data = self.conn.readline()
         else:
             # From BLE
             data = b''
 
-        #print(data)
+        # print(data)
 
-        # self.state.fromBytes(data)
-        self.state.fromString(data)
+        if self.as_bytes:
+            self.state.fromBytes(data)
+        else:
+            self.state.fromString(data)
+
         # print(self.state.states)
 
     def start(self):
@@ -560,9 +482,12 @@ class MicroPlayer:
 
         print("Start!")
         while True:
+            # Get data from Microbit
             self.get_data()
 
-            # KSP
+            # Send data to KSP
+            rotmsg.reset()
+
             if self.state.getState(DeviceInput.BMODE_2):
                 # MOTION INPUT
                 rotmsg.setPitch(self.state.getState(DeviceInput.ORIENT_FRONTBACK))
@@ -581,6 +506,7 @@ class MicroPlayer:
             self.simpit.send(InboundPackets.THROTTLE_MESSAGE,
                              to_bytes(self.state.getState(DeviceInput.THROTTLE), type=ct.c_int16))
 
+            # Get data from KSP to display (not used)
             # self.simpit.update()
 
 

@@ -49,6 +49,8 @@ We made a game controller for [Kerbal Space Program](https://www.kerbalspaceprog
 - Adjust the thrust output (throttle);
 - Switch between motion or joystick control mode.
 
+![Enclosure outside](TTISDassignment3/Enclosure/Outside.jpg)
+
 ### Code
 
 The [Microbit](https://microbit.org/) runs a simple main loop that collects data from each of the following inputs:
@@ -77,6 +79,8 @@ The enclosure was cut from a 2 mm MDF sheet. Both sides are living joints to pro
 
 The wiring is directly soldered to the extension board, covered with heat shrinks where applicable.
 
+![Enclosure insides](TTISDassignment3/Enclosure/Inside.jpg)
+
 ### Gameplay
 
 Before starting, check on which port the Microbit is connected and make sure to install com0com (the default COM to COM link is fine).
@@ -89,3 +93,5 @@ Before starting, check on which port the Microbit is connected and make sure to 
 4. Start KSP, plug the Microbit in the computer and start the host script;
 5. When ready, press both triggers on the controller at the same time, the host script will try to handshake with the mod. When this succeeds a message will be displayed in the console;
 6. Choose or build a vessel to fly and mod will use the data from the controller to override the keyboard controls. You can now control your flight with the controller!
+
+A video showing the handshake setup and some gameplay can be found in `Doc`.

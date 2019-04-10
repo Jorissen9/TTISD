@@ -12,6 +12,12 @@ We made a game controller for [Kerbal Space Program](https://www.kerbalspaceprog
 - Adjust the thrust output (throttle);
 - Switch between motion or joystick control mode.
 
+![Enclosure outside](Enclosure/Outside.jpg)
+
+
+
+
+
 ### Code
 
 The [Microbit](https://microbit.org/) runs a simple main loop that collects data from each of the following inputs:
@@ -28,6 +34,40 @@ By using MicroPython on the Microbit, there is not enough memory left to use the
 
 We used the [KerbalSimpit](https://bitbucket.org/pjhardy/kerbalsimpit) mod (open source) and adapted its [companion Arduino library](https://bitbucket.org/pjhardy/kerbalsimpit-arduino) for the Microbit. After handshaking, the mod handles packets sent from a serial port to adjust data in the game. Since the code could not be contained on just the Microbit, the additional host script requires an emulated COM port to communicate with KerbalSimpit. This is achieved with the external program [com0com](http://com0com.sourceforge.net/) (install can be found in `Code/deps`).
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### Enclosure
 
 Refer to the circuit diagram and the SVG drawing in the `Enclosure` folder.
@@ -39,6 +79,8 @@ The triggers are connected to the same pins as the on-circuit buttons A and B, a
 The enclosure was cut from a 2 mm MDF sheet. Both sides are living joints to provide a better grip when holding the controller.
 
 The wiring is directly soldered to the extension board, covered with heat shrinks where applicable.
+
+![Enclosure insides](Enclosure/Inside.jpg)
 
 ### Gameplay
 
@@ -52,3 +94,5 @@ Before starting, check on which port the Microbit is connected and make sure to 
 4. Start KSP, plug the Microbit in the computer and start the host script;
 5. When ready, press both triggers on the controller at the same time, the host script will try to handshake with the mod. When this succeeds a message will be displayed in the console;
 6. Choose or build a vessel to fly and mod will use the data from the controller to override the keyboard controls. You can now control your flight with the controller!
+
+A video showing the handshake setup and some gameplay can be found in `Doc`.
