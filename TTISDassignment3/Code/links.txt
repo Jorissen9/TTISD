@@ -1,7 +1,0 @@
-https://github.com/musabkilic/MicroBike/
-
-To adapt for KSP plugin:
-https://kerbalsimpit-arduino.readthedocs.io/en/stable/quickstart.html
-https://bitbucket.org/pjhardy/kerbalsimpit-arduino/src/28708ae29b57?at=master
-
-From: https://forum.kerbalspaceprogram.com/index.php?/topic/155796-ksp-151-kerbal-simpit-a-new-ksp-serial-mod-for-hardware-controllers-130/
