@@ -15,6 +15,7 @@ gen/
 out/
 .vs/
 obj/
+Debug/
 *.csproj.user
 
 # Gradle files
