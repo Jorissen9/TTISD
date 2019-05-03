@@ -16,6 +16,8 @@ out/
 .vs/
 obj/
 Debug/
+TTISD-Project/Research/LIDAR/RPLIDAR/rplidar_sdk_v1.10.0/sdk/output/win32/Debug/
+
 *.csproj.user
 
 # Gradle files
