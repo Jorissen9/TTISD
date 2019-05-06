@@ -32,18 +32,18 @@
 #include <math.h>
 #include "scanView.h"
 
-const int DEF_MARGIN = 20;
-const int DISP_RING_ABS_DIST  = 100;
-const float DISP_FULL_DIST    = 28000;
-const float DISP_DEFAULT_DIST = 1000;
-const float DISP_MIN_DIST     = 500;
-const float PI   = (float)3.14159265;
+constexpr int   DEF_MARGIN         = 20;
+constexpr int   DISP_RING_ABS_DIST = 100;
+constexpr float DISP_FULL_DIST     = 28000;
+constexpr float DISP_DEFAULT_DIST  = 1000;
+constexpr float DISP_MIN_DIST      = 300;
+constexpr float PI                 = 3.14159265f;
 
-constexpr size_t SEGMENT_AMOUNT      = 48;
+constexpr size_t SEGMENT_AMOUNT      = 36;
 constexpr float  SEGMENT_ANGLE_SWEEP = 360.f / float(SEGMENT_AMOUNT);
-constexpr size_t SEGMENT_DIST_START  = 400;
-constexpr size_t SEGMENT_DIST_END    = 500;
-constexpr size_t SEGMENT_POINTS_MATCH_THRESHOLD = 4;
+constexpr size_t SEGMENT_DIST_START  = 250;
+constexpr size_t SEGMENT_DIST_END    = 300;
+constexpr size_t SEGMENT_POINTS_MATCH_THRESHOLD = 8;
 
 const COLORREF dot_full_brightness = RGB(44,233,22);
 
@@ -174,14 +174,14 @@ void CScanView::onDrawSelf(CDCHandle dc)
 
 	memDC.SelectStockPen(DC_PEN);
 
-	for (scanObject &o : _scan_objects) {
-	//for (size_t pos = 0; pos < 1; pos++) {
-	//	scanObject o = _scan_objects[pos];
+	//for (scanObject &o : _scan_objects) {
+	for (size_t pos = 0; pos < SEGMENT_AMOUNT; pos++) {
+		scanObject& o = _scan_objects[pos];
 
 		const float distPixelMin = o.distMin*distScale;
 		const float distPixelMax = o.distMax*distScale;
-		const float radStart     = (float)(o.angleStart*PI / 180.0);
-		const float radEnd       = (float)(o.angleEnd*PI / 180.0);
+		const float radStart = (float)(o.angleStart*PI / 180.0);
+		const float radEnd = (float)(o.angleEnd*PI / 180.0);
 
 		/*
 			C ._________. D
@@ -191,13 +191,13 @@ void CScanView::onDrawSelf(CDCHandle dc)
 
 		const float ptAX = sin(radStart)*(distPixelMin)+centerPt.x;
 		const float ptAY = centerPt.y - cos(radStart)*(distPixelMin);
-		
+
 		const float ptBX = sin(radEnd)*(distPixelMin)+centerPt.x;
 		const float ptBY = centerPt.y - cos(radEnd)*(distPixelMin);
-				
+
 		const float ptCX = sin(radStart)*(distPixelMax)+centerPt.x;
 		const float ptCY = centerPt.y - cos(radStart)*(distPixelMax);
-						
+
 		const float ptDX = sin(radEnd)*(distPixelMax)+centerPt.x;
 		const float ptDY = centerPt.y - cos(radEnd)*(distPixelMax);
 
@@ -210,36 +210,48 @@ void CScanView::onDrawSelf(CDCHandle dc)
 		//memDC.TextOutA(ptCX, ptCY - 2, "C");
 		//memDC.TextOutA(ptDX, ptDY - 2, "D");
 
+		// Draw segment lines
 		if (o.detected) {
 			memDC.SetDCPenColor(colourGREEN);
-		} else {
+
+			memDC.MoveTo(int(ptBX), int(ptBY));
+			memDC.LineTo(int(ptDX), int(ptDY));
+			memDC.MoveTo(int(ptAX), int(ptAY));
+			memDC.LineTo(int(ptCX), int(ptCY));
+		}
+		else {
 			memDC.SetDCPenColor(colourRED);
+
+			if (!_scan_objects[(pos + 1) % SEGMENT_AMOUNT].detected) {
+				memDC.MoveTo(int(ptBX), int(ptBY));
+				memDC.LineTo(int(ptDX), int(ptDY));
+			}
+
+			if (!_scan_objects[(pos - 1) % SEGMENT_AMOUNT].detected) {
+				memDC.MoveTo(int(ptAX), int(ptAY));
+				memDC.LineTo(int(ptCX), int(ptCY));
+			}
 		}
 
 		// Draw segment arcs
-		//memDC.BeginPath();
+		memDC.BeginPath();
 
-		//memDC.MoveTo(int(ptBX), int(ptBY));
-		//memDC.AngleArc(centerPt.x, centerPt.y, distPixelMin, -o.angleStart + 90.0f, SEGMENT_ANGLE_SWEEP);
-
-		//memDC.MoveTo(int(ptDX), int(ptDY));
-		//memDC.AngleArc(centerPt.x, centerPt.y, distPixelMax, -o.angleStart + 90.0f, SEGMENT_ANGLE_SWEEP);
-
-		//memDC.EndPath();
-		//memDC.StrokePath();
-
-		// Draw segment lines
 		memDC.MoveTo(int(ptBX), int(ptBY));
-		memDC.LineTo(int(ptDX), int(ptDY));		
-		memDC.MoveTo(int(ptAX), int(ptAY));
-		memDC.LineTo(int(ptCX), int(ptCY));
+		memDC.AngleArc(centerPt.x, centerPt.y, int(distPixelMin), -o.angleStart + 90.0f - SEGMENT_ANGLE_SWEEP, SEGMENT_ANGLE_SWEEP);
+
+		memDC.MoveTo(int(ptDX), int(ptDY));
+		memDC.AngleArc(centerPt.x, centerPt.y, int(distPixelMax), -o.angleStart + 90.0f - SEGMENT_ANGLE_SWEEP, SEGMENT_ANGLE_SWEEP);
+
+		memDC.EndPath();
+		memDC.StrokePath();
 	}
 
 	memDC.SelectStockBrush(NULL_BRUSH);
-	int innerRad = int(_scan_objects.front().distMin * distScale),
-		outerRad = int(_scan_objects.front().distMax * distScale);
-	memDC.Ellipse(centerPt.x - innerRad, centerPt.y - innerRad, centerPt.x + innerRad, centerPt.y + innerRad);
-	memDC.Ellipse(centerPt.x - outerRad, centerPt.y - outerRad, centerPt.x + outerRad, centerPt.y + outerRad);
+	//memDC.SetDCPenColor(colourRED);
+	//int innerRad = int(_scan_objects.front().distMin * distScale),
+	//	outerRad = int(_scan_objects.front().distMax * distScale);
+	//memDC.Ellipse(centerPt.x - innerRad, centerPt.y - innerRad, centerPt.x + innerRad, centerPt.y + innerRad);
+	//memDC.Ellipse(centerPt.x - outerRad, centerPt.y - outerRad, centerPt.x + outerRad, centerPt.y + outerRad);
 
 
     memDC.SelectFont(bigfont);
@@ -289,8 +301,6 @@ void CScanView::onDrawSelf(CDCHandle dc)
     memDC.SelectBrush(oldBrush);
     memDC.SelectPen(oldPen);
     memDC.SelectBitmap(oldBitmap);
-
-    
 }
 
 
@@ -354,39 +364,36 @@ void CScanView::setScanData(rplidar_response_measurement_node_hq_t *buffer, size
 {
     _scan_data.clear();
     _is_scanning = true;
+
+	// Reset
+	for (scanObject& o : this->_scan_objects) {
+		o.detected = false;
+		o.pointsMatched = 0;
+	}
+
     for (size_t pos = 0; pos < count; ++pos) {
         scanDot dot;
         if (!buffer[pos].dist_mm_q2) continue;
 
         dot.quality = buffer[pos].quality;
-		dot.angle   = buffer[pos].angle_z_q14 *90.f / 16384.f;
-		dot.dist    = buffer[pos].dist_mm_q2 /4.0f;
-        _scan_data.push_back(dot);
-    }
-
-	for (scanObject &o : _scan_objects) {
-		o.detected = false;
-		o.pointsMatched = 0;
+		dot.angle   = buffer[pos].angle_z_q14 * 90.f / 16384.f;
+		dot.dist    = buffer[pos].dist_mm_q2 / 4.0f;
+        _scan_data.emplace_back(dot);
 
 		// Match point with object range
-		// TODO check in what order the points are given, e.g. by degrees from 0..360
-		//		==> easier to match objects
+		const size_t obj_idx_start = size_t(dot.angle / SEGMENT_ANGLE_SWEEP) % SEGMENT_AMOUNT;
+		scanObject *current  = &this->_scan_objects[obj_idx_start];
 
-		// For now, lazy search
-		for (const scanDot &dot : this->_scan_data) {
-			if (   dot.angle >= o.angleStart && dot.angle < o.angleEnd
-				&& dot.dist  >= o.distMin    && dot.dist  < o.distMax) 
-			{
-				o.pointsMatched++;
+		if (   dot.angle >= current->angleStart && dot.angle < current->angleEnd
+			&& dot.dist  >= current->distMin    && dot.dist  < current->distMax)
+		{
+			current->pointsMatched++;
 
-				if (o.pointsMatched > SEGMENT_POINTS_MATCH_THRESHOLD) {
-					o.detected = true;
-					break;
-				}
+			if (current->pointsMatched > SEGMENT_POINTS_MATCH_THRESHOLD) {
+				current->detected = true;
 			}
 		}
-	}
-
+    }
 
     _sample_duration = sampleDuration;
     _scan_speed = 1000000.0f / (count * sampleDuration);
