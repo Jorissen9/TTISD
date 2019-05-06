@@ -17,7 +17,9 @@ out/
 obj/
 Debug/
 TTISD-Project/Research/LIDAR/RPLIDAR/rplidar_sdk_v1.10.0/sdk/output/win32/Debug/
-
+*.ilk
+*.pdb
+*.lib
 *.csproj.user
 
 # Gradle files
@@ -41,13 +43,7 @@ captures/
 
 # IntelliJ
 *.iml
-TTISDassignment1/.idea/workspace.xml
-TTISDassignment1/.idea/tasks.xml
-TTISDassignment1/.idea/gradle.xml
-TTISDassignment1/.idea/assetWizardSettings.xml
-TTISDassignment1/.idea/dictionaries
-TTISDassignment1/.idea/libraries
-TTISDassignment1/.idea/caches
+TTISDassignment1/.idea/
 .idea/
 
 # Keystore files
@@ -72,12 +68,6 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
-TTISDassignment1/.idea/runConfigurations.xml
-TTISDassignment1/.idea/misc.xml
-TTISDassignment1/.idea/kotlinc.xml
-TTISDassignment1/.idea/gradle.xml
-TTISDassignment1/.idea/encodings.xml
-TTISDassignment1/.idea/caches/build_file_checksums.ser
 TTISDassignment1/doc/geo-TODO_Demo.pds
 TTISDassignment1/doc/geo-TODO_Demo.mp4
 
