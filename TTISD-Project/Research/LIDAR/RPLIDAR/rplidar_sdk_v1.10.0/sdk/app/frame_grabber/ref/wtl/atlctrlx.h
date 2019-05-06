@@ -26,6 +26,8 @@
   #define WM_UPDATEUISTATE                0x0128
 #endif // !WM_UPDATEUISTATE
 
+#pragma warning( push )
+#pragma warning( disable : 4838)
 
 ///////////////////////////////////////////////////////////////////////////////
 // Classes in this file:
@@ -4976,4 +4978,5 @@ public:
 
 }; // namespace WTL
 
+#pragma warning( pop )
 #endif // __ATLCTRLX_H__

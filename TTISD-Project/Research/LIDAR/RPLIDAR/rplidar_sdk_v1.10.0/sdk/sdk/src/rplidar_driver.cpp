@@ -2011,7 +2011,7 @@ u_result RPlidarDriverImplCommon::_sendCommand(_u8 cmd, const void * payload, si
         }
 
         // send size
-        _u8 sizebyte = payloadsize;
+        _u8 sizebyte = _u8(payloadsize);
         _chanDev->senddata(&sizebyte, 1);
 
         // send payload

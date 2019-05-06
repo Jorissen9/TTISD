@@ -41,6 +41,8 @@
   #endif
 #endif
 
+#pragma warning( push )
+#pragma warning( disable : 4838)
 
 ///////////////////////////////////////////////////////////////////////////////
 // Classes in this file:
@@ -4154,4 +4156,5 @@ public:
 
 }; // namespace WTL
 
+#pragma warning( pop )
 #endif // __ATLCTRLW_H__

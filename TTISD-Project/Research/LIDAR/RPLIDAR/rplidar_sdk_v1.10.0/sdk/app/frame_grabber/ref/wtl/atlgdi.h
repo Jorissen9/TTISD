@@ -19,6 +19,9 @@
 #endif
 
 
+#pragma warning( push )
+#pragma warning( disable : 4838)
+
 // protect template members from windowsx.h macros
 #ifdef _INC_WINDOWSX
   #undef CopyRgn
@@ -3888,4 +3891,5 @@ inline HBITMAP AtlGetClipboardDib(HWND hWnd)
 
 }; // namespace WTL
 
+#pragma warning( pop ) 
 #endif // __ATLGDI_H__

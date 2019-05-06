@@ -18,6 +18,8 @@
 	#error atluser.h requires atlapp.h to be included first
 #endif
 
+#pragma warning( push )
+#pragma warning( disable : 4302)
 
 ///////////////////////////////////////////////////////////////////////////////
 // Classes in this file:
@@ -1388,4 +1390,6 @@ inline bool AtlLoadString(UINT uID, BSTR& bstrText)
 
 }; // namespace WTL
 
+
+#pragma warning( pop ) 
 #endif // __ATLUSER_H__

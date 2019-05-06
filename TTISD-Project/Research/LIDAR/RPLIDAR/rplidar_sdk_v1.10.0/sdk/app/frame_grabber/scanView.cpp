@@ -43,6 +43,7 @@ constexpr size_t SEGMENT_AMOUNT      = 48;
 constexpr float  SEGMENT_ANGLE_SWEEP = 360.f / float(SEGMENT_AMOUNT);
 constexpr size_t SEGMENT_DIST_START  = 400;
 constexpr size_t SEGMENT_DIST_END    = 500;
+constexpr size_t SEGMENT_POINTS_MATCH_THRESHOLD = 4;
 
 const COLORREF dot_full_brightness = RGB(44,233,22);
 
@@ -235,8 +236,8 @@ void CScanView::onDrawSelf(CDCHandle dc)
 	}
 
 	memDC.SelectStockBrush(NULL_BRUSH);
-	int innerRad = _scan_objects.front().distMin * distScale,
-		outerRad = _scan_objects.front().distMax*distScale;
+	int innerRad = int(_scan_objects.front().distMin * distScale),
+		outerRad = int(_scan_objects.front().distMax * distScale);
 	memDC.Ellipse(centerPt.x - innerRad, centerPt.y - innerRad, centerPt.x + innerRad, centerPt.y + innerRad);
 	memDC.Ellipse(centerPt.x - outerRad, centerPt.y - outerRad, centerPt.x + outerRad, centerPt.y + outerRad);
 
@@ -353,13 +354,13 @@ void CScanView::setScanData(rplidar_response_measurement_node_hq_t *buffer, size
 {
     _scan_data.clear();
     _is_scanning = true;
-    for (int pos = 0; pos < (int)count; ++pos) {
+    for (size_t pos = 0; pos < count; ++pos) {
         scanDot dot;
         if (!buffer[pos].dist_mm_q2) continue;
 
         dot.quality = buffer[pos].quality;
-		dot.angle = buffer[pos].angle_z_q14 *90.f / 16384.f;
-		dot.dist = buffer[pos].dist_mm_q2 /4.0f;
+		dot.angle   = buffer[pos].angle_z_q14 *90.f / 16384.f;
+		dot.dist    = buffer[pos].dist_mm_q2 /4.0f;
         _scan_data.push_back(dot);
     }
 
@@ -368,6 +369,22 @@ void CScanView::setScanData(rplidar_response_measurement_node_hq_t *buffer, size
 		o.pointsMatched = 0;
 
 		// Match point with object range
+		// TODO check in what order the points are given, e.g. by degrees from 0..360
+		//		==> easier to match objects
+
+		// For now, lazy search
+		for (const scanDot &dot : this->_scan_data) {
+			if (   dot.angle >= o.angleStart && dot.angle < o.angleEnd
+				&& dot.dist  >= o.distMin    && dot.dist  < o.distMax) 
+			{
+				o.pointsMatched++;
+
+				if (o.pointsMatched > SEGMENT_POINTS_MATCH_THRESHOLD) {
+					o.detected = true;
+					break;
+				}
+			}
+		}
 	}
 
 

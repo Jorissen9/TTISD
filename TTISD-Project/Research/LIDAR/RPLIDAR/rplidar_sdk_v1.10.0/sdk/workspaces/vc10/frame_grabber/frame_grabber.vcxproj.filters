@@ -45,9 +45,6 @@
     <ClCompile Include="..\..\..\app\frame_grabber\TcpChannelSelDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\app\frame_grabber\drvlogic\stdafx.cpp">
-      <Filter>drvlogic</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\app\frame_grabber\drvlogic\common.h">

@@ -22,6 +22,8 @@
 	#error atlframe.h requires atlwin.h to be included first
 #endif
 
+#pragma warning( push )
+#pragma warning( disable : 4838)
 
 ///////////////////////////////////////////////////////////////////////////////
 // Classes in this file:
@@ -3685,4 +3687,6 @@ public:
 
 }; // namespace WTL
 
+
+#pragma warning( pop )
 #endif // __ATLFRAME_H__

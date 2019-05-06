@@ -51,7 +51,6 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <MinimalRebuild>true</MinimalRebuild>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
@@ -122,7 +121,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\app\frame_grabber\AboutDlg.cpp" />
     <ClCompile Include="..\..\..\app\frame_grabber\drvlogic\lidarmgr.cpp" />
-    <ClCompile Include="..\..\..\app\frame_grabber\drvlogic\stdafx.cpp" />
     <ClCompile Include="..\..\..\app\frame_grabber\framegrabber.cpp" />
     <ClCompile Include="..\..\..\app\frame_grabber\FreqSetDlg.cpp" />
     <ClCompile Include="..\..\..\app\frame_grabber\MainFrm.cpp" />

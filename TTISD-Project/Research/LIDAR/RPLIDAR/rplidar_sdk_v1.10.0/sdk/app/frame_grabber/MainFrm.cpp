@@ -142,9 +142,11 @@ LRESULT CMainFrame::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*
 
 void CMainFrame::scanModeSelect(int mode)
 {
-    if((unsigned int)mode >= scanModeMenuRecBegin_ && (unsigned int)mode < scanModeMenuRecBegin_ + modeVec_.size())
+	size_t mm(mode);
+
+    if(mm >= scanModeMenuRecBegin_ && mm < scanModeMenuRecBegin_ + modeVec_.size())
     {
-        usingScanMode_ = mode - scanModeMenuRecBegin_;
+        usingScanMode_ = _u16(mm - scanModeMenuRecBegin_);
         onSwitchMode(WORKING_MODE_SCAN);
     }
 }
