@@ -24,6 +24,8 @@ TTISD-Project/Research/LIDAR/RPLIDAR/rplidar_sdk_v1.10.0/sdk/output/win32/Debug/
 *.pro.user
 *.pro.user.*
 .qmake.stash
+Makefile
+Makefile.*
 
 # Gradle files
 .gradle/
