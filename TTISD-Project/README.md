@@ -20,3 +20,5 @@ RFID
 
 [RFID Antenna](https://www.digikey.be/products/nl?keywords=535-12930-ND%20)
 
+[Arduino lib](https://github.com/sparkfun/SparkFun_Simultaneous_RFID_Tag_Reader_Library)
+[ArduinoSTL lib](https://github.com/mike-matera/ArduinoSTL)
