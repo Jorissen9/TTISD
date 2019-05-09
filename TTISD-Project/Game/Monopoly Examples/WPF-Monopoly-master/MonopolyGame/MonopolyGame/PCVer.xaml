@@ -1,0 +1,152 @@
+﻿<Window x:Class="MonopolyGame.PCVer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MonopolyGame"
+        mc:Ignorable="d"
+        Title="PCVer" Height="800" Width="960">
+    <Window.Resources>
+
+        <Style TargetType="ScrollBar">
+            <Setter Property="Width" Value="15"/>
+        </Style>
+
+    </Window.Resources>
+    <Grid>
+        <Grid Margin="762,577,51,34" Visibility="{Binding StartEna}">
+            <ComboBox x:Name="comboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="119" Margin="10,61,0,0" Height="36" >
+                <ComboBoxItem Content="2" HorizontalAlignment="Center" Width="79"/>
+                <ComboBoxItem Content="3" HorizontalAlignment="Center" Width="79"/>
+                <ComboBoxItem Content="4" HorizontalAlignment="Center" Width="79"/>
+            </ComboBox>
+            <Button x:Name="StartB" Content="Start" HorizontalAlignment="Left" Height="37" Margin="10,105,0,0" VerticalAlignment="Top" Width="119" Click="Start_Click" />
+            <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="No of Player?" VerticalAlignment="Top" Height="23" Width="109" Margin="0,30,0,0"/>
+        </Grid>
+        <Grid Margin="724,570,12,3" Visibility="{Binding RollEna}">
+            <Button x:Name="RollB" Content="Roll" HorizontalAlignment="Left" Height="24" Margin="13,158,0,0" VerticalAlignment="Top" Width="78"  Click="RollB_Click"/>
+            <TextBlock x:Name="Status" HorizontalAlignment="Left" Height="73" Margin="0,78,0,0" TextWrapping="Wrap" Text="{Binding StatusMes}" VerticalAlignment="Top" Width="216" FontSize="16"/>
+
+
+
+        </Grid>
+        <Grid Margin="748,612,22,18" Visibility="{Binding QuestionEna}">
+            <TextBlock x:Name="Question" HorizontalAlignment="Left" Height="85" TextWrapping="Wrap" Text="{Binding QuestionMes}" VerticalAlignment="Top" Width="182" Margin="0,13,0,0" />
+            <Button x:Name="YesB" Content="Yes" HorizontalAlignment="Left" Height="26" Margin="10,103,0,0" VerticalAlignment="Top" Width="66" Click="YesB_Click"/>
+            <Button x:Name="NoB" Content="No" HorizontalAlignment="Left" Height="26" Margin="99,103,0,0" VerticalAlignment="Top" Width="72" Click="NoB_Click" />
+
+        </Grid>
+        <Grid HorizontalAlignment="Left" Height="553" Margin="726,10,0,0" VerticalAlignment="Top" Width="226">
+            <DataGrid x:Name="myGrid" Height="223" Margin="6,330,0,0" ItemsSource="{Binding history, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" CanUserResizeRows="False"  AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" Background="{x:Null}" OpacityMask="Black" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding turn, UpdateSourceTrigger=PropertyChanged}" ClipboardContentBinding="{Binding turn}"  Header="T" Foreground="Black" IsReadOnly="True" MinWidth="10" Width="Auto" CanUserSort="False"/>
+                    <DataGridTextColumn Binding="{Binding player, UpdateSourceTrigger=PropertyChanged}" ClipboardContentBinding="{Binding player}" Header="Ply" Width="Auto" Foreground="Black" IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Binding="{Binding action, UpdateSourceTrigger=PropertyChanged}" ClipboardContentBinding="{Binding action}" Header="Action" Width="165" Foreground="Black" IsReadOnly="True" CanUserSort="False"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Grid x:Name="P1" HorizontalAlignment="Left" Height="137" Margin="6,10,0,0" VerticalAlignment="Top" Width="104" Background="#FFF0F0F0" Visibility="{Binding PEna[0]}">
+                <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Height="18" Margin="25,3,0,0" TextWrapping="Wrap" Text="Player1" VerticalAlignment="Top" Width="52" TextDecorations="Underline"/>
+                <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Height="17" Margin="0,20,0,0" TextWrapping="Wrap" Text="Cash:" VerticalAlignment="Top" Width="46"/>
+                <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Height="19" Margin="0,37,0,0" TextWrapping="Wrap" Text="Wealth:" VerticalAlignment="Top" Width="46"/>
+                <TextBlock x:Name="textBlock4" HorizontalAlignment="Left" Height="18" Margin="0,55,0,0" TextWrapping="Wrap" Text="Property:" VerticalAlignment="Top" Width="94"/>
+                <ScrollViewer HorizontalAlignment="Left" Height="64" Margin="0,73,0,0" VerticalAlignment="Top" Width="104" >
+                    <TextBlock x:Name="textBlock5" TextWrapping="Wrap" FontSize="10" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True"/>
+                </ScrollViewer>
+                <TextBlock x:Name="textBlock11" HorizontalAlignment="Left" Height="16" Margin="46,21,0,0" TextWrapping="Wrap" Text="{Binding Pcash[0]}" VerticalAlignment="Top" Width="58"/>
+                <TextBlock x:Name="textBlock11_Copy" HorizontalAlignment="Left" Height="16" Margin="46,38,0,0" TextWrapping="Wrap" Text="{Binding Pwealth[0]}" VerticalAlignment="Top" Width="58"/>
+            </Grid>
+            <Grid x:Name="P2" Visibility="{Binding PEna[1]}" HorizontalAlignment="Left" Height="137" Margin="115,10,0,0" VerticalAlignment="Top" Width="104" Background="#FFF0F0F0">
+                <TextBlock x:Name="textBlock6" HorizontalAlignment="Left" Height="18" Margin="25,3,0,0" TextWrapping="Wrap" Text="Player2" VerticalAlignment="Top" Width="52" TextDecorations="Underline"/>
+                <TextBlock x:Name="textBlock7" HorizontalAlignment="Left" Height="17" Margin="0,20,0,0" TextWrapping="Wrap" Text="Cash:" VerticalAlignment="Top" Width="46"/>
+                <TextBlock x:Name="textBlock8" HorizontalAlignment="Left" Height="19" Margin="0,37,0,0" TextWrapping="Wrap" Text="Wealth:" VerticalAlignment="Top" Width="46"/>
+                <TextBlock x:Name="textBlock9" HorizontalAlignment="Left" Height="18" Margin="0,55,0,0" TextWrapping="Wrap" Text="Property:" VerticalAlignment="Top" Width="94"/>
+                <ScrollViewer HorizontalAlignment="Left" Height="64" Margin="0,73,0,0" VerticalAlignment="Top" Width="104" >
+                    <TextBlock x:Name="textBlock10" TextWrapping="Wrap" Text="{Binding Pprop[1]}" FontSize="10" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                </ScrollViewer>
+                <TextBlock x:Name="textBlock12" HorizontalAlignment="Left" Margin="46,21,0,0" TextWrapping="Wrap" Text="{Binding Pcash[1]}" VerticalAlignment="Top" RenderTransformOrigin="0.74,0.438" Width="58"/>
+                <TextBlock x:Name="textBlock12_Copy" HorizontalAlignment="Left" Margin="46,37,0,0" TextWrapping="Wrap" Text="{Binding Pwealth[1]}" VerticalAlignment="Top" RenderTransformOrigin="0.74,0.438" Width="58"/>
+            </Grid>
+            <Grid x:Name="P3" Visibility="{Binding PEna[2]}" HorizontalAlignment="Left" Height="137" Margin="6,169,0,0" VerticalAlignment="Top" Width="104" Background="#FFF0F0F0">
+                <TextBlock x:Name="textBlock13" HorizontalAlignment="Left" Height="18" Margin="25,3,0,0" TextWrapping="Wrap" Text="Player3" VerticalAlignment="Top" Width="52" TextDecorations="Underline"/>
+                <TextBlock x:Name="textBlock14" HorizontalAlignment="Left" Height="17" Margin="0,20,0,0" TextWrapping="Wrap" Text="Cash:" VerticalAlignment="Top" Width="46"/>
+                <TextBlock x:Name="textBlock15" HorizontalAlignment="Left" Height="19" Margin="0,37,0,0" TextWrapping="Wrap" Text="Wealth:" VerticalAlignment="Top" Width="46"/>
+                <TextBlock x:Name="textBlock16" HorizontalAlignment="Left" Height="18" Margin="0,55,0,0" TextWrapping="Wrap" Text="Property:" VerticalAlignment="Top" Width="94"/>
+                <ScrollViewer HorizontalAlignment="Left" Height="64" Margin="0,73,0,0" VerticalAlignment="Top" Width="104" >
+                    <TextBlock x:Name="textBlock17" TextWrapping="Wrap" Text="{Binding Pprop[2]}" FontSize="10" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                </ScrollViewer>
+                <TextBlock x:Name="textBlock18" HorizontalAlignment="Left" Height="16" Margin="46,21,0,0" TextWrapping="Wrap" Text="{Binding Pcash[2]}" VerticalAlignment="Top" Width="58"/>
+                <TextBlock x:Name="textBlock11_Copy1" HorizontalAlignment="Left" Height="16" Margin="46,38,0,0" TextWrapping="Wrap" Text="{Binding Pwealth[2]}" VerticalAlignment="Top" Width="58"/>
+            </Grid>
+            <Grid x:Name="P4" Visibility="{Binding PEna[3]}" HorizontalAlignment="Left" Height="137" Margin="115,169,0,0" VerticalAlignment="Top" Width="104" Background="#FFF0F0F0">
+                <TextBlock x:Name="textBlock19" HorizontalAlignment="Left" Height="18" Margin="25,3,0,0" TextWrapping="Wrap" Text="Player4" VerticalAlignment="Top" Width="52" TextDecorations="Underline"/>
+                <TextBlock x:Name="textBlock20" HorizontalAlignment="Left" Height="17" Margin="0,20,0,0" TextWrapping="Wrap" Text="Cash:" VerticalAlignment="Top" Width="46"/>
+                <TextBlock x:Name="textBlock21" HorizontalAlignment="Left" Height="19" Margin="0,37,0,0" TextWrapping="Wrap" Text="Wealth:" VerticalAlignment="Top" Width="46"/>
+                <TextBlock x:Name="textBlock22" HorizontalAlignment="Left" Height="18" Margin="0,55,0,0" TextWrapping="Wrap" Text="Property:" VerticalAlignment="Top" Width="94"/>
+                <ScrollViewer HorizontalAlignment="Left" Height="64" Margin="0,73,0,0" VerticalAlignment="Top" Width="104"  >
+                    <TextBlock x:Name="textBlock23" TextWrapping="Wrap" Text="{Binding Pprop[3]}" FontSize="10" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                </ScrollViewer>
+                <TextBlock x:Name="textBlock24" HorizontalAlignment="Left" Height="16" Margin="46,21,0,0" TextWrapping="Wrap" Text="{Binding Pcash[3]}" VerticalAlignment="Top" Width="58"/>
+                <TextBlock x:Name="textBlock11_Copy2" HorizontalAlignment="Left" Height="16" Margin="46,38,0,0" TextWrapping="Wrap" Text="{Binding Pwealth[3]}" VerticalAlignment="Top" Width="58"/>
+            </Grid>
+            <TextBlock x:Name="textBlock25" HorizontalAlignment="Left" Height="15" Margin="7,315,0,0" TextWrapping="Wrap" Text="History:" VerticalAlignment="Top" Width="62"/>
+            <Image Source="background.jpg" Stretch="Fill" Panel.ZIndex="-25"/>
+
+        </Grid>
+
+        <Image Margin="0,0,231,0" Source="a0cac753-1618-4719-97ec-9b0463c9088e.jpg" Stretch="Fill"/>
+        <Label Content="Label" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Button Name ="player4" Content="PLAYER &#xA;      4" HorizontalAlignment="Left" Margin="{Binding Player4margin}" VerticalAlignment="Top" Width="48" Height="32" FontFamily="Showcard Gothic" FontSize="10">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.093"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.073"/>
+                    <GradientStop Color="#FFFB1010" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button Name ="player3" Content="PLAYER &#xA;         3" HorizontalAlignment="Left" Margin="{Binding Player3margin}" VerticalAlignment="Top" Width="48" Height="32" FontFamily="Showcard Gothic" FontSize="10">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.093"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.073"/>
+                    <GradientStop Color="#FFFBF010" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button Name ="player2" Content="PLAYER &#xA;         2" HorizontalAlignment="Left" Margin="{Binding Player2margin}" VerticalAlignment="Top" Width="48" Height="32" FontFamily="Showcard Gothic" FontSize="10">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.093"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.073"/>
+                    <GradientStop Color="#FF50FB10" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button Name ="player1" Content="PLAYER &#xA;         1" HorizontalAlignment="left" Margin="{Binding Player1margin}" VerticalAlignment="Top" Width="48" Height="32" FontFamily="Showcard Gothic" FontSize="10">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.093"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.073"/>
+                    <GradientStop Color="#FF10FBDB" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="-37,844,0,-96" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.52,8.227"/>
+        <Grid Margin="762,606,38,51" Visibility="{Binding ConfirmEna}">
+            <TextBlock x:Name="ComfirmT" HorizontalAlignment="Left" Height="76" TextWrapping="Wrap" Text="{Binding ConfirmMes}" VerticalAlignment="Top" Width="152"/>
+            <Button x:Name="ConfirmB" Content="Confirm" HorizontalAlignment="Left" Height="25" Margin="52,88,0,0" VerticalAlignment="Top" Width="52" Click="ConfirmB_Click"/>
+
+        </Grid>
+        <Canvas HorizontalAlignment="Left" Height="183" Margin="726,577,0,0" VerticalAlignment="Top" Width="226">
+            <TextBlock x:Name="End" HorizontalAlignment="Left" Height="200" Margin="726,570,0,0" TextWrapping="Wrap" Visibility="{Binding EndEna}" VerticalAlignment="Top" Width="226"/>
+            <Button x:Name="ReB" Content="Restart" HorizontalAlignment="Left" Height="24" Margin="863,736,0,0" Visibility="{Binding EndEna}" VerticalAlignment="Top" Width="67" RenderTransformOrigin="0.529,4.542" Click="ReB_Click"/>
+            <Image Height="29" Source="Capture.PNG" Stretch="Fill" Width="226" Panel.ZIndex="-50"/>
+        </Canvas>
+
+
+    </Grid>
+</Window>

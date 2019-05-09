@@ -1,0 +1,41 @@
+﻿<Window x:Class="MonopolyGame.PCVer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MonopolyGame"
+        mc:Ignorable="d"
+        Title="PCVer" Height="800" Width="960">
+    <Grid>
+        <Grid Margin="745,511,68,100" Visibility="{Binding StartEna}">
+            <ComboBox x:Name="comboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="139" Margin="0,61,0,0" Height="36" >
+                <ComboBoxItem Content="2" HorizontalAlignment="Center" Width="79"/>
+                <ComboBoxItem Content="3" HorizontalAlignment="Center" Width="79"/>
+                <ComboBoxItem Content="4" HorizontalAlignment="Center" Width="79"/>
+            </ComboBox>
+            <Button x:Name="StartB" Content="Start" HorizontalAlignment="Left" Height="40" Margin="0,119,0,0" VerticalAlignment="Top" Width="139" Click="Start_Click" />
+            <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="No of Player?" VerticalAlignment="Top" Height="23" Width="109"/>
+        </Grid>
+        <Button x:Name="RollB" Content="Roll" HorizontalAlignment="Left" Height="27" Margin="762,706,0,0" VerticalAlignment="Top" Width="59" Visibility="{Binding RollEna}" Click="RollB_Click"/>
+        <Grid Margin="721,489,49,141" Visibility="{Binding QuestionEna}">
+            <TextBlock x:Name="Question" HorizontalAlignment="Left" Height="85" TextWrapping="Wrap" Text="{Binding QuestionMes}" VerticalAlignment="Top" Width="182" />
+            <Button x:Name="YesB" Content="Yes" HorizontalAlignment="Left" Height="26" Margin="4,114,0,0" VerticalAlignment="Top" Width="66" Click="YesB_Click"/>
+            <Button x:Name="NoB" Content="No" HorizontalAlignment="Left" Height="26" Margin="100,114,0,0" VerticalAlignment="Top" Width="72" Click="NoB_Click" />
+
+        </Grid>
+        <Grid HorizontalAlignment="Left" Height="479" Margin="703,10,0,0" VerticalAlignment="Top" Width="239">
+
+            <DataGrid HorizontalAlignment="Left" Height="140" Margin="10,329,0,0" VerticalAlignment="Top" Width="219" >
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Turn" CanUserResize="False"/>
+                    <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Player" CanUserResize="False"/>
+                    <DataGridCheckBoxColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Action" CanUserSort="False" CanUserResize="False" Width="140"/>
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </Grid>
+        <TextBlock x:Name="status" HorizontalAlignment="Left" Height="56" Margin="522,693,0,0" TextWrapping="Wrap" Text="{Binding StatusMes}" VerticalAlignment="Top" Width="200"/>
+        <TextBlock x:Name="previous" HorizontalAlignment="Left" Height="54" Margin="308,695,0,0" TextWrapping="Wrap" Text="{Binding PreviousMes}" VerticalAlignment="Top" Width="196"/>
+
+    </Grid>
+</Window>
