@@ -706,7 +706,6 @@ void MainWindow::nextTurn() {
     } else {
         playerTurn++;
     }
-
 }
 
 //getting player's turn
