@@ -270,6 +270,7 @@ void BottomBar::rollDice() {
     if (oldSpace > newSpace) {
         moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank, 200);
         allPlayers[currentPlayerNum]->setMoneyText();
+        allPlayers[currentPlayerNum]->addHistory("Received €200 from start.");
     }
 
     /*****************************     If new location is a Property     *****************************/
@@ -294,6 +295,7 @@ void BottomBar::rollDice() {
 
                 moneyAction.executeAction(myWindow->getPlayer(currentPlayerNum), myWindow->getPlayer(currentOwnership), myWindow->getSpaceRent(newSpace));
                 allPlayers[currentPlayerNum]->setMoneyText();
+                allPlayers[currentPlayerNum]->addHistory("Payed player " + to_string(currentOwnership + 1) + " €" + to_string(myWindow->getSpaceRent(newSpace)));
             }
         }
 
@@ -331,6 +333,7 @@ void BottomBar::rollDice() {
     } else if (myWindow->spaceType(newSpace) == "Tax") {
         moneyAction.executeAction(myWindow->getPlayer(currentPlayerNum), freePark, myWindow->getSpaceTax(newSpace));
         allPlayers[currentPlayerNum]->setMoneyText();
+        allPlayers[currentPlayerNum]->addHistory("Payed free parking €" + to_string(myWindow->getSpaceRent(newSpace)) + " which is now at €" + to_string(freePark->getMoneyAmount()));
 
         //checking if players are out of money
         if (myWindow->getPlayerMoney(currentPlayerNum) <= 0 && myWindow->isPlayerAlive(currentPlayerNum) == true) {
@@ -365,9 +368,9 @@ void BottomBar::rollDice() {
         //if the space is Free Parking...
     } else if (myWindow->spaceType(newSpace) == "FreeParking") {
         moneyAction.executeAction(freePark, myWindow->getPlayer(currentPlayerNum), freePark->getMoneyAmount());
+        allPlayers[currentPlayerNum]->addHistory("Received free parking cash with an amount of €" + to_string(freePark->getMoneyAmount()));
         freePark->setMoneyAmount(0);
         allPlayers[currentPlayerNum]->setMoneyText();
-
 
         /*******************************     If new Location is "Go To Jail"     **********************************/
 
@@ -376,7 +379,7 @@ void BottomBar::rollDice() {
         myWindow->setPlayerLocation(currentPlayerNum, 10);
         moneyAction.executeAction(myWindow->getPlayer(currentPlayerNum), freePark, 200);
         monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
-
+        allPlayers[currentPlayerNum]->addHistory("Player went to jail & paid free park €200.");
 
         /*******************************     If new Location is "Community Chest"     **********************************/
 
@@ -389,15 +392,14 @@ void BottomBar::rollDice() {
         myWindow->setPlayerLocation(currentPlayerNum, myWindow->getPlayerLocation(currentPlayerNum));
         monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
 
-
         futureSpace = myWindow->getPlayerLocation(currentPlayerNum);
 
         if (futureSpace < newSpace) {
             moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank,  200);
+            allPlayers[currentPlayerNum]->addHistory("Received €200 from start.");
         }
 
         allPlayers[currentPlayerNum]->setMoneyText();
-
 
         /*******************************     If new Location is "Chance"     **********************************/
 
@@ -410,22 +412,19 @@ void BottomBar::rollDice() {
         myWindow->setPlayerLocation(currentPlayerNum, myWindow->getPlayerLocation(currentPlayerNum));
         monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
 
-
         futureSpace = myWindow->getPlayerLocation(currentPlayerNum);
 
         if (futureSpace < newSpace) {
             moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank,  200);
+            allPlayers[currentPlayerNum]->addHistory("Received €200 from start.");
         }
 
         allPlayers[currentPlayerNum]->setMoneyText();
-
     }
 }
 
 void BottomBar::upgrade() {
-
     allPlayers[currentPlayerNum]->enableUpgrade();
-
 }
 
 void BottomBar::purchase() {
@@ -433,14 +432,13 @@ void BottomBar::purchase() {
     //if player cannot afford the property
     if (myWindow->getPlayerMoney(currentPlayerNum) - myWindow->getSpacePropertyCost(newSpace) <= 0) {
         //let Player know he can't purchase in GUI (pop up box) or disable button
-
     } else {
-
         //paying the money
         moneyAction.giveBank(myWindow->getPlayer(currentPlayerNum), bank, myWindow->getSpacePropertyCost(newSpace));
         //moneyAction.giveBank(myWindow->getPlayer(currentPlayerNum), bank, 1000);
         myWindow->setSpaceOwnership(newSpace, currentPlayerNum);
         allPlayers[currentPlayerNum]->setMoneyText();
+        allPlayers[currentPlayerNum]->addHistory("Player bought the property for €" + to_string(myWindow->getSpacePropertyCost(newSpace)));
 
         //if(myWindow->spaceType(newSpace) == "Property") {
         stringstream ss;
@@ -455,7 +453,6 @@ void BottomBar::purchase() {
 
         allPlayers[currentPlayerNum]->addProperty(newSpace, tempString1 + " " + tempString2, myWindow->getAllSpaces());
         //}
-
     }
 
     //checking if players are out of money
@@ -519,7 +516,6 @@ void BottomBar::endTurn() {
         string fullText;
         string informativeText;
 
-        rollButton->setEnabled(false);
         upgradeButton->setEnabled(false);
         purchaseButton->setEnabled(false);
         player1Button->setEnabled(false);
@@ -562,6 +558,7 @@ void BottomBar::endTurn() {
 
     //Change current player's color
     monopolyBoard->setActivePlayer(currentPlayerNum);
+    allPlayers[currentPlayerNum]->resetHistory();
 }
 
 void BottomBar::rollOrEnd(){

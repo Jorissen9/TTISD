@@ -22,12 +22,17 @@ GUIPlayers::GUIPlayers(Player* p, int playerNum){
   ss << player->getMoneyAmount();
   string tempMoney;
   ss >> tempMoney;
-  tempMoney = ("$" + tempMoney);
+  tempMoney = ("€" + tempMoney);
   ss.clear();
 
   QString qMoney = QString::fromStdString(tempMoney);
   moneyLabel = new QLabel( this );
   moneyLabel->setText( qMoney );
+
+  //current history
+  historyLabel = new QLabel( this );
+  historyLabel->setWordWrap(true);
+  resetHistory();
 
   //player's game piece
   string tempPiece = player->getGamePieceName();
@@ -42,6 +47,7 @@ GUIPlayers::GUIPlayers(Player* p, int playerNum){
   layout = new QVBoxLayout;
   layout->addWidget(gamePieceImg);
   layout->addWidget(numLabel);
+  layout->addWidget(historyLabel);
   layout->addWidget(moneyLabel);
 
   sideBar = new QWidget(this);
@@ -96,14 +102,7 @@ void GUIPlayers::addProperty(int propertyNum, string propertyName, Space** tempA
 
 */
 
-
     connect(ownedProperties[ownedCount], SIGNAL(clicked()), this, SLOT(upgradeSpace()) );
-
-
-
-
-
-
     layout->addWidget(ownedProperties[ownedCount]);
     sideBar->setLayout(layout);
     setWidget(sideBar);
@@ -112,23 +111,19 @@ void GUIPlayers::addProperty(int propertyNum, string propertyName, Space** tempA
 }
 
 void GUIPlayers::enableUpgrade(){
-
-    for( int i = 0; i < ownedCount; i++){
+    for(int i = 0; i < ownedCount; i++){
         if(((player->getMoneyAmount() - allSpaces[allProperties[i]]->getPropertyCost()) <= 0) || !(allSpaces[allProperties[i]]->getType() == "Property")) {
-        ownedProperties[i]->setEnabled(false);
+            ownedProperties[i]->setEnabled(false);
         } else {
-        ownedProperties[i]->setEnabled(true);
+            ownedProperties[i]->setEnabled(true);
         }
     }
-
 }
 
 void GUIPlayers::disableUpgrade(){
-
     for( int i = 0; i < ownedCount; i++){
         ownedProperties[i]->setEnabled(false);
     }
-
 }
 
 void GUIPlayers::upgradeSpace(){
@@ -137,27 +132,25 @@ void GUIPlayers::upgradeSpace(){
     isUpgraded = allSpaces[currentPropertyNum]->upgrade();
 
     if(isUpgraded == true){
-
         if((player->getMoneyAmount() - allSpaces[currentPropertyNum]->getPropertyCost()) <= 0) {
                string text = "You do not have enough money to upgrade this property!";
-                       QString qText = QString::fromStdString(text);
+               QString qText = QString::fromStdString(text);
 
-                       QMessageBox UpGradeLimit;
-                       UpGradeLimit.setText(qText);
-                       UpGradeLimit.exec();
+               QMessageBox UpGradeLimit;
+               UpGradeLimit.setText(qText);
+               UpGradeLimit.exec();
         } else {
                moneyAction.giveBank(player, bankPointer, allSpaces[currentPropertyNum]->getPropertyCost());
+               addHistory("Player upgraded the property for €" + to_string(allSpaces[currentPropertyNum]->getPropertyCost()) +
+                          " the property has now " + to_string(allSpaces[currentPropertyNum]->getHouses()) + " houses.");
         }
-
-
     } else {
-
         string text = "Maximum (5) amount of upgrades reached for this property!";
-            QString qText = QString::fromStdString(text);
+        QString qText = QString::fromStdString(text);
 
-            QMessageBox maxUpgrade;
-            maxUpgrade.setText(qText);
-            maxUpgrade.exec();
+        QMessageBox maxUpgrade;
+        maxUpgrade.setText(qText);
+        maxUpgrade.exec();
     }
 
     setMoneyText();
@@ -175,7 +168,13 @@ void GUIPlayers::setBank(Bank* tempBank){
     bankPointer = tempBank;
 }
 
+void GUIPlayers::resetHistory(){
+    history = "History:<br>";
+    historyLabel->setText("History:<br>");
+}
 
-
-
+void GUIPlayers::addHistory(string action){
+    history.append(QString::fromStdString(action) + "<br>");
+    historyLabel->setText(history);
+}
 
