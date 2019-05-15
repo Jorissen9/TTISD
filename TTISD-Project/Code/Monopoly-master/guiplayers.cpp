@@ -50,18 +50,26 @@ GUIPlayers::GUIPlayers(Player* p, int playerNum){
   gamePieceImg->setScaledContents(true);
 
   //Adding all parts to layout
+  gamePieceImg ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  numLabel     ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  historyLabel ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  moneyLabel   ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+
   layout = new QVBoxLayout;
-  layout->addWidget(gamePieceImg);
-  layout->addWidget(numLabel);
+  layout->setAlignment(Qt::AlignLeft);
+  layout->addWidget(gamePieceImg, 0);
+  layout->addWidget(numLabel, 0);
   layout->addWidget(historyLabel);
-  layout->addWidget(moneyLabel);
+  layout->addWidget(moneyLabel, 0);
 
   sideBar = new QWidget(this);
   sideBar->setLayout(layout);
   setWidget(sideBar);
 
-  this->setMinimumSize(QSize(143, 650));
-  this->setMaximumSize(QSize(143, 650));
+  this->setMinimumSize(QSize(150, 650));
+//  this->setMaximumSize(QSize(300, 650));
+  this->setMaximumWidth(500);
 }
 
 GUIPlayers::GUIPlayers(){
@@ -139,8 +147,8 @@ void GUIPlayers::upgradeSpace(){
     QString propertyName = button->text();
 
     for(int i=0; i<=40; i++) {
-        QString tempName = QString(allSpaces[i]->getName(0).c_str()).trimmed() + " "
-                         + QString(allSpaces[i]->getName(1).c_str()).trimmed();
+        QString tempName = QString::fromStdString(allSpaces[i]->getName(0)).trimmed() + " "
+                         + QString::fromStdString(allSpaces[i]->getName(1)).trimmed();
         if(tempName == propertyName.toUtf8().constData()) {
             index = i;
             break;
@@ -195,5 +203,6 @@ void GUIPlayers::resetHistory(){
 void GUIPlayers::addHistory(string action){
     history.append(QString::fromStdString(action) + "<br>");
     historyLabel->setText(history);
+    historyLabel->update();
 }
 

@@ -142,15 +142,24 @@ BottomBar::BottomBar() {
 
 
     //setting up all the buttons
-    rollButton = new QPushButton("Roll Dice");
-    upgradeButton = new QPushButton("Upgrade");
+    rollButton     = new QPushButton("Roll Dice");
+    upgradeButton  = new QPushButton("Upgrade");
     purchaseButton = new QPushButton("Purchase");
-    player1Button = new QPushButton("See Player 1");
-    player2Button = new QPushButton("See Player 2");
-    player3Button = new QPushButton("See Player 3");
-    player4Button = new QPushButton("See Player 4");
+    player1Button  = new QPushButton("See Player 1");
+    player2Button  = new QPushButton("See Player 2");
+    player3Button  = new QPushButton("See Player 3");
+    player4Button  = new QPushButton("See Player 4");
+
+    rollButton    ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    upgradeButton ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    purchaseButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    player1Button ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    player2Button ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    player3Button ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    player4Button ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     layout = new QGridLayout;
+    layout->setAlignment(Qt::AlignCenter);
     layout->addWidget(upgradeButton, 0, 1, nullptr);
     layout->addWidget(purchaseButton, 0, 2, nullptr);
     layout->addWidget(rollButton, 0, 3, nullptr);
@@ -160,9 +169,11 @@ BottomBar::BottomBar() {
     layout->addWidget(player4Button, 1, 3, nullptr);
 
 
-    this->setMaximumSize(QSize(800, 100));
+//    this->setMaximumSize(QSize(800, 100));
+    this->setMaximumHeight(100);
 
     bottomWidget = new QWidget(this);
+    bottomWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     bottomWidget->setLayout(layout);
     setWidget(bottomWidget);
 
@@ -561,7 +572,7 @@ void BottomBar::endTurn() {
 
     //Change current player's color
     monopolyBoard->setActivePlayer(currentPlayerNum);
-    allPlayers[currentPlayerNum]->resetHistory();
+//    allPlayers[currentPlayerNum]->resetHistory();
 }
 
 void BottomBar::rollOrEnd(){

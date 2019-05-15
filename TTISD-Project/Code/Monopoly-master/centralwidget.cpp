@@ -2,11 +2,12 @@
 
 CentralWidget::CentralWidget(int tempNum, Player* tempPlayers): QWidget() {
   numPlayers = tempNum;
-  
+
   //setting up the chance and community chest images
   boardLabel = new QLabel( this ); //adding current widget to another widget
   boardLabel->setPixmap( QPixmap("./Images/Monopoly.jpg") );
   this->setGeometry(0, 0, 650, 650);
+  this->setFixedSize(650, 650);
 
   //setting up the dice images
   dice1 = new QLabel(this);
@@ -25,7 +26,7 @@ CentralWidget::CentralWidget(int tempNum, Player* tempPlayers): QWidget() {
   dice2->setScaledContents(true);
   dice2->show();
 
-  
+
   //Create the covers for the card deck
   chanceCover = new QLabel(this);
   chanceCover->setPixmap(QPixmap("./Chance/chanceTemplate.jpg"));
@@ -48,37 +49,37 @@ CentralWidget::CentralWidget(int tempNum, Player* tempPlayers): QWidget() {
   int pieceCounter = 0;
 
   for(int i = 0; i < numPlayers; i++){
-	string tempName = tempPlayers[i].getGamePieceName();
-	QString qName = QString::fromStdString(tempName);
+    string tempName = tempPlayers[i].getGamePieceName();
+    QString qName = QString::fromStdString(tempName);
 
-	playerIcons[i] = new QLabel(this);
-	playerIcons[i]->setPixmap(QPixmap(qName));
+    playerIcons[i] = new QLabel(this);
+    playerIcons[i]->setPixmap(QPixmap(qName));
     playerIcons[i]->setStyleSheet("QLabel { background-color: red; }");
 
-	Coordinates tempLocation = tempPlayers[i].getPixelLocation();	
+    Coordinates tempLocation = tempPlayers[i].getPixelLocation();
 
     if(numPlayers == 2) {
- 	    playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
-	} else if (numPlayers == 3) {
-		if(i < 2){
-	    		playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
-		} else if (i == 2) {
-			playerIcons[i]->setGeometry(tempLocation.x + (pieceCounter*22), tempLocation.y + (22), 25, 25);
-		}
+        playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
+    } else if (numPlayers == 3) {
+        if(i < 2){
+                playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
+        } else if (i == 2) {
+            playerIcons[i]->setGeometry(tempLocation.x + (pieceCounter*22), tempLocation.y + (22), 25, 25);
+        }
 
- 	} else if (numPlayers == 4) {
-		if (i < 2) {
-			playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
-		} else if (i >= 2 && i < 4) {
-			playerIcons[i]->setGeometry(tempLocation.x + (pieceCounter*22), tempLocation.y + (22), 25, 25);
-			pieceCounter++;
-		}
-	}
+    } else if (numPlayers == 4) {
+        if (i < 2) {
+            playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
+        } else if (i >= 2 && i < 4) {
+            playerIcons[i]->setGeometry(tempLocation.x + (pieceCounter*22), tempLocation.y + (22), 25, 25);
+            pieceCounter++;
+        }
+    }
 
-  	playerIcons[i]->setFixedWidth(25);
-  	playerIcons[i]->setFixedHeight(25);
+    playerIcons[i]->setFixedWidth(25);
+    playerIcons[i]->setFixedHeight(25);
     playerIcons[i]->setScaledContents(true);
-  	playerIcons[i]->show();
+    playerIcons[i]->show();
   }
   playerIcons[0]->setStyleSheet("QLabel { background-color: green; }");
 }
@@ -88,48 +89,48 @@ void CentralWidget::drawCard() {
 }
 
 void CentralWidget::movePieces(int playerNum, Coordinates tempCoordinates){
-    
+
     Coordinates tempLocation = tempCoordinates;
 
     if(playerNum == 0) {
         playerIcons[playerNum]->setGeometry(tempLocation.x, tempLocation.y, 25, 25);
-	} else if (playerNum == 1){
-	    playerIcons[playerNum]->setGeometry(tempLocation.x + (22), tempLocation.y, 25, 25);
-	} else if (playerNum == 2) {
-	    playerIcons[playerNum]->setGeometry(tempLocation.x, tempLocation.y + (22), 25, 25);
- 	} else if (playerNum == 3) {
-	    playerIcons[playerNum]->setGeometry(tempLocation.x + (22), tempLocation.y + (22), 25, 25);
+    } else if (playerNum == 1){
+        playerIcons[playerNum]->setGeometry(tempLocation.x + (22), tempLocation.y, 25, 25);
+    } else if (playerNum == 2) {
+        playerIcons[playerNum]->setGeometry(tempLocation.x, tempLocation.y + (22), 25, 25);
+    } else if (playerNum == 3) {
+        playerIcons[playerNum]->setGeometry(tempLocation.x + (22), tempLocation.y + (22), 25, 25);
     }
 }
 
 void CentralWidget::changeDiceImg(int rollNum1, int rollNum2){
-    
+
     if(rollNum1 == 1) {
-	dice1->setPixmap(QPixmap("./Dice/dice1.png"));
+    dice1->setPixmap(QPixmap("./Dice/dice1.png"));
     } else if (rollNum1 == 2) {
-	dice1->setPixmap(QPixmap("./Dice/dice2.png"));
+    dice1->setPixmap(QPixmap("./Dice/dice2.png"));
     } else if (rollNum1 == 3) {
-	dice1->setPixmap(QPixmap("./Dice/dice3.png"));
+    dice1->setPixmap(QPixmap("./Dice/dice3.png"));
     } else if (rollNum1 == 4) {
-	dice1->setPixmap(QPixmap("./Dice/dice4.png"));
+    dice1->setPixmap(QPixmap("./Dice/dice4.png"));
     } else if (rollNum1 == 5) {
-	dice1->setPixmap(QPixmap("./Dice/dice5.png"));
+    dice1->setPixmap(QPixmap("./Dice/dice5.png"));
     } else if (rollNum1 == 6) {
-	dice1->setPixmap(QPixmap("./Dice/dice6.png"));
+    dice1->setPixmap(QPixmap("./Dice/dice6.png"));
     }
 
     if(rollNum2 == 1) {
-	dice2->setPixmap(QPixmap("./Dice/dice1.png"));
+    dice2->setPixmap(QPixmap("./Dice/dice1.png"));
     } else if (rollNum2 == 2) {
-	dice2->setPixmap(QPixmap("./Dice/dice2.png"));
+    dice2->setPixmap(QPixmap("./Dice/dice2.png"));
     } else if (rollNum2 == 3) {
-	dice2->setPixmap(QPixmap("./Dice/dice3.png"));
+    dice2->setPixmap(QPixmap("./Dice/dice3.png"));
     } else if (rollNum2 == 4) {
-	dice2->setPixmap(QPixmap("./Dice/dice4.png"));
+    dice2->setPixmap(QPixmap("./Dice/dice4.png"));
     } else if (rollNum2 == 5) {
-	dice2->setPixmap(QPixmap("./Dice/dice5.png"));
+    dice2->setPixmap(QPixmap("./Dice/dice5.png"));
     } else if (rollNum2 == 6) {
-	dice2->setPixmap(QPixmap("./Dice/dice6.png"));
+    dice2->setPixmap(QPixmap("./Dice/dice6.png"));
     }
 }
 
@@ -141,35 +142,35 @@ void CentralWidget::setActivePlayer(int playerNum){
 }
 
 void CentralWidget::hidePiece(int playerNum){
-	playerIcons[playerNum]->hide();
+    playerIcons[playerNum]->hide();
 }
 
 void CentralWidget::showCommunity(int cardNum){
-	communityCover->hide();
-	communityCards[cardNum]->show();
+    communityCover->hide();
+    communityCards[cardNum]->show();
 }
 
 void CentralWidget::resetCommunity(int cardNum){
-	communityCards[cardNum]->hide();
-	communityCover->show();
+    communityCards[cardNum]->hide();
+    communityCover->show();
 }
 
 void CentralWidget::showChance(int cardNum){
-	chanceCover->hide();
-	chanceCards[cardNum]->show();
+    chanceCover->hide();
+    chanceCards[cardNum]->show();
 }
 
 void CentralWidget::resetChance(int cardNum){
-	chanceCards[cardNum]->hide();
-	chanceCover->show();
-	
+    chanceCards[cardNum]->hide();
+    chanceCover->show();
+
 }
 
 void CentralWidget::initializingCards(int tempArray[]){
 
   communityCards = new QLabel*[10];
   chanceCards = new QLabel*[10];
- 
+
 
   //chance card 0
   chanceCards[tempArray[0]] = new QLabel(this);
@@ -179,7 +180,7 @@ void CentralWidget::initializingCards(int tempArray[]){
   chanceCards[tempArray[0]]->setFixedHeight(100);
   chanceCards[tempArray[0]]->setScaledContents(true);
   chanceCards[tempArray[0]]->hide();
-  
+
   //chance card 1
   chanceCards[tempArray[1]] = new QLabel(this);
   chanceCards[tempArray[1]]->setPixmap(QPixmap("./Chance/chance1.png"));
@@ -197,7 +198,7 @@ void CentralWidget::initializingCards(int tempArray[]){
   chanceCards[tempArray[2]]->setFixedHeight(100);
   chanceCards[tempArray[2]]->setScaledContents(true);
   chanceCards[tempArray[2]]->hide();
- 
+
   //chance card 3
   chanceCards[tempArray[3]] = new QLabel(this);
   chanceCards[tempArray[3]]->setPixmap(QPixmap("./Chance/chance3.png"));
@@ -296,7 +297,7 @@ void CentralWidget::initializingCards(int tempArray[]){
   communityCards[tempArray[3]]->setFixedHeight(100);
   communityCards[tempArray[3]]->setScaledContents(true);
   communityCards[tempArray[3]]->hide();
-  
+
   //community card 4
   communityCards[tempArray[4]] = new QLabel(this);
   communityCards[tempArray[4]]->setPixmap(QPixmap("./Community Chest/community4.png"));
