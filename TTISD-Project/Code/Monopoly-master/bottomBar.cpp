@@ -261,11 +261,14 @@ void BottomBar::rollDice() {
 
     //moving pieces
     oldSpace = myWindow->getPlayerLocation(currentPlayerNum);
+    // TODO change newSpace here
     newSpace = oldSpace;
     newSpace += (diceRoll1 + diceRoll2);
     newSpace = newSpace % 40;
+
     myWindow->setPlayerLocation(currentPlayerNum, newSpace);
     monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
+    allPlayers[currentPlayerNum]->addHistory("Moved to " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1) + ".");
 
     if (oldSpace > newSpace) {
         moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank, 200);
