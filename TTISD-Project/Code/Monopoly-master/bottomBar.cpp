@@ -438,7 +438,7 @@ void BottomBar::purchase() {
         //moneyAction.giveBank(myWindow->getPlayer(currentPlayerNum), bank, 1000);
         myWindow->setSpaceOwnership(newSpace, currentPlayerNum);
         allPlayers[currentPlayerNum]->setMoneyText();
-        allPlayers[currentPlayerNum]->addHistory("Player bought the property for €" + to_string(myWindow->getSpacePropertyCost(newSpace)));
+        allPlayers[currentPlayerNum]->addHistory("Player bought " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1) + " for €" + to_string(myWindow->getSpacePropertyCost(newSpace)));
 
         //if(myWindow->spaceType(newSpace) == "Property") {
         stringstream ss;

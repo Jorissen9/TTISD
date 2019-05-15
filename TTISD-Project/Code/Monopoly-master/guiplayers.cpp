@@ -81,8 +81,8 @@ void GUIPlayers::addProperty(int propertyNum, string propertyName, Space** tempA
     QPushButton* newButton = new QPushButton(tempName);
     ownedProperties[ownedCount] = newButton;
     ownedProperties[ownedCount]->setEnabled(false);
-        currentPropertyNum = propertyNum;
-        allProperties[ownedCount] = propertyNum;
+    currentPropertyNum = propertyNum;
+    allProperties[ownedCount] = propertyNum;
 
 /*
     QSignalMapper* signalMapper = new QSignalMapper(this);
@@ -141,7 +141,7 @@ void GUIPlayers::upgradeSpace(){
                UpGradeLimit.exec();
         } else {
                moneyAction.giveBank(player, bankPointer, allSpaces[currentPropertyNum]->getPropertyCost());
-               addHistory("Player upgraded the property for €" + to_string(allSpaces[currentPropertyNum]->getPropertyCost()) +
+               addHistory("Player upgraded " + allSpaces[currentPropertyNum]->getName(0) + allSpaces[currentPropertyNum]->getName(1) + " for €" + to_string(allSpaces[currentPropertyNum]->getPropertyCost()) +
                           " the property has now " + to_string(allSpaces[currentPropertyNum]->getHouses()) + " houses.");
         }
     } else {
