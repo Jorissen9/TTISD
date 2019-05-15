@@ -25,6 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        MainWindow2.cpp \
+        RPLIDAR/drvlogic/lidarmgr.cpp \
+        RPLIDAR/drvlogic/stdafx.cpp \
+        RPLIDAR/sdk/src/arch/win32/net_serial.cpp \
+        RPLIDAR/sdk/src/arch/win32/timer.cpp \
+        RPLIDAR/sdk/src/hal/thread.cpp \
+        RPLIDAR/sdk/src/rplidar_driver.cpp \
         boardgame.cpp \
         Game_Board.cpp \
         action.cpp \
@@ -45,6 +52,56 @@ SOURCES += \
 
 HEADERS += \
         Game_Board.h \
+        MainWindow2.hpp \
+        RPLIDAR/drvlogic/common.h \
+        RPLIDAR/drvlogic/lidarmgr.h \
+        RPLIDAR/drvlogic/stdafx.h \
+        RPLIDAR/ref/wtl/atlapp.h \
+        RPLIDAR/ref/wtl/atlbase.h \
+        RPLIDAR/ref/wtl/atlcrack.h \
+        RPLIDAR/ref/wtl/atlctrls.h \
+        RPLIDAR/ref/wtl/atlctrlw.h \
+        RPLIDAR/ref/wtl/atlctrlx.h \
+        RPLIDAR/ref/wtl/atlddx.h \
+        RPLIDAR/ref/wtl/atldef.h \
+        RPLIDAR/ref/wtl/atldlgs.h \
+        RPLIDAR/ref/wtl/atldwm.h \
+        RPLIDAR/ref/wtl/atlfind.h \
+        RPLIDAR/ref/wtl/atlframe.h \
+        RPLIDAR/ref/wtl/atlgdi.h \
+        RPLIDAR/ref/wtl/atlmisc.h \
+        RPLIDAR/ref/wtl/atlprint.h \
+        RPLIDAR/ref/wtl/atlres.h \
+        RPLIDAR/ref/wtl/atlresce.h \
+        RPLIDAR/ref/wtl/atlribbon.h \
+        RPLIDAR/ref/wtl/atlscrl.h \
+        RPLIDAR/ref/wtl/atlsplit.h \
+        RPLIDAR/ref/wtl/atltheme.h \
+        RPLIDAR/ref/wtl/atluser.h \
+        RPLIDAR/ref/wtl/atlwince.h \
+        RPLIDAR/ref/wtl/atlwinx.h \
+        RPLIDAR/sdk/include/rplidar.h \
+        RPLIDAR/sdk/include/rplidar_cmd.h \
+        RPLIDAR/sdk/include/rplidar_driver.h \
+        RPLIDAR/sdk/include/rplidar_protocol.h \
+        RPLIDAR/sdk/include/rptypes.h \
+        RPLIDAR/sdk/src/arch/win32/arch_win32.h \
+        RPLIDAR/sdk/src/arch/win32/net_serial.h \
+        RPLIDAR/sdk/src/arch/win32/timer.h \
+        RPLIDAR/sdk/src/arch/win32/winthread.hpp \
+        RPLIDAR/sdk/src/hal/abs_rxtx.h \
+        RPLIDAR/sdk/src/hal/assert.h \
+        RPLIDAR/sdk/src/hal/byteops.h \
+        RPLIDAR/sdk/src/hal/event.h \
+        RPLIDAR/sdk/src/hal/locker.h \
+        RPLIDAR/sdk/src/hal/socket.h \
+        RPLIDAR/sdk/src/hal/thread.h \
+        RPLIDAR/sdk/src/hal/types.h \
+        RPLIDAR/sdk/src/hal/util.h \
+        RPLIDAR/sdk/src/rplidar_driver_impl.h \
+        RPLIDAR/sdk/src/rplidar_driver_serial.h \
+        RPLIDAR/sdk/src/sdkcommon.h \
+        RPLIDAR_wrapper.h \
         action.h \
         bank.h \
         bottomBar.h \

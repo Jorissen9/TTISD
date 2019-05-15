@@ -1,3 +1,10 @@
+debug/MainWindow2.o
+debug/lidarmgr.o
+debug/stdafx.o
+debug/net_serial.o
+debug/timer.o
+debug/thread.o
+debug/rplidar_driver.o
 debug/boardgame.o
 debug/Game_Board.o
 debug/action.o
@@ -15,6 +22,7 @@ debug/money_action.o
 debug/move_action.o
 debug/player.o
 debug/space.o
+debug/moc_MainWindow2.o
 debug/moc_bottomBar.o
 debug/moc_centralwidget.o
 debug/moc_guiplayers.o
