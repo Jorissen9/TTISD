@@ -10,6 +10,7 @@ BottomBar::BottomBar() {
     freePark = new Player(0);
     communityCount = 0;
     chanceCount = 0;
+    rollButtonActive = true;
 
     //creating shuffled index
     for (int i = 0; i < 10; i++) {
@@ -148,10 +149,8 @@ BottomBar::BottomBar() {
     player2Button = new QPushButton("See Player 2");
     player3Button = new QPushButton("See Player 3");
     player4Button = new QPushButton("See Player 4");
-    endTurnButton = new QPushButton("End Turn");
 
     layout = new QGridLayout;
-    layout->addWidget(endTurnButton, 0, 0, nullptr);
     layout->addWidget(upgradeButton, 0, 1, nullptr);
     layout->addWidget(purchaseButton, 0, 2, nullptr);
     layout->addWidget(rollButton, 0, 3, nullptr);
@@ -172,13 +171,10 @@ BottomBar::BottomBar() {
     connect(player2Button, SIGNAL(clicked()), this, SLOT(seePlayer2()));
     connect(player3Button, SIGNAL(clicked()), this, SLOT(seePlayer3()));
     connect(player4Button, SIGNAL(clicked()), this, SLOT(seePlayer4()));
-    connect(rollButton, SIGNAL(clicked()), this, SLOT(rollDice()));
-    connect(endTurnButton, SIGNAL(clicked()), this, SLOT(endTurn()));
+    connect(rollButton, SIGNAL(clicked()), this, SLOT(rollOrEnd()));
     connect(purchaseButton, SIGNAL(clicked()), this, SLOT(purchase()));
     connect(upgradeButton, SIGNAL(clicked()), this, SLOT(upgrade()));
 
-    //disabling the endTurnButton
-    endTurnButton->setEnabled(false);
     purchaseButton->setEnabled(false);
     upgradeButton->setEnabled(false);
 }
@@ -265,15 +261,19 @@ void BottomBar::rollDice() {
 
     //moving pieces
     oldSpace = myWindow->getPlayerLocation(currentPlayerNum);
+    // TODO change newSpace here
     newSpace = oldSpace;
     newSpace += (diceRoll1 + diceRoll2);
     newSpace = newSpace % 40;
+
     myWindow->setPlayerLocation(currentPlayerNum, newSpace);
     monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
+    allPlayers[currentPlayerNum]->addHistory("Moved to " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1));
 
     if (oldSpace > newSpace) {
         moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank, 200);
         allPlayers[currentPlayerNum]->setMoneyText();
+        allPlayers[currentPlayerNum]->addHistory("Received €200 from start.");
     }
 
     /*****************************     If new location is a Property     *****************************/
@@ -298,6 +298,7 @@ void BottomBar::rollDice() {
 
                 moneyAction.executeAction(myWindow->getPlayer(currentPlayerNum), myWindow->getPlayer(currentOwnership), myWindow->getSpaceRent(newSpace));
                 allPlayers[currentPlayerNum]->setMoneyText();
+                allPlayers[currentPlayerNum]->addHistory("Payed player " + to_string(currentOwnership + 1) + " €" + to_string(myWindow->getSpaceRent(newSpace)));
             }
         }
 
@@ -335,6 +336,7 @@ void BottomBar::rollDice() {
     } else if (myWindow->spaceType(newSpace) == "Tax") {
         moneyAction.executeAction(myWindow->getPlayer(currentPlayerNum), freePark, myWindow->getSpaceTax(newSpace));
         allPlayers[currentPlayerNum]->setMoneyText();
+        allPlayers[currentPlayerNum]->addHistory("Payed free parking €" + to_string(myWindow->getSpaceTax(newSpace)) + " which is now at €" + to_string(freePark->getMoneyAmount()));
 
         //checking if players are out of money
         if (myWindow->getPlayerMoney(currentPlayerNum) <= 0 && myWindow->isPlayerAlive(currentPlayerNum) == true) {
@@ -368,10 +370,10 @@ void BottomBar::rollDice() {
 
         //if the space is Free Parking...
     } else if (myWindow->spaceType(newSpace) == "FreeParking") {
+        allPlayers[currentPlayerNum]->addHistory("Received free parking with an amount of €" + to_string(freePark->getMoneyAmount()));
         moneyAction.executeAction(freePark, myWindow->getPlayer(currentPlayerNum), freePark->getMoneyAmount());
         freePark->setMoneyAmount(0);
         allPlayers[currentPlayerNum]->setMoneyText();
-
 
         /*******************************     If new Location is "Go To Jail"     **********************************/
 
@@ -380,7 +382,7 @@ void BottomBar::rollDice() {
         myWindow->setPlayerLocation(currentPlayerNum, 10);
         moneyAction.executeAction(myWindow->getPlayer(currentPlayerNum), freePark, 200);
         monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
-
+        allPlayers[currentPlayerNum]->addHistory("Player went to jail.");
 
         /*******************************     If new Location is "Community Chest"     **********************************/
 
@@ -393,15 +395,14 @@ void BottomBar::rollDice() {
         myWindow->setPlayerLocation(currentPlayerNum, myWindow->getPlayerLocation(currentPlayerNum));
         monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
 
-
         futureSpace = myWindow->getPlayerLocation(currentPlayerNum);
 
         if (futureSpace < newSpace) {
             moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank,  200);
+            allPlayers[currentPlayerNum]->addHistory("Received €200 from start.");
         }
 
         allPlayers[currentPlayerNum]->setMoneyText();
-
 
         /*******************************     If new Location is "Chance"     **********************************/
 
@@ -414,26 +415,19 @@ void BottomBar::rollDice() {
         myWindow->setPlayerLocation(currentPlayerNum, myWindow->getPlayerLocation(currentPlayerNum));
         monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
 
-
         futureSpace = myWindow->getPlayerLocation(currentPlayerNum);
 
         if (futureSpace < newSpace) {
             moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank,  200);
+            allPlayers[currentPlayerNum]->addHistory("Received €200 from start.");
         }
 
         allPlayers[currentPlayerNum]->setMoneyText();
-
     }
-
-    //disabling and enabling buttons
-    endTurnButton->setEnabled(true);
-    rollButton->setEnabled(false);
 }
 
 void BottomBar::upgrade() {
-
     allPlayers[currentPlayerNum]->enableUpgrade();
-
 }
 
 void BottomBar::purchase() {
@@ -441,14 +435,13 @@ void BottomBar::purchase() {
     //if player cannot afford the property
     if (myWindow->getPlayerMoney(currentPlayerNum) - myWindow->getSpacePropertyCost(newSpace) <= 0) {
         //let Player know he can't purchase in GUI (pop up box) or disable button
-
     } else {
-
         //paying the money
         moneyAction.giveBank(myWindow->getPlayer(currentPlayerNum), bank, myWindow->getSpacePropertyCost(newSpace));
         //moneyAction.giveBank(myWindow->getPlayer(currentPlayerNum), bank, 1000);
         myWindow->setSpaceOwnership(newSpace, currentPlayerNum);
         allPlayers[currentPlayerNum]->setMoneyText();
+        allPlayers[currentPlayerNum]->addHistory("Player bought " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1) + " for €" + to_string(myWindow->getSpacePropertyCost(newSpace)));
 
         //if(myWindow->spaceType(newSpace) == "Property") {
         stringstream ss;
@@ -463,7 +456,6 @@ void BottomBar::purchase() {
 
         allPlayers[currentPlayerNum]->addProperty(newSpace, tempString1 + " " + tempString2, myWindow->getAllSpaces());
         //}
-
     }
 
     //checking if players are out of money
@@ -497,7 +489,6 @@ void BottomBar::purchase() {
 }
 
 void BottomBar::endTurn() {
-
     //incrimenting turn
     myWindow->nextTurn();
     int next = myWindow->getPlayerTurn();
@@ -528,14 +519,12 @@ void BottomBar::endTurn() {
         string fullText;
         string informativeText;
 
-        rollButton->setEnabled(false);
         upgradeButton->setEnabled(false);
         purchaseButton->setEnabled(false);
         player1Button->setEnabled(false);
         player2Button->setEnabled(false);
         player3Button->setEnabled(false);
         player4Button->setEnabled(false);
-        endTurnButton->setEnabled(false);
         allPlayers[next]->disableUpgrade();
 
         ss << (next + 1);
@@ -559,8 +548,6 @@ void BottomBar::endTurn() {
     currentPlayerNum = next;
 
     //disabling and enabling buttons
-    endTurnButton->setEnabled(false);
-    rollButton->setEnabled(true);
     purchaseButton->setEnabled(false);
 
     for (int i = 0; i < 40; i++) {
@@ -571,12 +558,21 @@ void BottomBar::endTurn() {
             upgradeButton->setEnabled(false);
         }
     }
+
+    //Change current player's color
+    monopolyBoard->setActivePlayer(currentPlayerNum);
+    allPlayers[currentPlayerNum]->resetHistory();
 }
 
-
-
-
-
-
-
+void BottomBar::rollOrEnd(){
+    if(rollButtonActive)
+    {
+        rollDice();
+        rollButton->setText("End Turn");
+    } else {
+        endTurn();
+        rollButton->setText("Roll Dice");
+    }
+    rollButtonActive = !rollButtonActive;
+}
 

@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QDockWidget>
+#include <QTextEdit>
 #include <string>
 #include <sstream>
 #include <QVBoxLayout>
@@ -23,6 +24,8 @@ class GUIPlayers : public QDockWidget {
     Player* player;
     QLabel *numLabel;
     QLabel *moneyLabel;
+    QTextEdit *historyLabel;
+    QString history;
     QVBoxLayout* layout;
     QWidget* sideBar;
     QLabel* gamePieceImg;
@@ -46,6 +49,8 @@ class GUIPlayers : public QDockWidget {
     void disableUpgrade();
     void setAllSpaces(Space** spaceArray);
     void setBank(Bank* tempBank);
+    void addHistory(string action);
+    void resetHistory();
 
 };
 

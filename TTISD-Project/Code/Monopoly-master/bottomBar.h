@@ -20,11 +20,9 @@ class BottomBar : public QDockWidget {
   Q_OBJECT
 
   protected:
-
     QPushButton* rollButton;
     QPushButton* upgradeButton;
     QPushButton* purchaseButton;
-    QPushButton* endTurnButton;
     QPushButton* player1Button;
     QPushButton* player2Button;
     QPushButton* player3Button;
@@ -44,6 +42,7 @@ class BottomBar : public QDockWidget {
     int communityCount;
     int chanceCount;
     int index[10];
+    bool rollButtonActive;
 
     //storing reference pointers
     GUIPlayers** allPlayers;
@@ -54,11 +53,11 @@ class BottomBar : public QDockWidget {
 
   private slots:
     //need to incorporate to make the buttons work
-
     void rollDice();
     void upgrade();
     void purchase();
     void endTurn();
+    void rollOrEnd();
     void seePlayer1();
     void seePlayer2();
     void seePlayer3();

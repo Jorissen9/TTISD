@@ -48,17 +48,16 @@ CentralWidget::CentralWidget(int tempNum, Player* tempPlayers): QWidget() {
   int pieceCounter = 0;
 
   for(int i = 0; i < numPlayers; i++){
-
-  	
 	string tempName = tempPlayers[i].getGamePieceName();
 	QString qName = QString::fromStdString(tempName);
 
 	playerIcons[i] = new QLabel(this);
 	playerIcons[i]->setPixmap(QPixmap(qName));
+    playerIcons[i]->setStyleSheet("QLabel { background-color: red; }");
 
 	Coordinates tempLocation = tempPlayers[i].getPixelLocation();	
 
-        if(numPlayers == 2) {
+    if(numPlayers == 2) {
  	    playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
 	} else if (numPlayers == 3) {
 		if(i < 2){
@@ -78,11 +77,10 @@ CentralWidget::CentralWidget(int tempNum, Player* tempPlayers): QWidget() {
 
   	playerIcons[i]->setFixedWidth(25);
   	playerIcons[i]->setFixedHeight(25);
-  	playerIcons[i]->setScaledContents(true);
+    playerIcons[i]->setScaledContents(true);
   	playerIcons[i]->show();
   }
-  
-
+  playerIcons[0]->setStyleSheet("QLabel { background-color: green; }");
 }
 
 void CentralWidget::drawCard() {
@@ -91,17 +89,17 @@ void CentralWidget::drawCard() {
 
 void CentralWidget::movePieces(int playerNum, Coordinates tempCoordinates){
     
-    Coordinates tempLocation = tempCoordinates;	
+    Coordinates tempLocation = tempCoordinates;
 
-        if(playerNum == 0) {
- 	    playerIcons[playerNum]->setGeometry(tempLocation.x, tempLocation.y, 25, 25);
+    if(playerNum == 0) {
+        playerIcons[playerNum]->setGeometry(tempLocation.x, tempLocation.y, 25, 25);
 	} else if (playerNum == 1){
 	    playerIcons[playerNum]->setGeometry(tempLocation.x + (22), tempLocation.y, 25, 25);
 	} else if (playerNum == 2) {
 	    playerIcons[playerNum]->setGeometry(tempLocation.x, tempLocation.y + (22), 25, 25);
  	} else if (playerNum == 3) {
 	    playerIcons[playerNum]->setGeometry(tempLocation.x + (22), tempLocation.y + (22), 25, 25);
-	}
+    }
 }
 
 void CentralWidget::changeDiceImg(int rollNum1, int rollNum2){
@@ -118,7 +116,7 @@ void CentralWidget::changeDiceImg(int rollNum1, int rollNum2){
 	dice1->setPixmap(QPixmap("./Dice/dice5.png"));
     } else if (rollNum1 == 6) {
 	dice1->setPixmap(QPixmap("./Dice/dice6.png"));
-    } 
+    }
 
     if(rollNum2 == 1) {
 	dice2->setPixmap(QPixmap("./Dice/dice1.png"));
@@ -133,8 +131,13 @@ void CentralWidget::changeDiceImg(int rollNum1, int rollNum2){
     } else if (rollNum2 == 6) {
 	dice2->setPixmap(QPixmap("./Dice/dice6.png"));
     }
-	
-	
+}
+
+void CentralWidget::setActivePlayer(int playerNum){
+    for(int i = 0; i < numPlayers; i++){
+        playerIcons[i]->setStyleSheet("QLabel { background-color: red; }");
+    }
+    playerIcons[playerNum]->setStyleSheet("QLabel { background-color: green; }");
 }
 
 void CentralWidget::hidePiece(int playerNum){

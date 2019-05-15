@@ -30,6 +30,7 @@ class CentralWidget: public QWidget {
     CentralWidget(int tempNum, Player* tempPlayers);
     void changeDiceImg(int rollNum1, int rollNum2);
     void movePieces(int playerNum, Coordinates tempCoordinates);
+    void setActivePlayer(int playerNum);
     void hidePiece(int playerNum);
     void showCommunity(int cardNum);
     void resetCommunity(int cardNum);
