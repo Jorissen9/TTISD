@@ -268,7 +268,7 @@ void BottomBar::rollDice() {
 
     myWindow->setPlayerLocation(currentPlayerNum, newSpace);
     monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
-    allPlayers[currentPlayerNum]->addHistory("Moved to " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1) + ".");
+    allPlayers[currentPlayerNum]->addHistory("Moved to " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1));
 
     if (oldSpace > newSpace) {
         moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank, 200);
@@ -336,7 +336,7 @@ void BottomBar::rollDice() {
     } else if (myWindow->spaceType(newSpace) == "Tax") {
         moneyAction.executeAction(myWindow->getPlayer(currentPlayerNum), freePark, myWindow->getSpaceTax(newSpace));
         allPlayers[currentPlayerNum]->setMoneyText();
-        allPlayers[currentPlayerNum]->addHistory("Payed free parking €" + to_string(myWindow->getSpaceRent(newSpace)) + " which is now at €" + to_string(freePark->getMoneyAmount()));
+        allPlayers[currentPlayerNum]->addHistory("Payed free parking €" + to_string(myWindow->getSpaceTax(newSpace)) + " which is now at €" + to_string(freePark->getMoneyAmount()));
 
         //checking if players are out of money
         if (myWindow->getPlayerMoney(currentPlayerNum) <= 0 && myWindow->isPlayerAlive(currentPlayerNum) == true) {
@@ -370,8 +370,8 @@ void BottomBar::rollDice() {
 
         //if the space is Free Parking...
     } else if (myWindow->spaceType(newSpace) == "FreeParking") {
+        allPlayers[currentPlayerNum]->addHistory("Received free parking with an amount of €" + to_string(freePark->getMoneyAmount()));
         moneyAction.executeAction(freePark, myWindow->getPlayer(currentPlayerNum), freePark->getMoneyAmount());
-        allPlayers[currentPlayerNum]->addHistory("Received free parking cash with an amount of €" + to_string(freePark->getMoneyAmount()));
         freePark->setMoneyAmount(0);
         allPlayers[currentPlayerNum]->setMoneyText();
 
@@ -382,7 +382,7 @@ void BottomBar::rollDice() {
         myWindow->setPlayerLocation(currentPlayerNum, 10);
         moneyAction.executeAction(myWindow->getPlayer(currentPlayerNum), freePark, 200);
         monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
-        allPlayers[currentPlayerNum]->addHistory("Player went to jail & paid free park €200.");
+        allPlayers[currentPlayerNum]->addHistory("Player went to jail.");
 
         /*******************************     If new Location is "Community Chest"     **********************************/
 
