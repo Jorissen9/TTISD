@@ -30,8 +30,14 @@ GUIPlayers::GUIPlayers(Player* p, int playerNum){
   moneyLabel->setText( qMoney );
 
   //current history
-  historyLabel = new QLabel( this );
-  historyLabel->setWordWrap(true);
+  historyLabel = new QTextEdit( this );
+  historyLabel->setReadOnly(true);
+
+  QPalette palette = historyLabel->palette();
+  palette.setColor(QPalette::Base, palette.color(QPalette::Window));
+  historyLabel->setPalette(palette);
+  historyLabel->setFrameStyle(QFrame::NoFrame);
+
   resetHistory();
 
   //player's game piece
@@ -102,7 +108,7 @@ void GUIPlayers::addProperty(int propertyNum, string propertyName, Space** tempA
 
 */
 
-    connect(ownedProperties[ownedCount], SIGNAL(clicked()), this, SLOT(upgradeSpace()) );
+    connect(ownedProperties[ownedCount], SIGNAL(clicked()), this, SLOT(upgradeSpace()));
     layout->addWidget(ownedProperties[ownedCount]);
     sideBar->setLayout(layout);
     setWidget(sideBar);
@@ -127,12 +133,25 @@ void GUIPlayers::disableUpgrade(){
 }
 
 void GUIPlayers::upgradeSpace(){
-    bool isUpgraded;
-    //int currentSpace = allProperties[num];
-    isUpgraded = allSpaces[currentPropertyNum]->upgrade();
+    // find out which button called the event
+    auto button = qobject_cast<QPushButton *>(sender());
+    int index = 0;
+    QString propertyName = button->text();
+
+    for(int i=0; i<=40; i++) {
+        QString tempName = QString(allSpaces[i]->getName(0).c_str()).trimmed() + " "
+                         + QString(allSpaces[i]->getName(1).c_str()).trimmed();
+        if(tempName == propertyName.toUtf8().constData()) {
+            index = i;
+            break;
+        }
+    }
+
+    // handel the event with the corrent index
+    bool isUpgraded = allSpaces[index]->upgrade();
 
     if(isUpgraded == true){
-        if((player->getMoneyAmount() - allSpaces[currentPropertyNum]->getPropertyCost()) <= 0) {
+        if((player->getMoneyAmount() - allSpaces[index]->getPropertyCost()) <= 0) {
                string text = "You do not have enough money to upgrade this property!";
                QString qText = QString::fromStdString(text);
 
@@ -140,9 +159,9 @@ void GUIPlayers::upgradeSpace(){
                UpGradeLimit.setText(qText);
                UpGradeLimit.exec();
         } else {
-               moneyAction.giveBank(player, bankPointer, allSpaces[currentPropertyNum]->getPropertyCost());
-               addHistory("Player upgraded " + allSpaces[currentPropertyNum]->getName(0) + allSpaces[currentPropertyNum]->getName(1) + " for €" + to_string(allSpaces[currentPropertyNum]->getPropertyCost()) +
-                          " the property has now " + to_string(allSpaces[currentPropertyNum]->getHouses()) + " houses.");
+               moneyAction.giveBank(player, bankPointer, allSpaces[index]->getPropertyCost());
+               addHistory("Player upgraded " + allSpaces[index]->getName(0) + allSpaces[index]->getName(1) + " for €" + to_string(allSpaces[index]->getPropertyCost()) +
+                          " the property has now " + to_string(allSpaces[index]->getHouses()) + " houses.");
         }
     } else {
         string text = "Maximum (5) amount of upgrades reached for this property!";

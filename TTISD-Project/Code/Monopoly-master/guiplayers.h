@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QDockWidget>
+#include <QTextEdit>
 #include <string>
 #include <sstream>
 #include <QVBoxLayout>
@@ -23,7 +24,7 @@ class GUIPlayers : public QDockWidget {
     Player* player;
     QLabel *numLabel;
     QLabel *moneyLabel;
-    QLabel *historyLabel;
+    QTextEdit *historyLabel;
     QString history;
     QVBoxLayout* layout;
     QWidget* sideBar;
