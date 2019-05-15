@@ -24,6 +24,8 @@ PA6: Board Game
 #include "bank.h"
 #include "mainwindow.h"
 
+#include "RPLIDAR_settings.h"
+
 using namespace std;
 
 int main(int argv, char *argc[]) {
@@ -32,12 +34,21 @@ int main(int argv, char *argc[]) {
     QApplication app(argv, argc);
 
     //seeding the time
-    srand(time(NULL));
+    srand(static_cast<uint32_t>(time(nullptr)));
 
     //variables
     int numOfPlayers = 0;
-    char gamePieces[10] = {'~', '!', '@', '#', '$', '%', '^', '&', '*', '?'};
     int numOfPieces = 10;
+
+#if 1   // Use Qt app instead of console version
+    lidar::Settings lidar_settings { 5, 115200 };
+
+
+    /*************    setting up RPLIDAR pop up box    *****************/
+    lidar::SettingsDialog rpsettings;
+    rpsettings.exec();
+    lidar_settings = rpsettings.getResult();
+
 
     /*************    setting up NUMBER OF PLAYERS pop up box    *****************/
     QMessageBox numPlayersBox;
@@ -65,7 +76,7 @@ int main(int argv, char *argc[]) {
     /*****************************************************************************/
 
     //setting up the game
-    MainWindow mainWindow(numOfPlayers);
+    MainWindow mainWindow(numOfPlayers, lidar_settings);
     Game_Board gameBoard;
     gameBoard.createPlayers(numOfPlayers);
     Bank bank;
@@ -138,12 +149,13 @@ int main(int argv, char *argc[]) {
     return app.exec();
 
 
-
+#else
 
 
 
 
     //creating shuffled index
+    char gamePieces[10] = {'~', '!', '@', '#', '$', '%', '^', '&', '*', '?'};
     int index[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     int random1 = -1;
     int random2 = -1;
@@ -679,5 +691,5 @@ int main(int argv, char *argc[]) {
         gameBoard.displayHorizontal(10, 0, numOfPlayers);
 
     }
-
+#endif
 }

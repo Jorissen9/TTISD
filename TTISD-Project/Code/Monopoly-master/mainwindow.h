@@ -11,23 +11,27 @@
 #include "player.h"
 #include "space.h"
 
+#include "RPLIDAR_wrapper.h"
+
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
 
-  private:
-  GUIPlayers* guiPlayers[4];
-  CentralWidget* centralWidget;
-  BottomBar* bottomBar;
-  int playerTurn;
-  int totalPlayers;
-  Player* players;
-  Coordinates boardSpace[40];
-  Space** spaces;
+    private:
+      GUIPlayers* guiPlayers[4];
+      CentralWidget* centralWidget;
+      BottomBar* bottomBar;
+      int playerTurn;
+      int totalPlayers;
+      Player* players;
+      Coordinates boardSpace[40];
+      Space** spaces;
+
+      lidar::Driver rplidardriver;
 
   public:
-    MainWindow(int numPlayers);
-    MainWindow();
+    MainWindow(int numPlayers, lidar::Settings lidar_settings);
+//    MainWindow();
     void nextTurn();
     int getPlayerTurn();
     void setGamePiece(int playerNum, string pieceName);

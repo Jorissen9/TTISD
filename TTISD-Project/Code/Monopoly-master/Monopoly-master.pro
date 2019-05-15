@@ -25,7 +25,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        MainWindow2.cpp \
         RPLIDAR/drvlogic/lidarmgr.cpp \
         RPLIDAR/drvlogic/stdafx.cpp \
         RPLIDAR/sdk/src/arch/win32/net_serial.cpp \
@@ -52,7 +51,6 @@ SOURCES += \
 
 HEADERS += \
         Game_Board.h \
-        MainWindow2.hpp \
         RPLIDAR/drvlogic/common.h \
         RPLIDAR/drvlogic/lidarmgr.h \
         RPLIDAR/drvlogic/stdafx.h \
@@ -101,6 +99,7 @@ HEADERS += \
         RPLIDAR/sdk/src/rplidar_driver_impl.h \
         RPLIDAR/sdk/src/rplidar_driver_serial.h \
         RPLIDAR/sdk/src/sdkcommon.h \
+        RPLIDAR_settings.h \
         RPLIDAR_wrapper.h \
         action.h \
         bank.h \

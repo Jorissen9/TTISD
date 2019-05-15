@@ -1,8 +1,9 @@
 #include "mainwindow.h"
 
 /**************     Primary constructor     ***************/
-MainWindow::MainWindow(int numPlayers)
+MainWindow::MainWindow(int numPlayers, lidar::Settings lidar_settings)
     : QMainWindow(nullptr)
+    , rplidardriver(lidar_settings)
 {
     setFixedSize(800, 755);
 
@@ -645,7 +646,7 @@ MainWindow::MainWindow(int numPlayers)
 }
 
 //Secondary constructor
-MainWindow::MainWindow() { }
+//MainWindow::MainWindow() { }
 
 /***********     Setting up the entire window     ************/
 void MainWindow::windowSetUp() {

@@ -201,7 +201,7 @@ void BottomBar::setCentralWidget(CentralWidget *tempBoard) {
 }
 
 void BottomBar::setMainWindow(MainWindow *tempWindow) {
-    myWindow = new MainWindow();
+    //myWindow = new MainWindow();
     myWindow = tempWindow;
 
     for (int i = 0; i < numberOfPlayers; i++) {
