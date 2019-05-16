@@ -53,6 +53,7 @@ class MainWindow : public QMainWindow {
     int getSpaceTax(int spaceIndex);
     string getSpaceName(int spaceIndex, int index);
     Space** getAllSpaces();
+    int getTotalPlayers();
 };
 
 #endif

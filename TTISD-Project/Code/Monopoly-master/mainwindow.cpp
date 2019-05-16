@@ -788,6 +788,10 @@ Space **MainWindow::getAllSpaces() {
     return spaces;
 }
 
+int MainWindow::getTotalPlayers(){
+    return totalPlayers;
+}
+
 
 
 

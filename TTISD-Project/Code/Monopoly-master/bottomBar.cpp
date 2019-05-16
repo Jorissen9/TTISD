@@ -309,7 +309,9 @@ void BottomBar::rollDice() {
             if (myWindow->getPlayerName(currentPlayerNum) != myWindow->getPlayerName(myWindow->getSpaceOwnership(newSpace))) {
 
                 moneyAction.executeAction(myWindow->getPlayer(currentPlayerNum), myWindow->getPlayer(currentOwnership), myWindow->getSpaceRent(newSpace));
-                allPlayers[currentPlayerNum]->setMoneyText();
+                for(int i = 0; i < myWindow->getTotalPlayers(); i++) {
+                    allPlayers[i]->setMoneyText();
+                }
                 allPlayers[currentPlayerNum]->addHistory("Payed player " + to_string(currentOwnership + 1) + " €" + to_string(myWindow->getSpaceRent(newSpace)));
             }
         }
