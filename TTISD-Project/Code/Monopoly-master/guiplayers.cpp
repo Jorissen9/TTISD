@@ -1,6 +1,7 @@
 #include "guiplayers.h"
 
 GUIPlayers::GUIPlayers(Player* p, int playerNum){
+    this->setTitleBarWidget(new QWidget());
 
   player = p;
   stringstream ss;
@@ -30,13 +31,14 @@ GUIPlayers::GUIPlayers(Player* p, int playerNum){
   moneyLabel->setText( qMoney );
 
   //current history
+  histTitle = new QLabel("History:");
   historyLabel = new QTextEdit( this );
   historyLabel->setReadOnly(true);
 
   QPalette palette = historyLabel->palette();
-  palette.setColor(QPalette::Base, palette.color(QPalette::Window));
+  palette.setColor(QPalette::Base, palette.color(QPalette::Light));
   historyLabel->setPalette(palette);
-  historyLabel->setFrameStyle(QFrame::NoFrame);
+  historyLabel->setFrameStyle(QFrame::Panel);
 
   resetHistory();
 
@@ -50,16 +52,18 @@ GUIPlayers::GUIPlayers(Player* p, int playerNum){
   gamePieceImg->setScaledContents(true);
 
   //Adding all parts to layout
-  gamePieceImg ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  numLabel     ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  gamePieceImg ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  numLabel     ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  histTitle    ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   historyLabel ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  moneyLabel   ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  moneyLabel   ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
 
   layout = new QVBoxLayout;
-  layout->setAlignment(Qt::AlignLeft);
+  layout->setAlignment(Qt::AlignCenter);
   layout->addWidget(gamePieceImg, 0);
   layout->addWidget(numLabel, 0);
+  layout->addWidget(histTitle, 0);
   layout->addWidget(historyLabel);
   layout->addWidget(moneyLabel, 0);
 
@@ -196,13 +200,11 @@ void GUIPlayers::setBank(Bank* tempBank){
 }
 
 void GUIPlayers::resetHistory(){
-    history = "History:<br>";
-    historyLabel->setText("History:<br>");
+    historyLabel->setText("");
 }
 
 void GUIPlayers::addHistory(string action){
-    history.append(QString::fromStdString(action) + "<br>");
-    historyLabel->setText(history);
+    historyLabel->setHtml(historyLabel->toHtml().prepend(QString::fromStdString(action)));
     historyLabel->update();
 }
 

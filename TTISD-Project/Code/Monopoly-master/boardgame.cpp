@@ -9,7 +9,10 @@ PA6: Board Game
 #include <string>
 #include <sstream>
 #include <cstdlib>
+#include <QDesktopWidget>
 #include <QApplication>
+#include <QStyle>
+
 #include "player.h"
 #include "space.h"
 #include "Game_Board.h"
@@ -145,6 +148,15 @@ int main(int argv, char *argc[]) {
 
     //setting up Full Game Board in Qt
     mainWindow.windowSetUp();
+    mainWindow.setGeometry(
+        QStyle::alignedRect(
+            Qt::LeftToRight,
+            Qt::AlignCenter,
+            mainWindow.size(),
+            QGuiApplication::screens().first()->geometry()
+        )
+    );
+
     mainWindow.show();
     return app.exec();
 

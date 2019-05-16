@@ -4,6 +4,7 @@
 #include <iostream>
 
 BottomBar::BottomBar() {
+    this->setTitleBarWidget(new QWidget());
 
     currentPlayerNum = 0;
     bank = new Bank;
