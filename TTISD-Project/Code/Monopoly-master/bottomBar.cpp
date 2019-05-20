@@ -280,12 +280,11 @@ void BottomBar::rollDice() {
 
     myWindow->setPlayerLocation(currentPlayerNum, newSpace);
     monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
-    allPlayers[currentPlayerNum]->addHistory("Moved to " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1));
 
     if (oldSpace > newSpace) {
         moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank, 200);
         allPlayers[currentPlayerNum]->setMoneyText();
-        allPlayers[currentPlayerNum]->addHistory("Received €200 from start.");
+        allPlayers[currentPlayerNum]->addHistory("Received $200 from start.");
     }
 
     /*****************************     If new location is a Property     *****************************/
@@ -297,6 +296,9 @@ void BottomBar::rollDice() {
 
         //if the property is not owned...
         if (myWindow->getSpaceOwnership(newSpace) < 0) {
+            allPlayers[currentPlayerNum]->addHistory("Moved to " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1) +
+                                                     " ($" + to_string(myWindow->getSpacePropertyCost(newSpace)) + ")");
+
             if (myWindow->getPlayerMoney(currentPlayerNum) - myWindow->getSpacePropertyCost(newSpace) <= 0) {
                 purchaseButton->setEnabled(false);
             } else {
@@ -306,13 +308,22 @@ void BottomBar::rollDice() {
             //else if property is owned...
         } else if (myWindow->getSpaceOwnership(newSpace) >= 0) {
 
+            allPlayers[currentPlayerNum]->addHistory("Moved to " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1));
             if (myWindow->getPlayerName(currentPlayerNum) != myWindow->getPlayerName(myWindow->getSpaceOwnership(newSpace))) {
 
                 moneyAction.executeAction(myWindow->getPlayer(currentPlayerNum), myWindow->getPlayer(currentOwnership), myWindow->getSpaceRent(newSpace));
                 for(int i = 0; i < myWindow->getTotalPlayers(); i++) {
                     allPlayers[i]->setMoneyText();
                 }
-                allPlayers[currentPlayerNum]->addHistory("Payed player " + to_string(currentOwnership + 1) + " €" + to_string(myWindow->getSpaceRent(newSpace)));
+
+                if(myWindow->getSpaceUpgradedAmount(newSpace) <= 0) {
+                    allPlayers[currentPlayerNum]->addHistory("Payed player " + to_string(currentOwnership + 1) + " $" +
+                                                             to_string(myWindow->getSpaceRent(newSpace)));
+                } else {
+                    allPlayers[currentPlayerNum]->addHistory("Payed player " + to_string(currentOwnership + 1) + " $" +
+                                                             to_string(myWindow->getSpaceRent(newSpace)) + " (" +
+                                                             to_string(myWindow->getSpaceUpgradedAmount(newSpace)) + " houses)");
+                }
             }
         }
 
@@ -343,14 +354,16 @@ void BottomBar::rollDice() {
             numAlive--;
 
         }
+    } else {
+        allPlayers[currentPlayerNum]->addHistory("Moved to " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1));
+    }
 
-        /*******************************     If new Location is a "Tax"     **********************************/
-
-        //if the space is a Tax...
-    } else if (myWindow->spaceType(newSpace) == "Tax") {
+    /*******************************     If new Location is a "Tax"     **********************************/
+    //if the space is a Tax...
+    if (myWindow->spaceType(newSpace) == "Tax") {
         moneyAction.executeAction(myWindow->getPlayer(currentPlayerNum), freePark, myWindow->getSpaceTax(newSpace));
         allPlayers[currentPlayerNum]->setMoneyText();
-        allPlayers[currentPlayerNum]->addHistory("Payed free parking €" + to_string(myWindow->getSpaceTax(newSpace)) + " which is now at €" + to_string(freePark->getMoneyAmount()));
+        allPlayers[currentPlayerNum]->addHistory("Payed free parking $" + to_string(myWindow->getSpaceTax(newSpace)) + " which is now at $" + to_string(freePark->getMoneyAmount()));
 
         //checking if players are out of money
         if (myWindow->getPlayerMoney(currentPlayerNum) <= 0 && myWindow->isPlayerAlive(currentPlayerNum) == true) {
@@ -384,7 +397,7 @@ void BottomBar::rollDice() {
 
         //if the space is Free Parking...
     } else if (myWindow->spaceType(newSpace) == "FreeParking") {
-        allPlayers[currentPlayerNum]->addHistory("Received free parking with an amount of €" + to_string(freePark->getMoneyAmount()));
+        allPlayers[currentPlayerNum]->addHistory("Received free parking with an amount of $" + to_string(freePark->getMoneyAmount()));
         moneyAction.executeAction(freePark, myWindow->getPlayer(currentPlayerNum), freePark->getMoneyAmount());
         freePark->setMoneyAmount(0);
         allPlayers[currentPlayerNum]->setMoneyText();
@@ -413,7 +426,7 @@ void BottomBar::rollDice() {
 
         if (futureSpace < newSpace) {
             moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank,  200);
-            allPlayers[currentPlayerNum]->addHistory("Received €200 from start.");
+            allPlayers[currentPlayerNum]->addHistory("Received $200 from start.");
         }
 
         allPlayers[currentPlayerNum]->setMoneyText();
@@ -433,7 +446,7 @@ void BottomBar::rollDice() {
 
         if (futureSpace < newSpace) {
             moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank,  200);
-            allPlayers[currentPlayerNum]->addHistory("Received €200 from start.");
+            allPlayers[currentPlayerNum]->addHistory("Received $200 from start.");
         }
 
         allPlayers[currentPlayerNum]->setMoneyText();
@@ -455,7 +468,7 @@ void BottomBar::purchase() {
         //moneyAction.giveBank(myWindow->getPlayer(currentPlayerNum), bank, 1000);
         myWindow->setSpaceOwnership(newSpace, currentPlayerNum);
         allPlayers[currentPlayerNum]->setMoneyText();
-        allPlayers[currentPlayerNum]->addHistory("Player bought " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1) + " for €" + to_string(myWindow->getSpacePropertyCost(newSpace)));
+        allPlayers[currentPlayerNum]->addHistory("Player bought " + myWindow->getSpaceName(newSpace, 0) + myWindow->getSpaceName(newSpace, 1) + " for $" + to_string(myWindow->getSpacePropertyCost(newSpace)));
 
         //if(myWindow->spaceType(newSpace) == "Property") {
         stringstream ss;

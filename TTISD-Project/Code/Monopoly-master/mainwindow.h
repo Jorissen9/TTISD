@@ -45,6 +45,7 @@ class MainWindow : public QMainWindow {
     Player* getPlayer(int num);
     string getPlayerName(int playerNum);
     int getSpaceRent(int spaceIndex);
+    int getSpaceUpgradedAmount(int spaceIndex);
     int getPlayerMoney(int playerNum);
     int getSpacePropertyCost(int spaceIndex);
     void setSpaceOwnership(int spaceIndex, int playerNum);

@@ -755,6 +755,10 @@ int MainWindow::getSpaceRent(int spaceIndex) {
     return spaces[spaceIndex]->getRent();
 }
 
+int MainWindow::getSpaceUpgradedAmount(int spaceIndex) {
+    return spaces[spaceIndex]->getHouses();
+}
+
 int MainWindow::getPlayerMoney(int playerNum) {
     return players[playerNum].getMoneyAmount();
 }
