@@ -58,30 +58,34 @@ CentralWidget::CentralWidget(int tempNum, Player* tempPlayers): QWidget() {
 
     Coordinates tempLocation = tempPlayers[i].getPixelLocation();
 
-    if(numPlayers == 2) {
-        playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
-    } else if (numPlayers == 3) {
-        if(i < 2){
-                playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
-        } else if (i == 2) {
-            playerIcons[i]->setGeometry(tempLocation.x + (pieceCounter*22), tempLocation.y + (22), 25, 25);
-        }
+//    if(numPlayers == 2) {
+//        playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
+//    } else if (numPlayers == 3) {
+//        if(i < 2){
+//                playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
+//        } else if (i == 2) {
+//            playerIcons[i]->setGeometry(tempLocation.x + (pieceCounter*22), tempLocation.y + (22), 25, 25);
+//        }
 
-    } else if (numPlayers == 4) {
-        if (i < 2) {
-            playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
-        } else if (i >= 2 && i < 4) {
-            playerIcons[i]->setGeometry(tempLocation.x + (pieceCounter*22), tempLocation.y + (22), 25, 25);
-            pieceCounter++;
-        }
-    }
+//    } else if (numPlayers == 4) {
+//        if (i < 2) {
+//            playerIcons[i]->setGeometry(tempLocation.x + (i*22), tempLocation.y, 25, 25);
+//        } else if (i >= 2 && i < 4) {
+//            playerIcons[i]->setGeometry(tempLocation.x + (pieceCounter*22), tempLocation.y + (22), 25, 25);
+//            pieceCounter++;
+//        }
+//    }
+    playerIcons[i]->setGeometry(tempLocation.x, tempLocation.y, 25, 25);
 
     playerIcons[i]->setFixedWidth(25);
     playerIcons[i]->setFixedHeight(25);
     playerIcons[i]->setScaledContents(true);
     playerIcons[i]->show();
   }
-  playerIcons[0]->setStyleSheet("QLabel { background-color: green; }");
+  playerIcons[0]->setStyleSheet("QLabel { border-radius: 5px; background-color: #4eff00; }");
+  playerIcons[0]->raise();
+  playerIcons[0]->setFixedWidth(50);
+  playerIcons[0]->setFixedHeight(50);
 }
 
 void CentralWidget::drawCard() {
@@ -91,16 +95,17 @@ void CentralWidget::drawCard() {
 void CentralWidget::movePieces(int playerNum, Coordinates tempCoordinates){
 
     Coordinates tempLocation = tempCoordinates;
+    playerIcons[playerNum]->setGeometry(tempLocation.x, tempLocation.y, 25, 25);
 
-    if(playerNum == 0) {
-        playerIcons[playerNum]->setGeometry(tempLocation.x, tempLocation.y, 25, 25);
-    } else if (playerNum == 1){
-        playerIcons[playerNum]->setGeometry(tempLocation.x + (22), tempLocation.y, 25, 25);
-    } else if (playerNum == 2) {
-        playerIcons[playerNum]->setGeometry(tempLocation.x, tempLocation.y + (22), 25, 25);
-    } else if (playerNum == 3) {
-        playerIcons[playerNum]->setGeometry(tempLocation.x + (22), tempLocation.y + (22), 25, 25);
-    }
+//    if(playerNum == 0) {
+//        playerIcons[playerNum]->setGeometry(tempLocation.x, tempLocation.y, 25, 25);
+//    } else if (playerNum == 1){
+//        playerIcons[playerNum]->setGeometry(tempLocation.x + (22), tempLocation.y, 25, 25);
+//    } else if (playerNum == 2) {
+//        playerIcons[playerNum]->setGeometry(tempLocation.x, tempLocation.y + (22), 25, 25);
+//    } else if (playerNum == 3) {
+//        playerIcons[playerNum]->setGeometry(tempLocation.x + (22), tempLocation.y + (22), 25, 25);
+//    }
 }
 
 void CentralWidget::changeDiceImg(int rollNum1, int rollNum2){
@@ -137,8 +142,14 @@ void CentralWidget::changeDiceImg(int rollNum1, int rollNum2){
 void CentralWidget::setActivePlayer(int playerNum){
     for(int i = 0; i < numPlayers; i++){
         playerIcons[i]->setStyleSheet("QLabel { background-color: red; }");
+        playerIcons[i]->setFixedWidth(25);
+        playerIcons[i]->setFixedHeight(25);
     }
-    playerIcons[playerNum]->setStyleSheet("QLabel { background-color: green; }");
+
+    playerIcons[playerNum]->setStyleSheet("QLabel { border-radius: 5px; background-color: #4eff00; }");
+    playerIcons[playerNum]->raise();
+    playerIcons[playerNum]->setFixedWidth(50);
+    playerIcons[playerNum]->setFixedHeight(50);
 }
 
 void CentralWidget::hidePiece(int playerNum){

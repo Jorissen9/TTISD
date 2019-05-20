@@ -41,7 +41,7 @@ int main(int argv, char *argc[]) {
 
     //variables
     int numOfPlayers = 0;
-    int numOfPieces = 10;
+    int numOfPieces = 8;
 
 #if 1   // Use Qt app instead of console version
     lidar::Settings lidar_settings { 5, 115200 };
@@ -63,17 +63,14 @@ int main(int argv, char *argc[]) {
 
     if (numPlayersBox.clickedButton() == button2) {
         numOfPlayers = 2;
-
     }
 
     if (numPlayersBox.clickedButton() == button3) {
         numOfPlayers = 3;
-
     }
 
     if (numPlayersBox.clickedButton() == button4) {
         numOfPlayers = 4;
-
     }
 
     /*****************************************************************************/
@@ -87,7 +84,7 @@ int main(int argv, char *argc[]) {
     MoneyAction moneyAction;
     GoToAction goToAction;
     Dice dice[2];
-    string gamePieceIcons[10] = {"hat.png", "baseball.png", "dog.png", "soccer.png", "surfer.png", "dragon.png", "barrow.png", "pretzel.png", "car.png", "ship.png"};
+    string gamePieceIcons[8] = {"duck.png", "battleship.png", "car.png", "cat.png", "dog.png", "hat.png", "penguin.png", "tyrannosaurus.png"};
 
     /**************      Setting up Game Piece Choices     ******************/
 
