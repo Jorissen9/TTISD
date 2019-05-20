@@ -25,7 +25,7 @@ class GUIPlayers : public QDockWidget {
     QLabel *numLabel;
     QLabel *moneyLabel;
     QTextEdit *historyLabel;
-    QString history;
+    QLabel *histTitle;
     QVBoxLayout* layout;
     QWidget* sideBar;
     QLabel* gamePieceImg;
