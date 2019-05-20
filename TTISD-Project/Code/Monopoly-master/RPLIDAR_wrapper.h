@@ -58,16 +58,58 @@ namespace lidar {
             //firmware 1.24
             std::vector<RplidarScanMode> modeVec_;
 
-            rplidar_response_device_info_t devInfo;
+            static constexpr size_t NODE_COUNT = 8192;
+            static constexpr    int SEGMENT_POINTS_MATCH_THRESHOLD = 8;
+            float SEGMENT_ANGLE_SWEEP = 360.0f;
+            size_t measurements = 0;
+
+            rplidar_response_measurement_node_hq_t nodes[NODE_COUNT];
+            std::vector<scanObject> _scan_objects;
 
             std::vector<bool> result_squares;
 
-            void getDeviceInfo() {
-                devInfo;
+            const rplidar_response_device_info_t& getDeviceInfo() const {
+                return LidarMgr::GetInstance().devinfo;
             }
 
             void readDataPoints() {
+                RPlidarDriver * lidar_drv = LidarMgr::GetInstance().lidar_drv;
+                measurements = NODE_COUNT;
 
+                if (IS_OK(lidar_drv->grabScanDataHq(this->nodes, measurements, 0))) {
+                    // Reset
+                    for (scanObject& o : this->_scan_objects) {
+                        o.detected = false;
+                        o.pointsMatched = 0;
+                    }
+
+                    std::fill(this->result_squares.begin(), this->result_squares.end(), false);
+
+                    for (size_t pos = 0; pos < measurements; ++pos) {
+                        if (!this->nodes[pos].dist_mm_q2) continue;
+
+                        const scanDot dot{
+                            this->nodes[pos].quality,
+                            this->nodes[pos].angle_z_q14 * 90.f / 16384.f,
+                            this->nodes[pos].dist_mm_q2 / 4.0f
+                        };
+
+                        // Match point with object range
+                        const size_t obj_idx_start = size_t(int(dot.angle / SEGMENT_ANGLE_SWEEP) % this->settings.SQUARES);
+                        scanObject *current = &this->_scan_objects[obj_idx_start];
+
+                        if (   dot.angle >= current->angleStart && dot.angle < current->angleEnd
+                            && dot.dist  >= current->distMin    && dot.dist  < current->distMax)
+                        {
+                            current->pointsMatched++;
+
+                            if (current->pointsMatched > SEGMENT_POINTS_MATCH_THRESHOLD) {
+                                current->detected = true;
+                                this->result_squares[obj_idx_start] = true;
+                            }
+                        }
+                    }
+                }
             }
 
             void setDeviceSettings() {
@@ -101,7 +143,10 @@ namespace lidar {
                     m.exec();
                     driver_init_ok = true;
 
-                    result_squares.resize(settings.SQUARES);
+                    this->SEGMENT_ANGLE_SWEEP = 360.0f / float(this->settings.SQUARES);
+
+                    this->result_squares.resize(settings.SQUARES);
+                    this->_scan_objects.resize(settings.SQUARES);
                 }
             }
 

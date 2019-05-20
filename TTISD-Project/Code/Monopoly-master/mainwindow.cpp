@@ -197,7 +197,7 @@ MainWindow::MainWindow(int numPlayers, lidar::Settings lidar_settings)
     //Space 3
     spaces[3]->setName(" Leavey  ", " Library ");
     spaces[3]->setType("Property");
-    spaces[3]->setPropertyCost(70);
+    spaces[3]->setPropertyCost(60);
     spaces[3]->setFreeParking(0);
     spaces[3]->setOccupied(false);
     spaces[3]->setOwnership(-1);
