@@ -44,7 +44,7 @@ int main(int argv, char *argc[]) {
     int numOfPieces = 8;
 
 #if 1   // Use Qt app instead of console version
-    lidar::Settings lidar_settings { 5, 115200 };
+    lidar::Settings lidar_settings = lidar::DEFAULT_SETTINGS;
 
 
     /*************    setting up RPLIDAR pop up box    *****************/

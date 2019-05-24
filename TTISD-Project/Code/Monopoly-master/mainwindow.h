@@ -28,6 +28,7 @@ class MainWindow : public QMainWindow {
       Space** spaces;
 
       lidar::Driver rplidardriver;
+      std::vector<bool> prev_player_state;
 
   public:
     MainWindow(int numPlayers, lidar::Settings lidar_settings);
@@ -55,6 +56,8 @@ class MainWindow : public QMainWindow {
     string getSpaceName(int spaceIndex, int index);
     Space** getAllSpaces();
     int getTotalPlayers();
+
+    lidar::PlayerMovement getPlayerPositionDiff();
 };
 
 #endif
