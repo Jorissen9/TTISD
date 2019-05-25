@@ -14,6 +14,8 @@ MainWindow::MainWindow(int numPlayers, lidar::Settings lidar_settings)
     playerTurn = 0;
     spaces = new Space*[40];
 
+    this->prev_player_state.resize(40);
+
     //Creating the players!
     players = new Player[totalPlayers];
 
@@ -690,6 +692,8 @@ void MainWindow::windowSetUp() {
     //Create numPlayers of QLabels in central widget,
     //save images, and display the players on the board
 
+    this->rplidardriver.Start();
+    this->getPlayerPositionDiff();
 }
 
 
@@ -796,16 +800,27 @@ int MainWindow::getTotalPlayers(){
     return totalPlayers;
 }
 
+lidar::PlayerMovement MainWindow::getPlayerPositionDiff() {
+    lidar::PlayerMovement player{0, 0, 0};
+    std::vector<bool> current = this->rplidardriver.getSquares();
 
+    for (size_t pos = 0; pos < current.size(); pos++) {
+        if (this->prev_player_state[pos] != current[pos]) {
+            if (current[pos]) { // Pos now has a player, so player moved here
+                player.new_position = int(pos);
+            } else {
+                player.old_position = int(pos);
+            }
+        }
+    }
 
+    player.moved_squares = player.new_position - player.old_position;
 
+    if (player.new_position < player.old_position) {
+        // Correct position if moved past 0
+        player.moved_squares += 39;
+    }
 
-
-
-
-
-
-
-
-
-
+    this->prev_player_state = current;
+    return player;
+}

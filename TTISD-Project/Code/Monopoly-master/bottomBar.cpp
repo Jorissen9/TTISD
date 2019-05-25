@@ -143,7 +143,11 @@ BottomBar::BottomBar() {
 
 
     //setting up all the buttons
+#if defined(RPLIDAR_WRAPPER_H)
+    rollButton     = new QPushButton("Rolled Dice and moved");
+#else
     rollButton     = new QPushButton("Roll Dice");
+#endif
     upgradeButton  = new QPushButton("Upgrade");
     purchaseButton = new QPushButton("Purchase");
     player1Button  = new QPushButton("See Player 1");
@@ -259,27 +263,40 @@ void BottomBar::seePlayer4() {
 }
 
 void BottomBar::rollDice() {
-
-    //getting 2 random dice rolls
-    Dice dice[2];
-    diceRoll1 = dice[0].rollDice();
-    diceRoll2 = dice[1].rollDice();
     oldSpace = 0;
     newSpace = 0;
     int futureSpace = 0;
 
-    //changing dice images on board
-    monopolyBoard->changeDiceImg(diceRoll1, diceRoll2);
+#if defined(RPLIDAR_WRAPPER_H)
+    // Get player new position
+    lidar::PlayerMovement pos = this->myWindow->getPlayerPositionDiff();
+    diceRoll1 = pos.moved_squares / 2;
+    diceRoll2 = pos.moved_squares - diceRoll1;
 
-    //moving pieces
+    oldSpace = pos.old_position;
+    newSpace = pos.new_position;
+
+#else // Use dice roll
+    //getting 2 random dice rolls
+    Dice dice[2];
+    diceRoll1 = dice[0].rollDice();
+    diceRoll2 = dice[1].rollDice();
+
     oldSpace = myWindow->getPlayerLocation(currentPlayerNum);
-    // TODO change newSpace here
+
     newSpace = oldSpace;
     newSpace += (diceRoll1 + diceRoll2);
     newSpace = newSpace % 40;
+#endif
+
+    //changing dice images on board
+    monopolyBoard->changeDiceImg(diceRoll1, diceRoll2);
 
     myWindow->setPlayerLocation(currentPlayerNum, newSpace);
     monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
+    allPlayers[currentPlayerNum]->addHistory(  "Player moved "  + std::to_string(pos.moved_squares)
+                                             + " squares from " + std::to_string(oldSpace)
+                                             + " to " + std::to_string(newSpace) + ".");
 
     if (oldSpace > newSpace) {
         moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank, 200);
@@ -598,7 +615,11 @@ void BottomBar::rollOrEnd(){
         rollButton->setText("End Turn");
     } else {
         endTurn();
-        rollButton->setText("Roll Dice");
+        #if defined(RPLIDAR_WRAPPER_H)
+            rollButton->setText("Rolled Dice and moved");
+        #else
+            rollButton->setText("Roll Dice");
+        #endif
     }
     rollButtonActive = !rollButtonActive;
 }

@@ -36,32 +36,32 @@ namespace lidar {
                 }
 
                 this->boxComports->addItems(ports);
-                this->boxComports->setCurrentIndex(4);
+                this->boxComports->setCurrentIndex(DEFAULT_SETTINGS.COMPORT);
                 this->grid->addWidget(new QLabel("Com port: "), 1, 1);
                 this->grid->addWidget(this->boxComports, 1, 2);
 
                 this->boxBaudrate = new QComboBox;
 
-                QStringList bauds{ "115200" };
+                QStringList bauds{ QString::fromStdString(std::to_string(DEFAULT_SETTINGS.BAUD)) };
                 this->boxBaudrate->addItems(bauds);
                 this->grid->addWidget(new QLabel("Baud rate: "), 2, 1);
                 this->grid->addWidget(this->boxBaudrate, 2, 2);
 
                 this->spinMin = new QDoubleSpinBox;
                 this->spinMin->setRange(250, 400);
-                this->spinMin->setValue(300);
+                this->spinMin->setValue(DEFAULT_SETTINGS.MINDIST);
                 this->grid->addWidget(new QLabel("Min distance (mm): "), 3, 1);
                 this->grid->addWidget(this->spinMin, 3, 2);
 
                 this->spinMax = new QDoubleSpinBox;
                 this->spinMax->setRange(300, 500);
-                this->spinMax->setValue(400);
+                this->spinMax->setValue(DEFAULT_SETTINGS.MAXDIST);
                 this->grid->addWidget(new QLabel("Max distance (mm): "), 4, 1);
                 this->grid->addWidget(this->spinMax, 4, 2);
 
                 this->spinSquares = new QSpinBox;
                 this->spinSquares->setRange(4, 48);
-                this->spinSquares->setValue(40);
+                this->spinSquares->setValue(DEFAULT_SETTINGS.SQUARES);
                 this->grid->addWidget(new QLabel("Game squares: "), 5, 1);
                 this->grid->addWidget(this->spinSquares, 5, 2);
 
