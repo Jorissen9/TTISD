@@ -39,11 +39,11 @@ constexpr float DISP_DEFAULT_DIST  = 1000;
 constexpr float DISP_MIN_DIST      = 300;
 constexpr float PI                 = 3.14159265f;
 
-constexpr size_t SEGMENT_AMOUNT      = 36;
+constexpr size_t SEGMENT_AMOUNT      = 40;
 constexpr float  SEGMENT_ANGLE_SWEEP = 360.f / float(SEGMENT_AMOUNT);
-constexpr size_t SEGMENT_DIST_START  = 250;
-constexpr size_t SEGMENT_DIST_END    = 300;
-constexpr size_t SEGMENT_POINTS_MATCH_THRESHOLD = 8;
+constexpr size_t SEGMENT_DIST_START  = 115;
+constexpr size_t SEGMENT_DIST_END    = 175;
+constexpr size_t SEGMENT_POINTS_MATCH_THRESHOLD = 10;
 
 const COLORREF dot_full_brightness = RGB(44,233,22);
 

@@ -20,6 +20,7 @@ class BottomBar : public QDockWidget {
   Q_OBJECT
 
   protected:
+    QPushButton* settingsButton;
     QPushButton* rollButton;
     QPushButton* upgradeButton;
     QPushButton* purchaseButton;
@@ -62,6 +63,7 @@ class BottomBar : public QDockWidget {
     void seePlayer2();
     void seePlayer3();
     void seePlayer4();
+    void changeSettings();
 
   public:
     BottomBar();

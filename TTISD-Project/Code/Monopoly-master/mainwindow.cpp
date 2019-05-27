@@ -800,6 +800,18 @@ int MainWindow::getTotalPlayers(){
     return totalPlayers;
 }
 
+void MainWindow::changeLidarSettings(lidar::Settings cfg) {
+    this->rplidardriver.setConfig(cfg);
+}
+
+lidar::Settings MainWindow::getLidarSettings() const {
+    return this->rplidardriver.getConfig();
+}
+
+bool MainWindow::isLidarAvailable() const {
+    return this->rplidardriver.isAvailable();
+}
+
 lidar::PlayerMovement MainWindow::getPlayerPositionDiff() {
     lidar::PlayerMovement player{0, 0, 0};
     std::vector<bool> current = this->rplidardriver.getSquares();

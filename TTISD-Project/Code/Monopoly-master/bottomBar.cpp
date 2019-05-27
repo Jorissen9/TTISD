@@ -1,6 +1,7 @@
 #include "bottomBar.h"
 #include "mainwindow.h"
 #include "dice.h"
+#include "RPLIDAR_settings.h"
 #include <iostream>
 
 BottomBar::BottomBar() {
@@ -155,6 +156,9 @@ BottomBar::BottomBar() {
     player3Button  = new QPushButton("See Player 3");
     player4Button  = new QPushButton("See Player 4");
 
+    settingsButton = new QPushButton("Settings");
+
+    settingsButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     rollButton    ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     upgradeButton ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     purchaseButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -165,6 +169,7 @@ BottomBar::BottomBar() {
 
     layout = new QGridLayout;
     layout->setAlignment(Qt::AlignCenter);
+    layout->addWidget(settingsButton, 0, 0, nullptr);
     layout->addWidget(upgradeButton, 0, 1, nullptr);
     layout->addWidget(purchaseButton, 0, 2, nullptr);
     layout->addWidget(rollButton, 0, 3, nullptr);
@@ -183,6 +188,7 @@ BottomBar::BottomBar() {
     setWidget(bottomWidget);
 
     //connecting buttons
+    connect(settingsButton, SIGNAL(clicked()), this, SLOT(changeSettings()));
     connect(player1Button, SIGNAL(clicked()), this, SLOT(seePlayer1()));
     connect(player2Button, SIGNAL(clicked()), this, SLOT(seePlayer2()));
     connect(player3Button, SIGNAL(clicked()), this, SLOT(seePlayer3()));
@@ -263,40 +269,42 @@ void BottomBar::seePlayer4() {
 }
 
 void BottomBar::rollDice() {
-    oldSpace = 0;
-    newSpace = 0;
     int futureSpace = 0;
 
-#if defined(RPLIDAR_WRAPPER_H)
-    // Get player new position
-    lidar::PlayerMovement pos = this->myWindow->getPlayerPositionDiff();
-    diceRoll1 = pos.moved_squares / 2;
-    diceRoll2 = pos.moved_squares - diceRoll1;
+    if (this->myWindow->isLidarAvailable()) {
+        // Get player new position
+        lidar::PlayerMovement pos = this->myWindow->getPlayerPositionDiff();
+        diceRoll1 = pos.moved_squares / 2;
+        diceRoll2 = pos.moved_squares - diceRoll1;
 
-    oldSpace = pos.old_position;
-    newSpace = pos.new_position;
+        if (pos.moved_squares == 0) {
+            newSpace = oldSpace;
+        } else {
+            oldSpace = pos.old_position;
+            newSpace = pos.new_position;
+        }
 
-#else // Use dice roll
-    //getting 2 random dice rolls
-    Dice dice[2];
-    diceRoll1 = dice[0].rollDice();
-    diceRoll2 = dice[1].rollDice();
+        allPlayers[currentPlayerNum]->addHistory(  "Player moved "  + std::to_string(pos.moved_squares)
+                                                 + " squares from " + std::to_string(oldSpace)
+                                                 + " to " + std::to_string(newSpace) + ".");
+    } else { // Use dice roll
+        //getting 2 random dice rolls
+        Dice dice[2];
+        diceRoll1 = dice[0].rollDice();
+        diceRoll2 = dice[1].rollDice();
 
-    oldSpace = myWindow->getPlayerLocation(currentPlayerNum);
+        oldSpace = myWindow->getPlayerLocation(currentPlayerNum);
 
-    newSpace = oldSpace;
-    newSpace += (diceRoll1 + diceRoll2);
-    newSpace = newSpace % 40;
-#endif
+        newSpace = oldSpace;
+        newSpace += (diceRoll1 + diceRoll2);
+        newSpace = newSpace % 40;
+    }
 
     //changing dice images on board
     monopolyBoard->changeDiceImg(diceRoll1, diceRoll2);
 
     myWindow->setPlayerLocation(currentPlayerNum, newSpace);
     monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
-    allPlayers[currentPlayerNum]->addHistory(  "Player moved "  + std::to_string(pos.moved_squares)
-                                             + " squares from " + std::to_string(oldSpace)
-                                             + " to " + std::to_string(newSpace) + ".");
 
     if (oldSpace > newSpace) {
         moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank, 200);
@@ -615,12 +623,19 @@ void BottomBar::rollOrEnd(){
         rollButton->setText("End Turn");
     } else {
         endTurn();
-        #if defined(RPLIDAR_WRAPPER_H)
+        if (this->myWindow->isLidarAvailable())
             rollButton->setText("Rolled Dice and moved");
-        #else
+        else
             rollButton->setText("Roll Dice");
-        #endif
     }
     rollButtonActive = !rollButtonActive;
 }
 
+void BottomBar::changeSettings() {
+    lidar::Settings cfg = this->myWindow->getLidarSettings();
+    cfg.COMPORT -= 1;
+
+    lidar::SettingsDialog rpsettings(cfg);
+    if (rpsettings.exec() == QDialog::Accepted)
+        this->myWindow->changeLidarSettings(rpsettings.getResult());
+}

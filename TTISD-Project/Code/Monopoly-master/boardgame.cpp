@@ -49,7 +49,8 @@ int main(int argv, char *argc[]) {
 
     /*************    setting up RPLIDAR pop up box    *****************/
     lidar::SettingsDialog rpsettings;
-    rpsettings.exec();
+    if (rpsettings.exec() == QDialog::Rejected)
+        std::abort();
     lidar_settings = rpsettings.getResult();
 
 

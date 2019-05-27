@@ -56,6 +56,9 @@ class MainWindow : public QMainWindow {
     string getSpaceName(int spaceIndex, int index);
     Space** getAllSpaces();
     int getTotalPlayers();
+    void changeLidarSettings(lidar::Settings cfg);
+    lidar::Settings getLidarSettings() const;
+    bool isLidarAvailable() const;
 
     lidar::PlayerMovement getPlayerPositionDiff();
 };
