@@ -436,6 +436,9 @@ void BottomBar::rollDice() {
         monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
         allPlayers[currentPlayerNum]->addHistory("Player went to jail.");
 
+        futureSpace = myWindow->getPlayerLocation(currentPlayerNum);
+        this->myWindow->movedPiece(newSpace, futureSpace);
+
         /*******************************     If new Location is "Community Chest"     **********************************/
 
         //if the space is Community Chest...
@@ -448,6 +451,7 @@ void BottomBar::rollDice() {
         monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
 
         futureSpace = myWindow->getPlayerLocation(currentPlayerNum);
+        this->myWindow->movedPiece(newSpace, futureSpace);
 
         if (futureSpace < newSpace) {
             moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank,  200);
@@ -468,6 +472,7 @@ void BottomBar::rollDice() {
         monopolyBoard->movePieces(currentPlayerNum, myWindow->getPlayerPixels(currentPlayerNum));
 
         futureSpace = myWindow->getPlayerLocation(currentPlayerNum);
+        this->myWindow->movedPiece(newSpace, futureSpace);
 
         if (futureSpace < newSpace) {
             moneyAction.takeBank(myWindow->getPlayer(currentPlayerNum), bank,  200);

@@ -61,6 +61,7 @@ class MainWindow : public QMainWindow {
     bool isLidarAvailable() const;
 
     lidar::PlayerMovement getPlayerPositionDiff();
+    void movedPiece(int currentPos, int newPos);
 };
 
 #endif
