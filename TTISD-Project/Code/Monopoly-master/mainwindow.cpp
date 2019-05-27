@@ -824,3 +824,8 @@ lidar::PlayerMovement MainWindow::getPlayerPositionDiff() {
     this->prev_player_state = current;
     return player;
 }
+
+void MainWindow::movedPiece(int currentPos, int newPos) {
+    this->prev_player_state[static_cast<size_t>(currentPos)] = false;
+    this->prev_player_state[static_cast<size_t>(newPos)] = true;
+}

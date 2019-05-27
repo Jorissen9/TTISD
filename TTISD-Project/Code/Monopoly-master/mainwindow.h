@@ -58,6 +58,7 @@ class MainWindow : public QMainWindow {
     int getTotalPlayers();
 
     lidar::PlayerMovement getPlayerPositionDiff();
+    void movedPiece(int currentPos, int newPos);
 };
 
 #endif
