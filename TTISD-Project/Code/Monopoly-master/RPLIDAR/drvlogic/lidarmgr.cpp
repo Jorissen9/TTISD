@@ -24,7 +24,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "lidarmgr.h"
 
 LidarMgr * LidarMgr::g_instance = nullptr;
