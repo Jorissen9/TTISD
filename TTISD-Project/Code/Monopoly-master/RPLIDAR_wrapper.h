@@ -170,6 +170,7 @@ namespace lidar {
                     _scan_objects.back().angleEnd = 360.0f;
 
                     this->setDeviceSettings();
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 }
             }
 

@@ -1,0 +1,26 @@
+IDI_ICON1               ICON    DISCARDABLE     "Images/proximity.ico"
+
+1 VERSIONINFO
+FILEVERSION     0,1,0,0
+PRODUCTVERSION  0,1,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080904E4"
+    BEGIN
+      VALUE "CompanyName", "UHasselt EDM - TTISD"
+      VALUE "FileDescription", "LIDAR Monopoly"
+	  VALUE "FileVersion", "0.1.0.0"
+      VALUE "InternalName", "LIDAR Monopoly"
+      VALUE "LegalCopyright", "©2019 Bjorn Jorissen & William Thenaers"
+      VALUE "OriginalFilename", "LIDAR_Monopoly.exe"
+      VALUE "ProductName", "LIDAR Monopoly"
+	  VALUE "ProductVersion", "0.1.0.0"
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x809, 1252
+  END
+END

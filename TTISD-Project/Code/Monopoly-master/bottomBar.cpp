@@ -47,43 +47,43 @@ BottomBar::BottomBar() {
     community[index[9]] = new CardMoney();
 
     //Community Card 0
-    community[index[0]]->setCardText("./community/community0.png");
+    community[index[0]]->setCardText(":/community/community0.png");
     community[index[0]]->setAmount(0);
 
     //Community Card 1
-    community[index[1]]->setCardText("./community/community1.png");
+    community[index[1]]->setCardText(":/community/community1.png");
     community[index[1]]->setAmount(75);
 
     //Community Card 2
-    community[index[2]]->setCardText("./community/community2.png");
+    community[index[2]]->setCardText(":/community/community2.png");
     community[index[2]]->setAmount(150);
 
     //Community Card 3
-    community[index[3]]->setCardText("./community/community3.png");
+    community[index[3]]->setCardText(":/community/community3.png");
     community[index[3]]->setAmount(24);
 
     //Community Card 4
-    community[index[4]]->setCardText("./community/community4.png");
+    community[index[4]]->setCardText(":/community/community4.png");
     community[index[4]]->setAmount(100);
 
     //Community Card 5
-    community[index[5]]->setCardText("./community/community5.png");
+    community[index[5]]->setCardText(":/community/community5.png");
     community[index[5]]->setAmount(20);
 
     //Community Card 6
-    community[index[6]]->setCardText("./community/community6.png");
+    community[index[6]]->setCardText(":/community/community6.png");
     community[index[6]]->setAmount(39);
 
     //Community Card 7
-    community[index[7]]->setCardText("./community/community7.png");
+    community[index[7]]->setCardText(":/community/community7.png");
     community[index[7]]->setAmount(15);
 
     //Community Card 8
-    community[index[8]]->setCardText("./community/community8.png");
+    community[index[8]]->setCardText(":/community/community8.png");
     community[index[8]]->setAmount(200);
 
     //Community Card 9
-    community[index[9]]->setCardText("./community/community9.png");
+    community[index[9]]->setCardText(":/community/community9.png");
     community[index[9]]->setAmount(20);
 
 
@@ -102,43 +102,43 @@ BottomBar::BottomBar() {
     chance[index[9]] = new CardMoney();
 
     //Chance Card 0
-    chance[index[0]]->setCardText("./chance/chance0.png");
+    chance[index[0]]->setCardText(":/chance/chance0.png");
     chance[index[0]]->setAmount(0);
 
     //Chance Card 1
-    chance[index[1]]->setCardText("./chance/chance1.png");
+    chance[index[1]]->setCardText(":/chance/chance1.png");
     chance[index[1]]->setAmount(28);
 
     //Chance Card 2
-    chance[index[2]]->setCardText("./chance/chance2.png");
+    chance[index[2]]->setCardText(":/chance/chance2.png");
     chance[index[2]]->setAmount(50);
 
     //Chance Card 3
-    chance[index[3]]->setCardText("./chance/chance3.png");
+    chance[index[3]]->setCardText(":/chance/chance3.png");
     chance[index[3]]->setAmount(11);
 
     //Chance Card 4
-    chance[index[4]]->setCardText("./chance/chance4.png");
+    chance[index[4]]->setCardText(":/chance/chance4.png");
     chance[index[4]]->setAmount(100);
 
     //Chance Card 5
-    chance[index[5]]->setCardText("./chance/chance5.png");
+    chance[index[5]]->setCardText(":/chance/chance5.png");
     chance[index[5]]->setAmount(15);
 
     //Chance Card 6
-    chance[index[6]]->setCardText("./chance/chance6.png");
+    chance[index[6]]->setCardText(":/chance/chance6.png");
     chance[index[6]]->setAmount(15);
 
     //Chance Card 7
-    chance[index[7]]->setCardText("./chance/chance7.png");
+    chance[index[7]]->setCardText(":/chance/chance7.png");
     chance[index[7]]->setAmount(15);
 
     //Chance Card 8
-    chance[index[8]]->setCardText("./chance/chance8.png");
+    chance[index[8]]->setCardText(":/chance/chance8.png");
     chance[index[8]]->setAmount(5);
 
     //Chance Card 9
-    chance[index[9]]->setCardText("./chance/chance9.png");
+    chance[index[9]]->setCardText(":/chance/chance9.png");
     chance[index[9]]->setAmount(100);
 
 

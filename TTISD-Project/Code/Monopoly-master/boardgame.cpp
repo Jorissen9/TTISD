@@ -112,7 +112,7 @@ int main(int argv, char *argc[]) {
 
         for (int j = 0; j < numOfPieces; j++) {
             icon[j] = new QPushButton;
-            icon[j]->setIcon(QIcon(QString(("Pieces/" + gamePieceIcons[j]).c_str())));
+            icon[j]->setIcon(QIcon(QString((":/Pieces/" + gamePieceIcons[j]).c_str())));
             icon[j]->setIconSize(QSize(50, 50));
             gamePieceBox.addButton(icon[j], QMessageBox::ActionRole);
         }
@@ -124,7 +124,7 @@ int main(int argv, char *argc[]) {
             if (gamePieceBox.clickedButton() == icon[j]) {
                 //set guiPlayer's gamepiece to the chosen gamePieceIcon
                 indexPiece = j;
-                mainWindow.setGamePiece(i, "Pieces/" + gamePieceIcons[indexPiece]);
+                mainWindow.setGamePiece(i, ":/Pieces/" + gamePieceIcons[indexPiece]);
                 break;
             }
 

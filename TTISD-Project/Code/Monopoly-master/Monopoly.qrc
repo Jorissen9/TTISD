@@ -1,0 +1,46 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+<qresource prefix="/">
+    <file>Chance/chance0.png</file>
+    <file>Chance/chance1.png</file>
+    <file>Chance/chance2.png</file>
+    <file>Chance/chance3.png</file>
+    <file>Chance/chance4.png</file>
+    <file>Chance/chance5.png</file>
+    <file>Chance/chance6.png</file>
+    <file>Chance/chance7.png</file>
+    <file>Chance/chance8.png</file>
+    <file>Chance/chance9.png</file>
+    <file>Chance/chanceTemplate.jpg</file>
+    
+    <file>Community Chest/community0.png</file>
+    <file>Community Chest/community1.png</file>
+    <file>Community Chest/community2.png</file>
+    <file>Community Chest/community3.png</file>
+    <file>Community Chest/community4.png</file>
+    <file>Community Chest/community5.png</file>
+    <file>Community Chest/community6.png</file>
+    <file>Community Chest/community7.png</file>
+    <file>Community Chest/community8.png</file>
+    <file>Community Chest/community9.png</file>
+    <file>Community Chest/communityTemplate.jpg</file>
+    
+    <file>Dice/dice1.png</file>
+    <file>Dice/dice2.png</file>
+    <file>Dice/dice3.png</file>
+    <file>Dice/dice4.png</file>
+    <file>Dice/dice5.png</file>
+    <file>Dice/dice6.png</file>
+    
+    <file>Images/Monopoly.jpg</file>
+    
+    <file>Pieces/battleship.png</file>
+    <file>Pieces/car.png</file>
+    <file>Pieces/cat.png</file>
+    <file>Pieces/dog.png</file>
+    <file>Pieces/duck.png</file>
+    <file>Pieces/hat.png</file>
+    <file>Pieces/penguin.png</file>
+    <file>Pieces/tyrannosaurus.png</file>
+</qresource>
+</RCC>

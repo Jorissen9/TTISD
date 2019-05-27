@@ -16,6 +16,8 @@ out/
 .vs/
 obj/
 Debug/
+debug/
+release/
 TTISD-Project/Research/LIDAR/RPLIDAR/rplidar_sdk_v1.10.0/sdk/output/win32/Debug/
 *.ilk
 *.pdb
@@ -28,6 +30,7 @@ Makefile
 Makefile.*
 *.Debug
 *.Release
+*.o
 
 # Gradle files
 .gradle/
