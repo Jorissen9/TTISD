@@ -134,6 +134,7 @@ void GUIPlayers::enableUpgrade(){
             ownedProperties[i]->setEnabled(false);
         } else {
             ownedProperties[i]->setEnabled(true);
+            ownedProperties[i]->setFocus();
         }
     }
 }
