@@ -10,6 +10,7 @@
 #include <string>
 #include <sstream>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include "space.h"
 #include "money_action.h"
 #include "bank.h"
@@ -26,6 +27,7 @@ class GUIPlayers : public QDockWidget {
     QLabel *moneyLabel;
     QTextEdit *historyLabel;
     QLabel *histTitle;
+    QHBoxLayout* top_layout;
     QVBoxLayout* layout;
     QWidget* sideBar;
     QLabel* gamePieceImg;
