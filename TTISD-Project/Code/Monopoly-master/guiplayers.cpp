@@ -23,7 +23,7 @@ GUIPlayers::GUIPlayers(Player* p, int playerNum){
   ss << player->getMoneyAmount();
   string tempMoney;
   ss >> tempMoney;
-  tempMoney = ("€" + tempMoney);
+  tempMoney = ("$" + tempMoney);
   ss.clear();
 
   QString qMoney = QString::fromStdString(tempMoney);
@@ -51,6 +51,10 @@ GUIPlayers::GUIPlayers(Player* p, int playerNum){
   gamePieceImg->setFixedHeight(50);
   gamePieceImg->setScaledContents(true);
 
+  QFont txtFont = historyLabel->font();
+  txtFont.setPointSize(14);
+  historyLabel->setFont(txtFont);
+
   //Adding all parts to layout
   gamePieceImg ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   numLabel     ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -71,9 +75,9 @@ GUIPlayers::GUIPlayers(Player* p, int playerNum){
   sideBar->setLayout(layout);
   setWidget(sideBar);
 
-  this->setMinimumSize(QSize(150, 650));
+  this->setMinimumSize(QSize(300, 650));
 //  this->setMaximumSize(QSize(300, 650));
-  this->setMaximumWidth(500);
+  this->setMaximumWidth(1000);
 }
 
 GUIPlayers::GUIPlayers(){

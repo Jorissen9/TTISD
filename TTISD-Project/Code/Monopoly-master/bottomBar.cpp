@@ -142,13 +142,9 @@ BottomBar::BottomBar() {
     chance[index[9]]->setAmount(100);
 
 
-
     //setting up all the buttons
-#if defined(RPLIDAR_WRAPPER_H)
-    rollButton     = new QPushButton("Rolled Dice and moved");
-#else
+    settingsButton = new QPushButton("Settings");
     rollButton     = new QPushButton("Roll Dice");
-#endif
     upgradeButton  = new QPushButton("Upgrade");
     purchaseButton = new QPushButton("Purchase");
     player1Button  = new QPushButton("See Player 1");
@@ -156,7 +152,18 @@ BottomBar::BottomBar() {
     player3Button  = new QPushButton("See Player 3");
     player4Button  = new QPushButton("See Player 4");
 
-    settingsButton = new QPushButton("Settings");
+    QFont btnFont = rollButton->font();
+    btnFont.setPointSize(15);
+
+    settingsButton->setFont(btnFont);
+    upgradeButton ->setFont(btnFont);
+    purchaseButton->setFont(btnFont);
+    player1Button ->setFont(btnFont);
+    player2Button ->setFont(btnFont);
+    player3Button ->setFont(btnFont);
+    player4Button ->setFont(btnFont);
+    btnFont.setPointSize(14);
+    rollButton    ->setFont(btnFont);
 
     settingsButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     rollButton    ->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -225,6 +232,11 @@ void BottomBar::setMainWindow(MainWindow *tempWindow) {
     for (int i = 0; i < numberOfPlayers; i++) {
         allPlayers[i]->setBank(bank);
     }
+
+    if (this->myWindow->isLidarAvailable())
+        rollButton->setText("Rolled Dice and moved");
+    else
+        rollButton->setText("Roll Dice");
 }
 
 void BottomBar::disableButtons(int num) {
@@ -268,12 +280,18 @@ void BottomBar::seePlayer4() {
     }
 }
 
-void BottomBar::rollDice() {
+bool BottomBar::rollDice() {
     int futureSpace = 0;
 
     if (this->myWindow->isLidarAvailable()) {
         // Get player new position
         lidar::PlayerMovement pos = this->myWindow->getPlayerPositionDiff();
+
+        if (pos.moved_squares == 0) {
+            allPlayers[currentPlayerNum]->addHistory("There was no change in state detected! Please roll the dice and move your pawn.");
+            return false;
+        }
+
         diceRoll1 = pos.moved_squares / 2;
         diceRoll2 = pos.moved_squares - diceRoll1;
 
@@ -298,6 +316,8 @@ void BottomBar::rollDice() {
         newSpace = oldSpace;
         newSpace += (diceRoll1 + diceRoll2);
         newSpace = newSpace % 40;
+
+        this->myWindow->movedPiece(oldSpace, newSpace);
     }
 
     //changing dice images on board
@@ -481,6 +501,8 @@ void BottomBar::rollDice() {
 
         allPlayers[currentPlayerNum]->setMoneyText();
     }
+
+    return true;
 }
 
 void BottomBar::upgrade() {
@@ -622,18 +644,19 @@ void BottomBar::endTurn() {
 }
 
 void BottomBar::rollOrEnd(){
-    if(rollButtonActive)
-    {
-        rollDice();
-        rollButton->setText("End Turn");
+    if (rollButtonActive) {
+        if (rollDice()) {
+            rollButton->setText("End Turn");
+            rollButtonActive = !rollButtonActive;
+        }
     } else {
         endTurn();
         if (this->myWindow->isLidarAvailable())
             rollButton->setText("Rolled Dice and moved");
         else
             rollButton->setText("Roll Dice");
+        rollButtonActive = !rollButtonActive;
     }
-    rollButtonActive = !rollButtonActive;
 }
 
 void BottomBar::changeSettings() {
