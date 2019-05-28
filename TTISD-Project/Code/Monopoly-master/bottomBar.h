@@ -28,6 +28,7 @@ class BottomBar : public QDockWidget {
     QPushButton* player2Button;
     QPushButton* player3Button;
     QPushButton* player4Button;
+
     QGridLayout* layout;
     QWidget* bottomWidget;
     int diceRoll1;
@@ -54,7 +55,7 @@ class BottomBar : public QDockWidget {
 
   private slots:
     //need to incorporate to make the buttons work
-    void rollDice();
+    bool rollDice();
     void upgrade();
     void purchase();
     void endTurn();

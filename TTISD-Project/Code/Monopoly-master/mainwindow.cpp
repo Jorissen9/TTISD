@@ -1,13 +1,15 @@
 #include "mainwindow.h"
 
+#include <QApplication>
+
 /**************     Primary constructor     ***************/
 MainWindow::MainWindow(int numPlayers, lidar::Settings lidar_settings)
     : QMainWindow(nullptr)
     , rplidardriver(lidar_settings)
 {
-    this->setGeometry(0, 0, 900, 755);
+    this->setGeometry(0, 0, 1024, 755);
 //    setFixedSize(800, 755);
-    this->setMinimumSize(800, 750);
+    this->setMinimumSize(1024, 755);
 //    this->setMaximumSize(1200, 750);
 
     totalPlayers = numPlayers;
@@ -840,4 +842,22 @@ lidar::PlayerMovement MainWindow::getPlayerPositionDiff() {
 void MainWindow::movedPiece(int currentPos, int newPos) {
     this->prev_player_state[static_cast<size_t>(currentPos)] = false;
     this->prev_player_state[static_cast<size_t>(newPos)] = true;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+
+//    keyShortcut = new QShortcut(QKeySequence(Qt::Key_Return), this->myWindow,SLOT(click()));
+//    shortcut->setAutoRepeat(false);
+
+    if (event->key() == Qt::Key_Return) {
+        QWidget *focussed = QApplication::focusWidget();
+
+        if (focussed != nullptr) {
+            QKeyEvent key_press  (QEvent::KeyPress  , Qt::Key_Space, Qt::NoModifier);
+            QKeyEvent key_release(QEvent::KeyRelease, Qt::Key_Space, Qt::NoModifier);
+            QCoreApplication::sendEvent(focussed, &key_press);
+            QCoreApplication::sendEvent(focussed, &key_release);
+        }
+    } else
+        QMainWindow::keyPressEvent(event);
 }
