@@ -7,9 +7,9 @@ MainWindow::MainWindow(int numPlayers, lidar::Settings lidar_settings)
     : QMainWindow(nullptr)
     , rplidardriver(lidar_settings)
 {
-    this->setGeometry(0, 0, 1024, 755);
+    this->setGeometry(0, 0, 1045, 755);
 //    setFixedSize(800, 755);
-    this->setMinimumSize(1024, 755);
+    this->setMinimumSize(1045, 755);
 //    this->setMaximumSize(1200, 750);
 
     totalPlayers = numPlayers;
