@@ -1,0 +1,4 @@
+1. Start the game
+2. Show the calibration of the min & max range
+3. Play the game
+4. Show the mechanics and land on different aspects intentionally if needed
