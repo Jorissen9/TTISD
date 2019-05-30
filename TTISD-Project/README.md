@@ -81,7 +81,7 @@ After everything is done, the main game window will be shown and the game can be
 
 Each player rolls their dice and moved their pawn, turn by turn. After moving the pawn, the "`Rolled Dice and moved`" button should be pressed to advance the game. As mentioned before, the LIDAR will now detect the new game state and extrapolate the new position of the current player and update the virtual game board. When a player lands on a square that already has a pawn, he/she should move to the next one. This state cannot be handled as the pawn could have "disappeared" on any square that has a pawn and can therefore not be detected.
 
-Refer to [`TTISD_Project_9_DemoFHD.mp4`](Documentation\TTISD_Project_9_DemoFHD.mp4) for actual gameplay.
+Refer to [`TTISD_Project_9_DemoFHD.mp4`](Documentation\TTISD_Project_9_DemoFHD.mp4) for actual gameplay. We used a mobile app for rolling the dice, since we forgot to bring physical ones.
 
 The game itself is not feature complete when compared to the official rules of Monopoly, but it works fine as a simplified version for our purposes. Our initial goal of creating a unified interface and provide a framework for playing (complex) board games virtually with a physical segmented board, is therefore not fully achieved, but we have shown that this approach is viable for future work.
 
