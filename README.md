@@ -6,15 +6,15 @@ Bjorn Jorissen, William Thenaers
 
 ## Assignment 1: Android geoTODO
 
-Some screenshots from an emulator can be found in [`TTISDassignment1\doc\`](TTISDassignment1\doc\).
+Some screenshots from an emulator can be found in [`TTISDassignment1/doc/`](TTISDassignment1/doc/).
 
 A video showing the execution on a real Android smart phone and a Samsung Gear Live is also inlcuded.
 
 ## Assignment 2: Interactive Room
 
-Some screenshots and a video can be found in `TTISDassignment2\doc\`.
+Some screenshots and a video can be found in [`TTISDassignment2/doc/`](TTISDassignment2/doc/).
 
-A release build is provided in `TTISDassignment2\bin\Release` (after building).
+A release build is provided in `TTISDassignment2/bin/Release` (after building).
 Running it might require the Kinect SDK (v1.8).
 
 ### Gameplay
@@ -61,15 +61,15 @@ The [Microbit](https://microbit.org/) runs a simple main loop that collects data
 - A linear potentiometer for amount of thrust;
 - A switch to toggle joystick or IMU control mode.
 
-Since the assignment required Python, both the Microbit and the host computer run a script, `Code/KSPCommander_device.py` and `Code/KSPCommander_host.py` respectively. Installing the `PySerial` package on the host is required.
+Since the assignment required Python, both the Microbit and the host computer run a script, [`Code/KSPCommander_device.py`](TTISDassignment3/Code/KSPCommander_device.py) and [`Code/KSPCommander_host.py`](TTISDassignment3/Code/KSPCommander_host.py) respectively. Installing the `PySerial` package on the host is required.
 
 By using MicroPython on the Microbit, there is not enough memory left to use the full `radio` module for Bluetooth support, and hence we had to give up on using it. Since the working memory is also limited when using Python, the script had to be split between the Microbit and the host, else the entire interaction with the Microbit and KSP could have been contained on the Microbit only,
 
-We used the [KerbalSimpit](https://bitbucket.org/pjhardy/kerbalsimpit) mod (open source) and adapted its [companion Arduino library](https://bitbucket.org/pjhardy/kerbalsimpit-arduino) for the Microbit. After handshaking, the mod handles packets sent from a serial port to adjust data in the game. Since the code could not be contained on just the Microbit, the additional host script requires an emulated COM port to communicate with KerbalSimpit. This is achieved with the external program [com0com](http://com0com.sourceforge.net/) (install can be found in `Code/deps`).
+We used the [KerbalSimpit](https://bitbucket.org/pjhardy/kerbalsimpit) mod (open source) and adapted its [companion Arduino library](https://bitbucket.org/pjhardy/kerbalsimpit-arduino) for the Microbit. After handshaking, the mod handles packets sent from a serial port to adjust data in the game. Since the code could not be contained on just the Microbit, the additional host script requires an emulated COM port to communicate with KerbalSimpit. This is achieved with the external program [com0com](http://com0com.sourceforge.net/) (install can be found in [`Code/deps`](TTISDassignment3/Code/deps/)).
 
 ### Enclosure
 
-Refer to the circuit diagram and the SVG drawing in the `Enclosure` folder.
+Refer to the circuit diagram and the SVG drawing in the [`Enclosure`](TTISDassignment3/Enclosure/) folder.
 
 ![Circuit diagram](TTISDassignment3/Enclosure/CircuitDiagram.png)
 
@@ -120,7 +120,7 @@ Because the first idea was viable, we tried to use the [*SparkFun Simultaneous R
 
 ![TTISD_Project_RFID_antenna](TTISD-Project/Research/RFID/Documentation/TTISD_Project_RFID_antenna.jpg)
 
-We started with the example code from the [Arduino library](https://github.com/sparkfun/SparkFun_Simultaneous_RFID_Tag_Reader_Library) ([local](TTISD-Project/Research/RFID/Arduino test sketches/SparkFun_Simultaneous_RFID_Tag_Reader_Library-master.7z), requires [ArduinoSTL lib](https://github.com/mike-matera/ArduinoSTL)). The reader works to some extent when just reading tags that pass by the antenna (see [`TTISD-Project/Research/RFID/Arduino test sketches`](TTISD-Project/Research/RFID/Arduino test sketches/)), but we never got a reliable readout. Example applications from other users show that the setup should be capable of detecting multiple tags that pass in front of the antenna, and fair enough if tags pass by, they get detected. But multiple UHF RFID tags resulted in a continuous bad CRC error when they are just held stationary in front of the antenna. Since our proposed application would require the detection of a grid of stationary tags, this method proved to fail our expectations.
+We started with the example code from the [Arduino library](https://github.com/sparkfun/SparkFun_Simultaneous_RFID_Tag_Reader_Library) ([local](TTISD-Project/Research/RFID/Arduino%20test%20sketches/SparkFun_Simultaneous_RFID_Tag_Reader_Library-master.7z), requires [ArduinoSTL lib](https://github.com/mike-matera/ArduinoSTL)). The reader works to some extent when just reading tags that pass by the antenna (see [`TTISD-Project/Research/RFID/Arduino test sketches`](TTISD-Project/Research/RFID/Arduino%20test%20sketches/)), but we never got a reliable readout. Example applications from other users show that the setup should be capable of detecting multiple tags that pass in front of the antenna, and fair enough if tags pass by, they get detected. But multiple UHF RFID tags resulted in a continuous bad CRC error when they are just held stationary in front of the antenna. Since our proposed application would require the detection of a grid of stationary tags, this method proved to fail our expectations.
 
 A possible cause could be that these Ultra-High Frequency tags (UHF) are subject to interference with other tags or other UHF signal sources, although they are designed in a way the mitigates this problem. Another adjustment we tried, was providing the reader with an external power supply and increasing the signal strength. This however, yielded no better results than just using the usb powered Arduino. Experiments in the way the code handled reading tags were also in vain.
 
@@ -129,11 +129,11 @@ Most other applications are using this setup to detect items passing in front of
 ##### LIDAR
 While working on the RFID tags we also experimented with a LIDAR sensor.
 
-The [Velodyne LIDAR](https://velodynelidar.com/vlp-16.html) that was available, has a minimum range of 1 meter and a maximum range of 100 meters. While this is good for outdoor applications, like tracking large environments which is what the LIDAR is designed for, it is overkill for the application we wanted to create. Apart from the high range, it can measure multiple vertical levels to create a 3D environment map. Example traces can be found in [`TTISD-Project/Research/LIDAR/Velodyne LIDAR`](TTISD-Project/Research/LIDAR/Velodyne LIDAR) ([VeloView](https://velodynelidar.com/downloads.html#software) software required to read them).
+The [Velodyne LIDAR](https://velodynelidar.com/vlp-16.html) that was available, has a minimum range of 1 meter and a maximum range of 100 meters. While this is good for outdoor applications, like tracking large environments which is what the LIDAR is designed for, it is overkill for the application we wanted to create. Apart from the high range, it can measure multiple vertical levels to create a 3D environment map. Example traces can be found in [`TTISD-Project/Research/LIDAR/Velodyne LIDAR`](TTISD-Project/Research/LIDAR/Velodyne%20LIDAR/) ([VeloView](https://velodynelidar.com/downloads.html#software) software required to read them).
 
 ![Velondyne LIDAR trace](TTISD-Project/Research/LIDAR/Velodyne LIDAR/Velodyne-VLP-16-Data_1.png)
 
-We were shown a [paper](TTISD-Project/Research/LIDAR/SurfaceSight A New Spin on Touch and Object Sensing for IoT Experiences.pdf) that used a LIDAR sensor to identify objects and gestures, but as we wanted to use small pawns, this did not look applicable to our idea. It still consisted of combining a LIDAR with RFID tag tracking to create a board game. 
+We were shown a [paper](TTISD-Project/Research/LIDAR/SurfaceSight%20A%20New%20Spin%20on%20Touch%20and%20Object%20Sensing%20for%20IoT%20Experiences.pdf) that used a LIDAR sensor to identify objects and gestures, but as we wanted to use small pawns, this did not look applicable to our idea. It still consisted of combining a LIDAR with RFID tag tracking to create a board game. 
 
 The Velodyne LIDAR was far too expensive for use in a simple prototype game.
 
