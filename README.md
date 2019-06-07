@@ -131,7 +131,7 @@ While working on the RFID tags we also experimented with a LIDAR sensor.
 
 The [Velodyne LIDAR](https://velodynelidar.com/vlp-16.html) that was available, has a minimum range of 1 meter and a maximum range of 100 meters. While this is good for outdoor applications, like tracking large environments which is what the LIDAR is designed for, it is overkill for the application we wanted to create. Apart from the high range, it can measure multiple vertical levels to create a 3D environment map. Example traces can be found in [`TTISD-Project/Research/LIDAR/Velodyne LIDAR`](TTISD-Project/Research/LIDAR/Velodyne%20LIDAR/) ([VeloView](https://velodynelidar.com/downloads.html#software) software required to read them).
 
-![Velondyne LIDAR trace](TTISD-Project/Research/LIDAR/Velodyne LIDAR/Velodyne-VLP-16-Data_1.png)
+![Velondyne LIDAR trace](TTISD-Project/Research/LIDAR/Velodyne%20LIDAR/Velodyne-VLP-16-Data_1.png)
 
 We were shown a [paper](TTISD-Project/Research/LIDAR/SurfaceSight%20A%20New%20Spin%20on%20Touch%20and%20Object%20Sensing%20for%20IoT%20Experiences.pdf) that used a LIDAR sensor to identify objects and gestures, but as we wanted to use small pawns, this did not look applicable to our idea. It still consisted of combining a LIDAR with RFID tag tracking to create a board game. 
 
